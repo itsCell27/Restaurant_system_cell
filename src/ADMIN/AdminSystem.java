@@ -3,7 +3,7 @@ package ADMIN;
 import java.util.Scanner;
 
 public class AdminSystem {
-    public static void main(String[] args) {
+        public static void main(String[] args) {
         int maxAdmins = 10; 
         AdminManager adminManager = new AdminManager(maxAdmins);
         AdminMenu adminMenu = new AdminMenu(adminManager);

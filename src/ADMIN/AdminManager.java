@@ -3,10 +3,11 @@ package ADMIN;
 public class AdminManager {
     private AdminVar[] admins;
     private int count;
-
+   
     public AdminManager(int size) {
         admins = new AdminVar[size];
         count = 0;
+        admins[count++] = new AdminVar("admin", "admin");
     }
 
     public boolean register(String username, String password) {
