@@ -22,13 +22,13 @@ class AdminMenu {
         int choice = in.nextInt();
         switch (choice){
             case 1:
-                addmenuitem.AddMenu();
+                addmenuitem.addMenu();
                break;
             case 2:
                 updatemenuitem.UpdateMenu();
                break;
             case 3:
-                deletemenuitem.DeleteMenu();
+                deletemenuitem.DeleteMenuItem();
                break;
             case 4:
                return;
