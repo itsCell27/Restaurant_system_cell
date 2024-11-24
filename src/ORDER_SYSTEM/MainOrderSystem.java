@@ -10,10 +10,9 @@ public class MainOrderSystem {
     static Scanner scanner = new Scanner(System.in);
     static Order[] orders = new Order[100];
     static OrderCount orderCount = new OrderCount(0);
-    static int dineInOrTakeOut;
+    static int dineInOrTakeOut = 0;  // Default to 0, will be set to 1 (Dine In) or 2 (Take Out)
     static boolean isUserLoggedIn = false;  // Track user login status
 
-    
     public static void main(String[] args) {
         int mainChoice;
         BreakfastMenu breakfastMenu = new BreakfastMenu(orders, orderCount);
@@ -22,12 +21,12 @@ public class MainOrderSystem {
         DrinksAndDessert drinksAndDessert = new DrinksAndDessert(orders, orderCount);
         Coffee coffee = new Coffee(orders, orderCount);
         Fries fries = new Fries(orders, orderCount);
-        HandleMyOrder handleOrder = new HandleMyOrder(scanner, orders, orderCount, dineInOrTakeOut);
 
         displayUserRoleMenu();  // Display the user role selection menu
 
         if (isUserLoggedIn) {  // Only proceed if the user selects "Customer"
-              // Display dine in or take out options
+            // Display dine in or take out options
+            displayDineInOrTakeOut();
 
             do {
                 System.out.println("\nWelcome to the Restaurant!");
@@ -62,10 +61,12 @@ public class MainOrderSystem {
                         fries.displayFriesMenu();
                         break;
                     case 7:
-                        handleOrder.handleMyOrder();
+                        // Ensure HandleMyOrder is instantiated here with the correct parameters
+                        HandleMyOrder handleOrder = new HandleMyOrder(scanner, orders, orderCount, dineInOrTakeOut);
+                        handleOrder.handleMyOrder();  // This will now correctly use the dineInOrTakeOut value
                         break;
                     case 0:
-                        displayDineInOrTakeOut();
+                        displayDineInOrTakeOut();  // Show this again in case user wants to change dining preference
                         break;
                     default:
                         System.out.println("Invalid choice. Please select again.");
@@ -89,23 +90,21 @@ public class MainOrderSystem {
 
             switch (choice) {
                 case 1:
-                	AdminSystem adminSystem = new AdminSystem(); // Instantiate the AdminSystem class
+                    AdminSystem adminSystem = new AdminSystem(); // Instantiate the AdminSystem class
                     adminSystem.start();
                     break;
                 case 2:
-                	EmployeeMenu employeeMenu = new EmployeeMenu(); // Instantiate the EmployeeMenu class
+                    EmployeeMenu employeeMenu = new EmployeeMenu(); // Instantiate the EmployeeMenu class
                     employeeMenu.start();
                     break;
                 case 3:
                     isUserLoggedIn = true;  // Only if Customer is selected, allow access to the system
-                    displayDineInOrTakeOut();  // Call this method after login
                     return;
                 default:
                     System.out.println("Invalid option. Please select again.");
             }
         }
     }
-
 
     // Display Dine In or Take Out menu
     public static void displayDineInOrTakeOut() {
@@ -120,17 +119,19 @@ public class MainOrderSystem {
 
             switch (choice) {
                 case 1:
-                    dineInOrTakeOut = 1;
-                    return;
+                    dineInOrTakeOut = 1;  // Dine In option selected
+                    System.out.println("Dine In selected.");
+                    return;  // Exit the loop after setting the value
                 case 2:
-                    dineInOrTakeOut = 2;
-                    return;
+                    dineInOrTakeOut = 2;  // Take Out option selected
+                    System.out.println("Take Out selected.");
+                    return;  // Exit the loop after setting the value
                 case 3:
                     // Attempt to log out by authenticating
                     AdminAuthForLogout authForLogout = new AdminAuthForLogout();
                     if (authForLogout.authenticateForLogout()) {
                         isUserLoggedIn = false;  // Log the user out if authentication is successful
-                        displayUserRoleMenu();
+                        displayUserRoleMenu();  // Show the user role menu again
                         return;
                     } else {
                         System.out.println("Logout failed. Returning to menu.");
@@ -141,6 +142,9 @@ public class MainOrderSystem {
             }
         }
     }
+ 
+
+
 
     public static void displayOrderSummary() {
         System.out.println("\nOrder Summary:");

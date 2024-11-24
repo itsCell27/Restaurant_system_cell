@@ -15,7 +15,7 @@ public class MenuData {
     public static final String[] breakfastItemNames = {"Combo Breakfast 1", "Combo Breakfast 2", "Combo Breakfast 3", "Combo Breakfast 4", "Pancake", "Regular Peach Mango Pie","Large Peach Mango Pie", "Regular Brewed Coffee","Iced Coffee"};  // Changed to public
     public static final int[] breakfastItemPrices = {69, 69, 69, 69, 39, 48, 69, 49, 49};  // Changed to public
 
-    public static final String[] burgerItemNames = {"Regular Burger","Cheeseburger","Bacon Cheeseburger","Jumbo Burger (1 drink)","B1 (1 regular burger, 1 small fries, 1 drink)","B2 (1 cheeseburger, 1 small fries, 1 drink)","B3 (1 bacon cheeseburger, 1 small fries, 1 drink)","B4 (2 regular burger, 2 small fries, 2 drink)","B5 (2 jumbo burger, 2 medium size fries, 2 drinks)"};  // Changed to public
+    public static final String[] burgerItemNames = {"Regular Burger","Cheeseburger","Bacon Cheeseburger","Jumbo Burger","B1","B2 ","B3 ","B4 ","B5"};  // Changed to public
     public static final int[] burgerItemPrices = {59, 79, 99, 139, 89, 119, 139, 169, 399};  // Changed to public
 
     public static final String[] drinksAndDessertsItemNames = {"Regular Soft Drink","Large Soft Drink","Iced Tea","Milkshake (Vanilla/Chocolate)","Chocolate Sundae","Vanilla Sundae","Caramel Sundae","Banana Split","Choco Chip Cookie (2 pcs)","Mango Float"};  // Changed to public

@@ -35,7 +35,6 @@ public class AdminSystem {
                     break;
                 case 2:
                     System.out.println("Exiting...");
-                    scanner.close();  // Close the scanner when done
                     return;
                 default:
                     System.out.println("Invalid choice. Please try again.");

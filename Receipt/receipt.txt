@@ -2,19 +2,15 @@
               ORDER #1
 ====================================
 Order Summary:
-Item: Latte
+Item: Pancake
 Quantity: 5
-Price: 400 PHP
+Price: 195 PHP
 
-Item: Espresso
+Item: Large Peach Mango Pie
 Quantity: 5
-Price: 275 PHP
+Price: 345 PHP
 
-Item: Regular Coffee
-Quantity: 5
-Price: 250 PHP
-
-Total Price: 925 PHP
+Total Price: 540 PHP
 Dining Option: Take Out
 Payment Method: Cash
 ====================================
