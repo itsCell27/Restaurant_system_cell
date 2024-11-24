@@ -1,8 +1,9 @@
 package ORDER_SYSTEM;
 
-import ADMIN.AdminVar;
+import ADMIN.AdminSystem;
 import ADMIN.AdminAuthForLogout;
 import MENU_DATA_HANDLING.MenuData;
+import EMPLOYEE.EmployeeMenu;
 import java.util.Scanner;
 
 public class MainOrderSystem {
@@ -11,8 +12,7 @@ public class MainOrderSystem {
     static OrderCount orderCount = new OrderCount(0);
     static int dineInOrTakeOut;
     static boolean isUserLoggedIn = false;  // Track user login status
-    
-    static AdminVar adminVar = new AdminVar("admin", "admin123"); 
+
     
     public static void main(String[] args) {
         int mainChoice;
@@ -89,19 +89,23 @@ public class MainOrderSystem {
 
             switch (choice) {
                 case 1:
-                    System.out.println("Admin access is restricted.");
+                	AdminSystem adminSystem = new AdminSystem(); // Instantiate the AdminSystem class
+                    adminSystem.start();
                     break;
                 case 2:
-                    System.out.println("Employee access is restricted.");
+                	EmployeeMenu employeeMenu = new EmployeeMenu(); // Instantiate the EmployeeMenu class
+                    employeeMenu.start();
                     break;
                 case 3:
                     isUserLoggedIn = true;  // Only if Customer is selected, allow access to the system
+                    displayDineInOrTakeOut();  // Call this method after login
                     return;
                 default:
                     System.out.println("Invalid option. Please select again.");
             }
         }
     }
+
 
     // Display Dine In or Take Out menu
     public static void displayDineInOrTakeOut() {
@@ -110,7 +114,7 @@ public class MainOrderSystem {
             System.out.println("\nSelect an option:");
             System.out.println("1. Dine In");
             System.out.println("2. Take Out");
-            System.out.println("3. Exit");
+            System.out.println("3. Logout");
             System.out.print("Please select an option: ");
             choice = scanner.nextInt();
 
@@ -123,7 +127,7 @@ public class MainOrderSystem {
                     return;
                 case 3:
                     // Attempt to log out by authenticating
-                    AdminAuthForLogout authForLogout = new AdminAuthForLogout(adminVar);
+                    AdminAuthForLogout authForLogout = new AdminAuthForLogout();
                     if (authForLogout.authenticateForLogout()) {
                         isUserLoggedIn = false;  // Log the user out if authentication is successful
                         displayUserRoleMenu();

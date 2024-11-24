@@ -4,11 +4,10 @@ import java.util.Scanner;
 
 public class AdminAuthForLogout {
     private static final Scanner scanner = new Scanner(System.in);
-    private AdminVar adminVar;
 
-    public AdminAuthForLogout(AdminVar adminVar) {
-        this.adminVar = adminVar;
-    }
+    // Hardcoded admin credentials (default username and password)
+    private static final String ADMIN_USERNAME = "admin";
+    private static final String ADMIN_PASSWORD = "admin123";
 
     // Method to authenticate admin credentials for logout
     public boolean authenticateForLogout() {
@@ -21,7 +20,7 @@ public class AdminAuthForLogout {
         enteredPassword = scanner.nextLine();
 
         // Check if the credentials match
-        if (adminVar.getUsername().equals(enteredUsername) && adminVar.getPassword().equals(enteredPassword)) {
+        if (ADMIN_USERNAME.equals(enteredUsername) && ADMIN_PASSWORD.equals(enteredPassword)) {
             System.out.println("Logout successful!");
             return true;  // Return true if authentication is successful
         } else {
