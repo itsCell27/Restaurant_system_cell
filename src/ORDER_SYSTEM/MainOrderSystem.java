@@ -1,5 +1,9 @@
 package ORDER_SYSTEM;
+
+import ADMIN.AdminSystem;
+import ADMIN.AdminAuthForLogout;
 import MENU_DATA_HANDLING.MenuData;
+import EMPLOYEE.EmployeeMenu;
 import java.util.Scanner;
 
 public class MainOrderSystem {
@@ -9,6 +13,7 @@ public class MainOrderSystem {
     static int dineInOrTakeOut;
     static boolean isUserLoggedIn = false;  // Track user login status
 
+    
     public static void main(String[] args) {
         int mainChoice;
         BreakfastMenu breakfastMenu = new BreakfastMenu(orders, orderCount);
@@ -19,107 +24,88 @@ public class MainOrderSystem {
         Fries fries = new Fries(orders, orderCount);
         HandleMyOrder handleOrder = new HandleMyOrder(scanner, orders, orderCount, dineInOrTakeOut);
 
-        displayDineInOrTakeOut();  // Display dine in or take out options
+        displayUserRoleMenu();  // Display the user role selection menu
 
-        do {
-            System.out.println("\nWelcome to the Restaurant!");
-            System.out.println("1. Breakfast Menu");
-            System.out.println("2. Chicken And Platters");
-            System.out.println("3. Burger Menu");
-            System.out.println("4. Drinks & Desserts Menu");
-            System.out.println("5. Coffee Menu");
-            System.out.println("6. Fries Menu");
-            System.out.println("7. My Order");
-            System.out.println("0. Go Back");
-            System.out.print("Please select an option: ");
-            mainChoice = scanner.nextInt();
+        if (isUserLoggedIn) {  // Only proceed if the user selects "Customer"
+            displayDineInOrTakeOut();  // Display dine in or take out options
 
-            switch (mainChoice) {
-                case 1:
-                    breakfastMenu.displayBreakfastMenu();
-                    break;
-                case 2:
-                    chickenAndPlattersMenu.displayChickenAndPlatters();
-                    break;
-                case 3:
-                    burger.displayBurgerMenu();
-                    break;
-                case 4:
-                    drinksAndDessert.displayDrinksAndDessertsMenu();
-                    break;
-                case 5:
-                    coffee.displayCoffeeMenu();
-                    break;
-                case 6:
-                    fries.displayFriesMenu();
-                    break;
-                case 7:
-                    handleOrder.handleMyOrder();
-                    break;
-                case 0:
-                    displayDineInOrTakeOut();
-                    break;
-                default:
-                    System.out.println("Invalid choice. Please select again.");
-            }
-        } while (true);
+            do {
+                System.out.println("\nWelcome to the Restaurant!");
+                System.out.println("1. Breakfast Menu");
+                System.out.println("2. Chicken And Platters");
+                System.out.println("3. Burger Menu");
+                System.out.println("4. Drinks & Desserts Menu");
+                System.out.println("5. Coffee Menu");
+                System.out.println("6. Fries Menu");
+                System.out.println("7. My Order");
+                System.out.println("0. Go Back");
+                System.out.print("Please select an option: ");
+                mainChoice = scanner.nextInt();
+
+                switch (mainChoice) {
+                    case 1:
+                        breakfastMenu.displayBreakfastMenu();
+                        break;
+                    case 2:
+                        chickenAndPlattersMenu.displayChickenAndPlatters();
+                        break;
+                    case 3:
+                        burger.displayBurgerMenu();
+                        break;
+                    case 4:
+                        drinksAndDessert.displayDrinksAndDessertsMenu();
+                        break;
+                    case 5:
+                        coffee.displayCoffeeMenu();
+                        break;
+                    case 6:
+                        fries.displayFriesMenu();
+                        break;
+                    case 7:
+                        handleOrder.handleMyOrder();
+                        break;
+                    case 0:
+                        displayDineInOrTakeOut();
+                        break;
+                    default:
+                        System.out.println("Invalid choice. Please select again.");
+                }
+            } while (true);
+        } else {
+            System.out.println("Exiting system.");
+        }
     }
 
     // Display Login and Register menu before Dine In/Take Out
-    public static void displayLoginRegisterMenu() {
+    public static void displayUserRoleMenu() {
         int choice;
-        while (!isUserLoggedIn) {
-            System.out.println("\nWelcome! Please login or register to continue.");
-            System.out.println("1. Login");
-            System.out.println("2. Register");
-            System.out.println("3. Exit");
+        while (true) {
+            System.out.println("\nSelect your role:");
+            System.out.println("1. Admin");
+            System.out.println("2. Employee");
+            System.out.println("3. Customer");
             System.out.print("Please select an option: ");
             choice = scanner.nextInt();
-            scanner.nextLine();  // Consume newline
 
             switch (choice) {
                 case 1:
-                    loginUser();
+                	AdminSystem adminSystem = new AdminSystem(); // Instantiate the AdminSystem class
+                    adminSystem.start();
                     break;
                 case 2:
-                    registerUser();
+                	EmployeeMenu employeeMenu = new EmployeeMenu(); // Instantiate the EmployeeMenu class
+                    employeeMenu.start();
                     break;
                 case 3:
-                    System.out.println("Exiting system.");
-                    System.exit(0);
-                    break;
+                    isUserLoggedIn = true;  // Only if Customer is selected, allow access to the system
+                    displayDineInOrTakeOut();  // Call this method after login
+                    return;
                 default:
                     System.out.println("Invalid option. Please select again.");
             }
         }
     }
 
-    // Simulate user login (can be connected to actual data storage)
-    public static void loginUser() {
-        System.out.print("Enter username: ");
-        String username = scanner.nextLine();
-        System.out.print("Enter password: ");
-        String password = scanner.nextLine();
-
-        // For demonstration, we assume any username/password combination is valid
-        System.out.println("Login successful!");
-        isUserLoggedIn = true;
-    }
-
-    // Simulate user registration (can be connected to actual data storage)
-    public static void registerUser() {
-        System.out.print("Enter first name: ");
-        String firstName = scanner.nextLine();
-        System.out.print("Enter last name: ");
-        String lastName = scanner.nextLine();
-        System.out.print("Enter username: ");
-        String username = scanner.nextLine();
-        System.out.print("Enter password: ");
-        String password = scanner.nextLine();
-
-        // Display success message for now (no actual storage handling in this snippet)
-        System.out.println("Registration successful! You can now login.");
-    }
 
     // Display Dine In or Take Out menu
     public static void displayDineInOrTakeOut() {
@@ -128,7 +114,7 @@ public class MainOrderSystem {
             System.out.println("\nSelect an option:");
             System.out.println("1. Dine In");
             System.out.println("2. Take Out");
-            System.out.println("3. Exit");
+            System.out.println("3. Logout");
             System.out.print("Please select an option: ");
             choice = scanner.nextInt();
 
@@ -140,8 +126,15 @@ public class MainOrderSystem {
                     dineInOrTakeOut = 2;
                     return;
                 case 3:
-                    System.out.println("Exiting system.");
-                    System.exit(0);
+                    // Attempt to log out by authenticating
+                    AdminAuthForLogout authForLogout = new AdminAuthForLogout();
+                    if (authForLogout.authenticateForLogout()) {
+                        isUserLoggedIn = false;  // Log the user out if authentication is successful
+                        displayUserRoleMenu();
+                        return;
+                    } else {
+                        System.out.println("Logout failed. Returning to menu.");
+                    }
                     break;
                 default:
                     System.out.println("Invalid option. Please select again.");
