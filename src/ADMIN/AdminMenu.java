@@ -8,6 +8,7 @@ class AdminMenu {
     UpdateMenuItem updatemenuitem = new UpdateMenuItem();
     DeleteMenuItem deletemenuitem = new DeleteMenuItem();
 <<<<<<< HEAD
+<<<<<<< HEAD
     RegisterEmployee registeremployee = new RegisterEmployee();
     public AdminMenu(AdminManager manager) {
         this.manager = manager;
@@ -40,6 +41,9 @@ class AdminMenu {
 =======
 
 >>>>>>> branch 'Changes' of https://github.com/Andrewlars/Restaurant_system.git
+=======
+
+>>>>>>> branch 'Changes' of https://github.com/Andrewlars/Restaurant_system.git
     public void displayMenu() {
     	
         while (true) {
@@ -54,6 +58,9 @@ class AdminMenu {
             System.out.println("3. Delete menu item");
             System.out.println("4. Register Empployee");
             System.out.println("5. Logout");
+<<<<<<< HEAD
+>>>>>>> branch 'Changes' of https://github.com/Andrewlars/Restaurant_system.git
+=======
 >>>>>>> branch 'Changes' of https://github.com/Andrewlars/Restaurant_system.git
             System.out.print("Choose an option: ");
             int choice = scanner.nextInt();
