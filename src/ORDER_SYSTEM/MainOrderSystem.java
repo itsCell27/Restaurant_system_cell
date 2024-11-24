@@ -27,7 +27,7 @@ public class MainOrderSystem {
         displayUserRoleMenu();  // Display the user role selection menu
 
         if (isUserLoggedIn) {  // Only proceed if the user selects "Customer"
-            displayDineInOrTakeOut();  // Display dine in or take out options
+              // Display dine in or take out options
 
             do {
                 System.out.println("\nWelcome to the Restaurant!");
