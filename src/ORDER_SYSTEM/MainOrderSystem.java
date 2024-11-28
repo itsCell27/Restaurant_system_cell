@@ -1,219 +1,200 @@
 package ORDER_SYSTEM;
 
+import EMPLOYEE.Login;  // Import the Login class from the EMPLOYEE package
+import EMPLOYEE.EmployeeMenu;  // Import the EmployeeMenu class
 import ADMIN.AdminSystem;
-import ADMIN.AdminAuthForLogout;
-import MENU_DATA_HANDLING.MenuData;
-import EMPLOYEE.EmployeeMenu;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class MainOrderSystem {
-    static Scanner scanner = new Scanner(System.in);
-    static Order[] orders = new Order[100];
-    static OrderCount orderCount = new OrderCount(0);
-    static int dineInOrTakeOut = 0;  // Default to 0, will be set to 1 (Dine In) or 2 (Take Out)
-    static boolean isUserLoggedIn = false;  // Track user login status
 
     public static void main(String[] args) {
-        int mainChoice;
-        BreakfastMenu breakfastMenu = new BreakfastMenu(orders, orderCount);
-        ChickenAndPlattersMenu chickenAndPlattersMenu = new ChickenAndPlattersMenu(orders, orderCount);
-        Burger burger = new Burger(orders, orderCount);
-        DrinksAndDessert drinksAndDessert = new DrinksAndDessert(orders, orderCount);
-        Coffee coffee = new Coffee(orders, orderCount);
-        Fries fries = new Fries(orders, orderCount);
+        Scanner scanner = new Scanner(System.in); // Create the scanner once here
 
-        displayUserRoleMenu();  // Display the user role selection menu
+        // Create instances of the menu classes
+        ChickenAndPlattersMenu chickenMenu = new ChickenAndPlattersMenu();
+        BreakfastMenu breakfastMenu = new BreakfastMenu();
+        DrinksAndDessertMenu drinksAndDessertMenu = new DrinksAndDessertMenu(); // Drinks & Desserts menu
+        BurgerMenu burgerMenu = new BurgerMenu(); // Burger menu
+        CoffeeMenu coffeeMenu = new CoffeeMenu(); // Coffee menu
+        FriesMenu friesMenu = new FriesMenu(); // Fries menu
 
-        if (isUserLoggedIn) {  // Only proceed if the user selects "Customer"
-            // Display dine in or take out options
-            displayDineInOrTakeOut();
+        // Load menu items from the CSV file
+        List<MenuItem> menuItems = chickenMenu.readMenuItems();
 
-            do {
-                System.out.println("\nWelcome to the Restaurant!");
-                System.out.println("1. Breakfast Menu");
-                System.out.println("2. Chicken And Platters");
-                System.out.println("3. Burger Menu");
-                System.out.println("4. Drinks & Desserts Menu");
-                System.out.println("5. Coffee Menu");
-                System.out.println("6. Fries Menu");
-                System.out.println("7. My Order");
-                System.out.println("0. Go Back");
-                System.out.print("Please select an option: ");
-                mainChoice = scanner.nextInt();
+        // Create an instance of HandleMyOrder class to manage the orders
+        HandleMyOrder handleOrder = new HandleMyOrder();
+        List<Order> orders = new ArrayList<>();  // List of orders
 
-                switch (mainChoice) {
-                    case 1:
-                        breakfastMenu.displayBreakfastMenu();
-                        break;
-                    case 2:
-                        chickenAndPlattersMenu.displayChickenAndPlatters();
-                        break;
-                    case 3:
-                        burger.displayBurgerMenu();
-                        break;
-                    case 4:
-                        drinksAndDessert.displayDrinksAndDessertsMenu();
-                        break;
-                    case 5:
-                        coffee.displayCoffeeMenu();
-                        break;
-                    case 6:
-                        fries.displayFriesMenu();
-                        break;
-                    case 7:
-                        // Ensure HandleMyOrder is instantiated here with the correct parameters
-                        HandleMyOrder handleOrder = new HandleMyOrder(scanner, orders, orderCount, dineInOrTakeOut);
-                        handleOrder.handleMyOrder();  // This will now correctly use the dineInOrTakeOut value
-                        break;
-                    case 0:
-                        displayDineInOrTakeOut();  // Show this again in case user wants to change dining preference
-                        break;
-                    default:
-                        System.out.println("Invalid choice. Please select again.");
-                }
-            } while (true);
-        } else {
-            System.out.println("Exiting system.");
-        }
-    }
+        // Dining option
+        String diningOption = "";
 
-    // Display Login and Register menu before Dine In/Take Out
-    public static void displayUserRoleMenu() {
-        int choice;
+        // Role selection loop
         while (true) {
-            System.out.println("\nSelect your role:");
-            System.out.println("1. Admin");
-            System.out.println("2. Employee");
-            System.out.println("3. Customer");
-            System.out.print("Please select an option: ");
-            choice = scanner.nextInt();
+            int roleChoice = getRoleChoice();  // Get the role choice from a helper method
 
-            switch (choice) {
+            // Handle the role selection
+            switch (roleChoice) {
                 case 1:
-                    AdminSystem adminSystem = new AdminSystem(); // Instantiate the AdminSystem class
-                    adminSystem.start();
+                    System.out.println("You selected Admin.");
+                    AdminSystem adminSystem = new AdminSystem();  // Create an instance of AdminSystem
+                    adminSystem.start();  // Start the admin system
                     break;
                 case 2:
-                    EmployeeMenu employeeMenu = new EmployeeMenu(); // Instantiate the EmployeeMenu class
-                    employeeMenu.start();
-                    break;
-                case 3:
-                    isUserLoggedIn = true;  // Only if Customer is selected, allow access to the system
-                    return;
-                default:
-                    System.out.println("Invalid option. Please select again.");
-            }
-        }
-    }
+                    System.out.println("You selected Employee.");
+                    // Loop to allow retry if login fails
+                    boolean loginSuccess = false;
+                    while (!loginSuccess) {
+                        Login login = new Login();  // Create an instance of the Login class
+                        Scanner scannerForEmployee = new Scanner(System.in);  // Scanner for employee login
+                        System.out.print("Enter username: ");
+                        String employeeUsername = scannerForEmployee.nextLine();  // Read employee username
+                        System.out.print("Enter password: ");
+                        String employeePassword = scannerForEmployee.nextLine();  // Read employee password
 
-    // Display Dine In or Take Out menu
-    public static void displayDineInOrTakeOut() {
-        int choice;
-        while (true) {
-            System.out.println("\nSelect an option:");
-            System.out.println("1. Dine In");
-            System.out.println("2. Take Out");
-            System.out.println("3. Logout");
-            System.out.print("Please select an option: ");
-            choice = scanner.nextInt();
+                        // Verify the credentials by calling the public method handleLogin
+                        if (login.handleLogin(employeeUsername, employeePassword)) {
+                            System.out.println("Employee login successful!");
+                            loginSuccess = true;  // Set flag to true to exit loop on success
+                            
+                            // After login success, start Employee Menu
+                            EmployeeMenu employeeMenu = new EmployeeMenu();  // Create an instance of EmployeeMenu
+                            employeeMenu.start();  // Start the employee menu
 
-            switch (choice) {
-                case 1:
-                    dineInOrTakeOut = 1;  // Dine In option selected
-                    System.out.println("Dine In selected.");
-                    return;  // Exit the loop after setting the value
-                case 2:
-                    dineInOrTakeOut = 2;  // Take Out option selected
-                    System.out.println("Take Out selected.");
-                    return;  // Exit the loop after setting the value
-                case 3:
-                    // Attempt to log out by authenticating
-                    AdminAuthForLogout authForLogout = new AdminAuthForLogout();
-                    if (authForLogout.authenticateForLogout()) {
-                        isUserLoggedIn = false;  // Log the user out if authentication is successful
-                        displayUserRoleMenu();  // Show the user role menu again
-                        return;
-                    } else {
-                        System.out.println("Logout failed. Returning to menu.");
+                        } else {
+                            System.out.println("Invalid username or password for Employee.");
+                            System.out.println("Returning to role selection...");
+                            break;  // Exit the loop and go back to role selection
+                        }
                     }
                     break;
+                case 3:
+                    System.out.println("You selected Customer.");
+                    break;
                 default:
-                    System.out.println("Invalid option. Please select again.");
-            }
-        }
-    }
- 
-
-
-
-    public static void displayOrderSummary() {
-        System.out.println("\nOrder Summary:");
-        int total = 0;
-        for (int i = 0; i < orderCount.count; i++) {
-            String itemName = "";
-            switch (orders[i].getCategory()) {
-                case "Breakfast":
-                    itemName = MenuData.breakfastItemNames[orders[i].getItemIndex()];
-                    break;
-                case "ChickenAndPlatters":
-                    itemName = MenuData.chickenAndPlattersItemNames[orders[i].getItemIndex()];
-                    break;
-                case "Burger":
-                    itemName = MenuData.burgerItemNames[orders[i].getItemIndex()];
-                    break;
-                case "DrinksAndDesserts":
-                    itemName = MenuData.drinksAndDessertsItemNames[orders[i].getItemIndex()];
-                    break;
-                case "Coffee":
-                    itemName = MenuData.coffeeItemNames[orders[i].getItemIndex()];
-                    break;
-                case "Fries":
-                    itemName = MenuData.friesItemNames[orders[i].getItemIndex()];
-                    break;
+                    System.out.println("Invalid option, please restart and select a valid role.");
+                    continue; // If invalid role, go back to role selection
             }
 
-            System.out.printf("Item: %s\n", itemName);
-            System.out.printf("Quantity: %d\n", orders[i].getQuantity());
-            System.out.printf("Price: %d PHP\n", orders[i].getPrice());
-            total += orders[i].getPrice();
-            System.out.println();
+            // After the user completes their role-specific actions, go back to role selection
+            if (roleChoice == 1 || roleChoice == 2) {
+                System.out.println("Returning to role selection...");
+                continue;  // Go back to the role selection loop
+            }
+
+            // Dining option loop
+            diningOption = "";
+            while (true) {
+                // Display Dine In, Take Out, and Logout options
+                if (diningOption.isEmpty()) {
+                    System.out.println("\nSelect an option:");
+                    System.out.println("1. Dine In");
+                    System.out.println("2. Take Out");
+                    System.out.println("3. Logout");
+                    System.out.print("Please select an option: ");
+                    
+                    int diningChoice = scanner.nextInt();
+                    
+                    // Handle the dining choice and set the global dining option
+                    switch (diningChoice) {
+                        case 1:
+                            System.out.println("You selected Dine In.");
+                            HandleMyOrder.setDiningOption("Dine In"); // Set the dining option
+                            diningOption = "Dine In"; // Store the option
+                            break;  // Dine In selected
+                        case 2:
+                            System.out.println("You selected Take Out.");
+                            HandleMyOrder.setDiningOption("Take Out"); // Set the dining option
+                            diningOption = "Take Out"; // Store the option
+                            break;  // Take Out selected
+                        case 3:
+                            System.out.println("Logging out...");
+                            diningOption = "";  // Clear dining option after logout
+                            break; // Log out and return to role selection
+                        default:
+                            System.out.println("Invalid option, please select a valid option.");
+                            continue;  // Restart loop if invalid option
+                    }
+                }
+
+                if (diningOption.isEmpty()) {
+                    break; // Exit the dining option loop if logged out
+                }
+
+                // Display the main menu after dining option is selected
+                displayMainMenu();
+
+                // Get user's choice for the main menu
+                int choice = scanner.nextInt();
+
+                // Handle the user's choice
+                switch (choice) {
+                    case 0:
+                        System.out.println("Going back to dining options...");
+                        diningOption = ""; // Reset dining option so it can ask for it again
+                        break; // Go back to dining options
+                    case 1:
+                        // Show the Breakfast menu and process the order
+                        breakfastMenu.displayMenu(scanner, handleOrder);
+                        break;  // Keep the program running after processing Breakfast Menu
+                    case 2:
+                        // Show the Chicken and Platters menu and process the order
+                        chickenMenu.displayMenu( scanner, handleOrder);
+                        break;  // Keep the program running after processing Chicken And Platters Menu
+                    case 3:
+                        // Show the Burger menu and process the order
+                        burgerMenu.displayMenu( scanner, handleOrder);
+                        break;  // Keep the program running after processing Burger Menu
+                    case 4:
+                        // Show the Drinks & Desserts menu and process the order
+                        drinksAndDessertMenu.displayMenu( scanner, handleOrder);
+                        break;  // Keep the program running after processing Drinks & Desserts Menu
+                    case 5:
+                        // Show the Coffee menu and process the order
+                        coffeeMenu.displayMenu( scanner, handleOrder);
+                        break;  // Keep the program running after processing Coffee Menu
+                    case 6:
+                        // Show the Fries menu and process the order
+                        friesMenu.displayMenu( scanner, handleOrder);
+                        break;  // Keep the program running after processing Fries Menu
+                    case 7:
+                        // View the current temporary orders
+                        handleOrder.showOrderSummary(); // Show temporary orders in the HandleMyOrder class
+                        break;  // Keep the program running after viewing the orders
+                    default:
+                        System.out.println("Option not implemented yet! Please select a valid option.");
+                }
+            }
+
+            // After logging out from dining options, return to the role selection menu
+            System.out.println("Returning to role selection...");
         }
-        System.out.printf("Total Price: %d PHP\n", total);
     }
 
-    public static void waitForEnter() {
-        System.out.print("Press Enter to continue...");
-        scanner.nextLine();
-        scanner.nextLine();
-    }
-}
-
-class Order {
-    private String category;
-    private int itemIndex;
-    private int quantity;
-    private int price;
-
-    public Order(String category, int itemIndex, int quantity, int price) {
-        this.category = category;
-        this.itemIndex = itemIndex;
-        this.quantity = quantity;
-        this.price = price;
+    // Helper method to get role choice (No Scanner parameter)
+    private static int getRoleChoice() {
+        Scanner scanner = new Scanner(System.in);  // Create a new Scanner object here
+        System.out.println("Select your role:");
+        System.out.println("1. Admin");
+        System.out.println("2. Employee");
+        System.out.println("3. Customer");
+        System.out.print("Please select an option: ");
+        return scanner.nextInt();  // Return the role choice
     }
 
-    public String getCategory() {
-        return category;
-    }
-
-    public int getItemIndex() {
-        return itemIndex;
-    }
-
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public int getPrice() {
-        return price;
+    // Method to display the main menu
+    private static void displayMainMenu() {
+        System.out.println("\nWelcome to the Restaurant!");
+        System.out.println("1. Breakfast Menu");
+        System.out.println("2. Chicken And Platters");
+        System.out.println("3. Burger Menu");
+        System.out.println("4. Drinks & Desserts Menu");
+        System.out.println("5. Coffee Menu");
+        System.out.println("6. Fries Menu");
+        System.out.println("7. My Order");
+        System.out.println("0. Go Back");
+        System.out.print("Please select an option: ");
     }
 }

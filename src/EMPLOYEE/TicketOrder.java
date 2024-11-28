@@ -30,8 +30,8 @@ public class TicketOrder {
                 String status = orderDetails[6].trim();
                 String date = orderDetails[7].trim();
 
-                // Only consider pending orders
-                if ("pending".equalsIgnoreCase(status)) {
+                // Only consider served orders now
+                if ("served".equalsIgnoreCase(status)) {
                     Order order = new Order(orderNumber, itemName, quantity, totalAmount, paymentMethod, diningOption, date);
                     ordersMap.putIfAbsent(orderNumber, new ArrayList<>());
                     ordersMap.get(orderNumber).add(order);
@@ -53,7 +53,7 @@ public class TicketOrder {
         Map<String, List<Order>> ordersMap = fetchOrdersFromCSV(csvFile);
 
         if (ordersMap.isEmpty()) {
-            System.out.println("No pending orders found.");
+            System.out.println("No served orders found.");
             return;
         }
 
@@ -179,10 +179,5 @@ public class TicketOrder {
         public String getDate() {
             return date;
         }
-    }
-
-    // Main method to run the system
-    public static void main(String[] args) {
-        handleOrder();
     }
 }

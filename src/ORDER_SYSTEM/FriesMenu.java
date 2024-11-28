@@ -4,7 +4,7 @@ import java.io.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class BreakfastMenu {
+public class FriesMenu {
 
     private static final String FILE_PATH = "MenuItems/menu.csv"; // Hardcoded file path
 
@@ -49,35 +49,35 @@ public class BreakfastMenu {
         return menuItems;
     }
 
-    // Method to display the Breakfast menu and process orders
+    // Method to display the Fries menu and process orders
     public void displayMenu(Scanner scanner, HandleMyOrder handleOrder) {
         // Reload the menu items from the CSV file each time
         List<MenuItem> menuItems = readMenuItems();
 
-        // Filter the items that belong to the "Breakfast" category
-        List<MenuItem> breakfastMenu = menuItems.stream()
-                .filter(item -> item.getCategory().equalsIgnoreCase("Breakfast"))
+        // Filter the items that belong to the "Fries" category
+        List<MenuItem> friesMenu = menuItems.stream()
+                .filter(item -> item.getCategory().equalsIgnoreCase("Fries"))
                 .collect(Collectors.toList());
 
-        if (breakfastMenu.isEmpty()) {
-            System.out.println("No items found in the Breakfast menu.");
+        if (friesMenu.isEmpty()) {
+            System.out.println("No items found in the Fries menu.");
             return;
         }
 
-        System.out.println("\nBreakfast Menu:");
-        for (int i = 0; i < breakfastMenu.size(); i++) {
-            System.out.println((i + 1) + ". " + breakfastMenu.get(i));
+        System.out.println("\nFries Menu:");
+        for (int i = 0; i < friesMenu.size(); i++) {
+            System.out.println((i + 1) + ". " + friesMenu.get(i));
         }
 
-        System.out.print("Please select an option (1-" + breakfastMenu.size() + "), input 0 to go back: ");
+        System.out.print("Please select an option (1-" + friesMenu.size() + "), input 0 to go back: ");
         int itemChoice = scanner.nextInt();
         if (itemChoice == 0) {
             return; // Go back to main menu
         }
 
         // Process the order if valid
-        if (itemChoice > 0 && itemChoice <= breakfastMenu.size()) {
-            processOrder(breakfastMenu.get(itemChoice - 1), scanner, handleOrder);
+        if (itemChoice > 0 && itemChoice <= friesMenu.size()) {
+            processOrder(friesMenu.get(itemChoice - 1), scanner, handleOrder);
         } else {
             System.out.println("Invalid choice. Going back...");
         }

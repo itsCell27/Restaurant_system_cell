@@ -10,7 +10,7 @@ public class EmployeeMenu {
     }
 
     // Start method to display the employee menu and handle actions
-    public void start() {
+    public boolean start() {
         boolean running = true;
 
         while (running) {
@@ -39,12 +39,12 @@ public class EmployeeMenu {
                     break;
                 case 5:
                     System.out.println("Logging out...");
-                    break;
+                    return false;  // Return false to indicate logout and go back to role selection
                 default:
                     System.out.println("Invalid option. Please try again.");
             }
         }
-
-        scanner.close();
+        
+        return true;  // If the loop ends, the user has logged out
     }
 }

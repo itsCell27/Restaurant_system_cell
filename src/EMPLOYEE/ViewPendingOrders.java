@@ -9,7 +9,7 @@ import java.util.Map;
 public class ViewPendingOrders {
 
     public static void displayPendingOrders() {
-        String csvFile = "OrderRecords/order_records.csv";  // Path to your CSV file
+        String csvFile = "OrderRecords/order_summary.csv";  // Path to your CSV file
         String line;
         String cvsSplitBy = ",";
 
@@ -26,8 +26,8 @@ public class ViewPendingOrders {
                 // Split the line by commas
                 String[] orderDetails = line.split(cvsSplitBy);
 
-                // Ensure we have enough columns in the CSV row (7 expected)
-                if (orderDetails.length < 7) {
+                // Ensure we have enough columns in the CSV row (9 expected)
+                if (orderDetails.length < 9) {
                     continue;  // Skip rows that don't have enough columns
                 }
 
@@ -40,11 +40,12 @@ public class ViewPendingOrders {
                 String diningOption = orderDetails[5].trim();   // We may not use this now
                 String status = orderDetails[6].trim();         // Order status
                 String date = orderDetails[7].trim();           // We may not use this now
+                String time = orderDetails[8].trim();           // Time column
 
                 // Only process orders with "pending" status
                 if (status.equalsIgnoreCase("pending")) {
-                    // Extract the total price from the "Total Amount" field (remove the "PHP" part)
-                    int itemTotalPrice = Integer.parseInt(totalAmount.replace(" PHP", "").trim());
+                    // Extract the total price from the "Total Price" field
+                    int itemTotalPrice = Integer.parseInt(totalAmount.trim());
 
                     // Add this item to the map for the given order number
                     StringBuilder orderItems = ordersMap.getOrDefault(orderNumber, new StringBuilder());
@@ -72,10 +73,5 @@ public class ViewPendingOrders {
         } catch (IOException e) {
             System.out.println("Error reading the CSV file: " + e.getMessage());
         }
-    }
-
-    public static void main(String[] args) {
-        // Call the method to display pending orders
-        displayPendingOrders();
     }
 }

@@ -1,195 +1,170 @@
 package ORDER_SYSTEM;
 
-import MENU_DATA_HANDLING.MenuData;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Scanner;
+import java.io.*;
+import java.util.*;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
 
-class HandleMyOrder {
-    private Scanner scanner;
-    private Order[] orders;
-    private OrderCount orderCount;
-    private int dineInOrTakeOut;
-    private static int orderNumber = 1;  // Starting order number
+public class HandleMyOrder {
 
-    public HandleMyOrder(Scanner scanner, Order[] orders, OrderCount orderCount, int dineInOrTakeOut) {
-        this.scanner = scanner;
-        this.orders = orders;
-        this.orderCount = orderCount;
-        this.dineInOrTakeOut = dineInOrTakeOut;
-    }
+    private static int orderCount = getLastOrderNumber() + 1;  // Start from the next number after the last order number
+    private List<Order> orders = new ArrayList<>();  // Store orders in a list
 
-    public void handleMyOrder() {
-        if (orderCount.count == 0) {
-            System.out.println("\nNo orders to display.");
-            waitForEnter();
+    // Static variable to store the dining option
+    private static String diningOption;
+
+    // Method to show the order summary
+    public void showOrderSummary() {
+        if (orders.isEmpty()) {
+            System.out.println("No orders to display.");
             return;
         }
-        System.out.println("\nYour Order Summary:");
-        int total = 0;
-        for (int i = 0; i < orderCount.count; i++) {
-            if (orders[i] == null) continue;
 
-            String itemName = getItemName(orders[i]);
-            System.out.printf("Item: %s\n", itemName);
-            System.out.printf("Quantity: %d\n", orders[i].getQuantity());
-            System.out.printf("Price: %d PHP\n", orders[i].getPrice());
-            total += orders[i].getPrice();
-            System.out.println();
+        double totalAmount = 0;  // Variable to store the total amount of all orders
+
+        // Display the summary for each order and calculate the total amount
+        for (Order order : orders) {
+            order.displaySummary();  // Display the order summary using the displaySummary method of the Order class
+            System.out.println("Dining Option: " + diningOption);  // Display the dining option
+            totalAmount += order.getTotalAmount();  // Add the total price of the current order to totalAmount
+            System.out.println("--------------------------------");
         }
-        System.out.printf("Total Price: %d PHP\n", total);
-        System.out.println("Dining Option: " + (dineInOrTakeOut == 1 ? "Dine In" : "Take Out"));
 
-        System.out.print("Input 1 to check out, 2 to cancel, or 0 to go back: ");
-        int action = scanner.nextInt();
+        // Display the total amount of the orders
+        System.out.println("Total Amount: " + String.format("%.2f", totalAmount));
 
-        if (action == 0) return;
-        if (action == 1) handleCheckout(total);
-        else if (action == 2) {
-            System.out.println("Cancelling all orders...");
-            resetOrders();
+        // Ask user if they want to checkout
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Do you want to checkout the order? (yes/no): ");
+        String userInput = scanner.nextLine();
+
+        if ("yes".equalsIgnoreCase(userInput)) {
+            // Ask for the payment method
+            System.out.print("Choose a payment method (Cash/E-money): ");
+            String paymentMethod = scanner.nextLine();
+
+            if (!paymentMethod.equalsIgnoreCase("cash") && !paymentMethod.equalsIgnoreCase("e-money")) {
+                System.out.println("Invalid payment method. Please choose 'Cash' or 'E-money'.");
+                return;  // Exit the method if invalid input
+            }
+
+            saveOrderToCSV(paymentMethod);
+            clearOrders();  // Clear orders after successful checkout
         } else {
-            System.out.println("Invalid option selected.");
+            System.out.println("Order not checked out.");
         }
     }
 
-    private void waitForEnter() {
-        System.out.print("Press Enter to continue...");
-        scanner.nextLine(); // Consume the leftover newline
-        scanner.nextLine(); // Wait for the user to press Enter
+    // Method to add an order to the list
+    public void addOrder(Order order) {
+        orders.add(order);
     }
 
-    private String getItemName(Order order) {
-        switch (order.getCategory()) {
-            case "Breakfast":
-                return MenuData.breakfastItemNames[order.getItemIndex()];
-            case "ChickenAndPlatters":
-                return MenuData.chickenAndPlattersItemNames[order.getItemIndex()];
-            case "Burger":
-                return MenuData.burgerItemNames[order.getItemIndex()];
-            case "DrinksAndDesserts":
-                return MenuData.drinksAndDessertsItemNames[order.getItemIndex()];
-            case "Coffee":
-                return MenuData.coffeeItemNames[order.getItemIndex()];
-            case "Fries":
-                return MenuData.friesItemNames[order.getItemIndex()];
-            default:
-                return "Unknown Item";
+    // Method to set the dining option globally
+    public static void setDiningOption(String option) {
+        if ("Dine In".equalsIgnoreCase(option) || "Take Out".equalsIgnoreCase(option)) {
+            diningOption = option;
+        } else {
+            throw new IllegalArgumentException("Invalid dining option. Choose 'Dine In' or 'Take Out'.");
         }
     }
 
-    private void handleCheckout(int total) {
-        System.out.println("\nSelect Payment Method:");
-        System.out.println("1. Cash");
-        System.out.println("2. E-money");
-        System.out.print("Select payment method: ");
-        int paymentMethod = scanner.nextInt();
+    // Method to save orders to CSV file
+ // Method to save orders to CSV file
+    private void saveOrderToCSV(String paymentMethod) {
+        // Define the new file path in the "OrderRecords" folder
+        String directoryPath = "OrderRecords";
+        File directory = new File(directoryPath);
 
-        if (paymentMethod != 1 && paymentMethod != 2) {
-            System.out.println("Invalid payment method selected.");
-            return;
-        }
-
-        File directory = new File("OrderRecords");
+        // Create the "OrderRecords" directory if it does not exist
         if (!directory.exists()) {
-            directory.mkdirs();
+            directory.mkdir();  // Create directory
         }
 
-        // Retrieve the last order number from the CSV file
-        int lastOrderNumber = getLastOrderNumber();
+        String fileName = directoryPath + "/order_summary.csv";  // File path inside OrderRecords folder
 
-        // Increment the order number
-        orderNumber = lastOrderNumber + 1;
-
-        try {
-            File file = new File(directory, "order_records.csv");
-            FileWriter writer = new FileWriter(file, true);
-
-            // If the file is empty, write the header row
-            if (file.length() == 0) {
-                writer.append("Order Number,Item,Quantity,Total Amount,Payment Method,Dining Option,Status,Date\n");
+        // Try-with-resources to ensure the FileWriter is closed after use
+        try (FileWriter fileWriter = new FileWriter(fileName, true)) {
+            // Write header if the file is empty
+            if (new File(fileName).length() == 0) {
+                fileWriter.append("Order Number,Item,Quantity,Total Price,Payment Method,Dining Option,Status,Date,Time\n");
             }
 
-            String currentDate = new SimpleDateFormat("MM/dd/yyyy").format(new Date());
-            String paymentMethodStr = (paymentMethod == 1) ? "Cash" : "E-money";
-            String diningOptionStr = (dineInOrTakeOut == 1) ? "Dine in" : "Take out";
-            String status = "pending";
-            String orderNumberStr = String.valueOf(orderNumber);
+            // Get the current date and time
+            String[] currentDateTime = getCurrentDateTime();
 
-            // Loop through each order and write the details to the CSV file
-            for (int i = 0; i < orderCount.count; i++) {
-                if (orders[i] == null) continue;
-
-                String itemName = getItemName(orders[i]);
-                int itemTotal = orders[i].getPrice() * orders[i].getQuantity();  // Calculate the total price for this item
-
-                // Format and write the order details to the CSV file
-                writer.append(String.format("%s,%s,%d,%d PHP,%s,%s,%s,%s\n",
-                        orderNumberStr, itemName, orders[i].getQuantity(), itemTotal, paymentMethodStr, diningOptionStr, status, currentDate));
+            // Write each order to the CSV file
+            for (Order order : orders) {
+                fileWriter.append(String.valueOf(orderCount)) // Order Number
+                          .append(",")
+                          .append(order.getItem().getName())  // Item Name
+                          .append(",")
+                          .append(String.valueOf(order.getQuantity())) // Quantity
+                          .append(",")
+                          .append(String.valueOf(order.getTotalAmount())) // Total Price
+                          .append(",")
+                          .append(paymentMethod) // Payment Method
+                          .append(",")
+                          .append(diningOption)  // Dining Option (Dine In / Take Out)
+                          .append(",")
+                          .append("pending") // Status (could be "pending" initially)
+                          .append(",")
+                          .append(currentDateTime[0]) // Date
+                          .append(",")
+                          .append(currentDateTime[1]) // Time
+                          .append("\n");
             }
 
-            writer.close();
-            System.out.println("Order record saved successfully.");
-            generateReceipt(orderNumberStr);
-            resetOrders();
+            System.out.println("Order has been checked out and saved to " + fileName);
+
+            // Increment orderCount after saving the order
+            orderCount++;
+
         } catch (IOException e) {
-            System.out.println("Error saving the order record: " + e.getMessage());
+            System.out.println("An error occurred while saving the order to CSV: " + e.getMessage());
         }
     }
 
-    private int getLastOrderNumber() {
-        File file = new File("OrderRecords", "order_records.csv");
 
-        if (!file.exists() || file.length() == 0) {
-            return 0; // No orders, so the next order number will be 1
-        }
+    // Method to clear orders
+    private void clearOrders() {
+        orders.clear();
+        System.out.println("All orders have been cleared.");
+    }
 
-        try (Scanner fileScanner = new Scanner(file)) {
-            String lastLine = "";
-            while (fileScanner.hasNextLine()) {
-                lastLine = fileScanner.nextLine();
+    // Method to get the last order number from the CSV file
+    private static int getLastOrderNumber() {
+        int lastOrderNumber = 0;
+        try (BufferedReader reader = new BufferedReader(new FileReader("OrderRecords/order_summary.csv"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] data = line.split(",");
+                if (data.length > 0) {
+                    try {
+                        lastOrderNumber = Integer.parseInt(data[0]);
+                    } catch (NumberFormatException e) {
+                        // Ignore invalid number formats
+                    }
+                }
             }
-
-            // The first column is the order number, so we split the line and return the last order number
-            String[] columns = lastLine.split(",");
-            return Integer.parseInt(columns[0]);  // Extract the order number from the last row
-        } catch (IOException | NumberFormatException e) {
-            System.out.println("Error reading the last order number: " + e.getMessage());
-            return 0; // Return 0 in case of an error, meaning we will start with order number 1
+        } catch (IOException e) {
+            System.out.println("Error reading the CSV file: " + e.getMessage());
         }
+        return lastOrderNumber;
     }
 
+    // Helper method to get the current date and time
+    private String[] getCurrentDateTime() {
+        String[] dateTime = new String[2];
 
-    private void generateReceipt(String orderNumberStr) throws IOException {
-        // Create the directory to store receipts if it doesn't exist
-        File receiptDirectory = new File("Orders");
-        if (!receiptDirectory.exists()) {
-            receiptDirectory.mkdirs();
-        }
+        // Get the current date and time in the Asia/Manila timezone
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Manila"));
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("hh:mm a");  // 12-hour format with AM/PM
+        
+        dateTime[0] = now.format(dateFormatter);  // Get the current date
+        dateTime[1] = now.format(timeFormatter);  // Get the current time in 12-hour format with AM/PM
 
-        // Create a new file for each order (order#1.txt, order#2.txt, ...)
-        File receiptFile = new File(receiptDirectory, "order#" + orderNumberStr + ".txt");
-        FileWriter receiptWriter = new FileWriter(receiptFile, false);  // false to overwrite if file exists
-
-        // Write the order header
-        receiptWriter.write("====================================\n");
-        receiptWriter.write("              ORDER #" + orderNumberStr + "\n");
-        receiptWriter.write("====================================\n");
-
-        // Close the writer
-        receiptWriter.close();
-
-        // Inform the user
-        System.out.println("Receipt for order #" + orderNumberStr + " saved successfully to " + receiptFile.getPath());
-    }
-
-    private void resetOrders() {
-        for (int i = 0; i < orders.length; i++) {
-            orders[i] = null;
-        }
-        orderCount.count = 0;
+        return dateTime;  // Return both as an array
     }
 }

@@ -26,13 +26,13 @@ class AdminMenu {
 
                 switch (choice) {
                     case 1:
-                        addMenuItem.AddMenu();
+                        addMenuItem.displayCategoryMenu();
                         break;
                     case 2:
-                        updateMenuItem.UpdateMenu();
+                        updateMenuItem.displayCategoryMenu();
                         break;
                     case 3:
-                        deleteMenuItem.DeleteMenu();
+                        deleteMenuItem.displayCategoryMenu();
                         break;
                     case 4:
                         registerEmployee.RegisterEmployee();

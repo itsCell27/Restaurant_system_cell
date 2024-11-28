@@ -6,15 +6,15 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 
 public class CancelOrders {
 
-    // Method to display pending orders and mark them as cancelled
+    // Method to display pending orders and cancel them
     public static void cancelOrder() {
-        String csvFile = "OrderRecords/order_records.csv";  // Path to your CSV file
+        String csvFile = "OrderRecords/order_summary.csv";  // Path to your CSV file
         String line;
         String cvsSplitBy = ",";
-        Map<String, String> orderStatuses = new HashMap<>();
         Map<String, StringBuilder> ordersMap = new HashMap<>();
         Map<String, Integer> totalPriceMap = new HashMap<>();
 
@@ -24,32 +24,36 @@ public class CancelOrders {
 
             // Read through the file and process pending orders
             while ((line = br.readLine()) != null) {
-                // Split the line by commas
                 String[] orderDetails = line.split(cvsSplitBy);
+
+                // Ensure we have enough columns in the CSV row
+                if (orderDetails.length < 9) continue;
 
                 String orderNumber = orderDetails[0].trim();
                 String itemName = orderDetails[1].trim();
                 int quantity = Integer.parseInt(orderDetails[2].trim());
-                String totalAmount = orderDetails[3].trim();  // This is the total price for the quantity
-                String status = orderDetails[5].trim();
+                String totalAmount = orderDetails[3].trim();  // Total price for the quantity
+                String status = orderDetails[6].trim();       // Order status
 
                 // Only process orders with "pending" status
-                if (status.equals("pending")) {
+                if (status.equalsIgnoreCase("pending")) {
                     // Add to the map for displaying orders
                     StringBuilder orderItems = ordersMap.getOrDefault(orderNumber, new StringBuilder());
-                    orderItems.append(String.format("%d %-15s ..................................%s\n", quantity, itemName, totalAmount));
+                    orderItems.append(String.format("%d %-15s ..................................%s PHP\n", quantity, itemName, totalAmount));
                     ordersMap.put(orderNumber, orderItems);
 
                     // Calculate the total price for the order
-                    int itemTotalPrice = Integer.parseInt(totalAmount.replace(" PHP", "").trim());
+                    int itemTotalPrice = Integer.parseInt(totalAmount.trim());
                     totalPriceMap.put(orderNumber, totalPriceMap.getOrDefault(orderNumber, 0) + itemTotalPrice);
-
-                    // Store the status of the order
-                    orderStatuses.put(orderNumber, status);
                 }
             }
 
             // Display the orders
+            if (ordersMap.isEmpty()) {
+                System.out.println("No pending orders found.");
+                return;
+            }
+
             for (Map.Entry<String, StringBuilder> entry : ordersMap.entrySet()) {
                 String orderNumber = entry.getKey();
                 StringBuilder orderItems = entry.getValue();
@@ -61,33 +65,34 @@ public class CancelOrders {
                 System.out.println();
             }
 
-            // Get user input to mark an order as cancelled
+            // Get user input to cancel an order
+            Scanner scanner = new Scanner(System.in);
             System.out.print("Input the Order number to cancel (0 to go back): ");
-            int orderNumberToCancel = Integer.parseInt(System.console().readLine());
+            String input = scanner.nextLine();
 
-            // If the user selects 0, exit the method
-            if (orderNumberToCancel == 0) {
+            // Handle the "go back" option
+            if (input.equals("0")) {
                 System.out.println("Going back...");
                 return;
             }
 
-            // If the order number is valid, mark the order as cancelled
-            String orderNumberStr = String.valueOf(orderNumberToCancel);
-            if (ordersMap.containsKey(orderNumberStr)) {
-                // Read the file again to update the status
-                updateOrderStatus(csvFile, orderNumberStr, "cancelled");
-                System.out.println("Order #" + orderNumberStr + " marked as cancelled.");
+            // Validate the order number and mark as cancelled
+            if (ordersMap.containsKey(input)) {
+                updateOrderStatus(csvFile, input);
+                System.out.println("Order #" + input + " marked as cancelled.");
             } else {
                 System.out.println("Invalid order number.");
             }
 
         } catch (IOException e) {
             System.out.println("Error reading the CSV file: " + e.getMessage());
+        } catch (NumberFormatException e) {
+            System.out.println("Error: Invalid number format in the file.");
         }
     }
 
     // Method to update the status of an order to "cancelled"
-    private static void updateOrderStatus(String csvFile, String orderNumber, String newStatus) {
+    private static void updateOrderStatus(String csvFile, String orderNumber) {
         StringBuilder fileContent = new StringBuilder();
         String line;
         String cvsSplitBy = ",";
@@ -100,14 +105,13 @@ public class CancelOrders {
 
                 // Check if the order number matches
                 if (orderDetails[0].trim().equals(orderNumber)) {
-                    // Change the status to the new status (cancelled)
-                    orderDetails[5] = newStatus;
+                    // Change the status to "cancelled"
+                    orderDetails[6] = "cancelled";
                     updated = true;
                 }
 
                 // Rebuild the line with the updated status
-                fileContent.append(String.join(",", orderDetails));
-                fileContent.append("\n");
+                fileContent.append(String.join(",", orderDetails)).append("\n");
             }
 
             // If the order was updated, write the content back to the file
@@ -119,10 +123,5 @@ public class CancelOrders {
         } catch (IOException e) {
             System.out.println("Error updating the CSV file: " + e.getMessage());
         }
-    }
-
-    public static void main(String[] args) {
-        // Call the method to display pending orders and cancel them
-        cancelOrder();
     }
 }

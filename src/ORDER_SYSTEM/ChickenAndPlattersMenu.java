@@ -1,92 +1,117 @@
 package ORDER_SYSTEM;
-import MENU_DATA_HANDLING.MenuData;
-import java.util.Scanner;
 
-public class ChickenAndPlattersMenu{
-    Scanner scanner = new Scanner(System.in);
-    private Order[] orders;
-    private OrderCount orderCount; // use wrapper
+import java.io.*;
+import java.util.*;
+import java.util.stream.Collectors;
 
-    public ChickenAndPlattersMenu(Order[] orders, OrderCount orderCount)  {
-        this.orders = orders;
-        this.orderCount = orderCount;
+public class ChickenAndPlattersMenu {
+
+    private static final String FILE_PATH = "MenuItems/menu.csv"; // Hardcoded file path
+
+    // Method to read the CSV file and load the menu items dynamically
+    public List<MenuItem> readMenuItems() {
+        List<MenuItem> menuItems = new ArrayList<>();
+
+        // Print the current working directory for debugging purposes
+        System.out.println("Current working directory: " + System.getProperty("user.dir"));
+
+        // Check if the file exists before trying to read it
+        File file = new File(FILE_PATH);
+        if (!file.exists()) {
+            System.out.println("File not found: " + FILE_PATH);
+            return menuItems;  // Return empty list if file does not exist
+        }
+
+        try (BufferedReader br = new BufferedReader(new FileReader(FILE_PATH))) {
+            String line;
+
+            // Skip the header line
+            br.readLine();
+
+            // Read each line in the CSV file
+            while ((line = br.readLine()) != null) {
+                // Splitting by comma, assuming the format is "Item, Price, Category"
+                String[] data = line.split(",");
+
+                if (data.length == 3) {
+                    String name = data[0].trim();
+                    int price = Integer.parseInt(data[1].trim());
+                    String category = data[2].trim();
+
+                    // Create a MenuItem object and add it to the list
+                    menuItems.add(new MenuItem(name, price, category));
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return menuItems;
     }
 
-    public void displayChickenAndPlatters() {
-        int choice, quantity, saveOrder;
-        while (true) {
-            System.out.println("\nChicken And Platters Menu:");
-            for (int i = 0; i < MenuData.NUM_CHICKENANDPLATTERS_ITEMS; i++) {
-                System.out.printf("%d. %s - %d PHP\n", i + 1, MenuData.chickenAndPlattersItemNames[i], MenuData.chickenAndPlattersItemPrices[i]);
-            }
-            System.out.print("Please select an option (1-10), input 0 to go back: ");
-            choice = scanner.nextInt();
+    // Method to display the Chicken and Platters menu and process orders
+    public void displayMenu(Scanner scanner, HandleMyOrder handleOrder) {
+        // Reload the menu items from the CSV file each time
+        List<MenuItem> menuItems = readMenuItems();
 
-            if (choice == 0) return; // Go back to the main menu
+        // Filter the items that belong to the "Chicken and Platters" category
+        List<MenuItem> chickenMenu = menuItems.stream()
+                .filter(item -> item.getCategory().equalsIgnoreCase("Chicken and Platters"))
+                .collect(Collectors.toList());
 
-            if (choice >= 1 && choice <= MenuData.NUM_CHICKENANDPLATTERS_ITEMS) {
-                System.out.printf("You selected %s.\n", MenuData.chickenAndPlattersItemNames[choice - 1]);
+        if (chickenMenu.isEmpty()) {
+            System.out.println("No items found in the Chicken and Platters menu.");
+            return;
+        }
 
-                System.out.print("Enter the quantity for this item: ");
-                quantity = scanner.nextInt();
+        System.out.println("\nChicken And Platters Menu:");
+        for (int i = 0; i < chickenMenu.size(); i++) {
+            System.out.println((i + 1) + ". " + chickenMenu.get(i));
+        }
 
-                System.out.print("Do you want to save this order? (1 for Yes, 0 for No): ");
-                saveOrder = scanner.nextInt();
+        System.out.print("Please select an option (1-" + chickenMenu.size() + "), input 0 to go back: ");
+        int itemChoice = scanner.nextInt();
+        if (itemChoice == 0) {
+            return; // Go back to main menu
+        }
 
-                if (saveOrder == 1) {
-                    int price = MenuData.chickenAndPlattersItemPrices[choice - 1] * quantity;
-                    orders[orderCount.count++] = new Order("ChickenAndPlatters", choice - 1, quantity, price);
-
-                    displayOrderSummary();
-                    waitForEnter();
-                } else {
-                    System.out.println("Order Not Saved.");
-                }
-            } else {
-                System.out.println("Invalid Burger menu selection.");
-            }
+        // Process the order if valid
+        if (itemChoice > 0 && itemChoice <= chickenMenu.size()) {
+            processOrder(chickenMenu.get(itemChoice - 1), scanner, handleOrder);
+        } else {
+            System.out.println("Invalid choice. Going back...");
         }
     }
-        public void displayOrderSummary() {
+
+    // Method to process the order for a specific menu item
+    private void processOrder(MenuItem item, Scanner scanner, HandleMyOrder handleOrder) {
+        System.out.print("Enter the quantity for this item: ");
+        int quantity = scanner.nextInt();
+
+        // Calculate the total price
+        int totalPrice = item.getPrice() * quantity;
+
+        System.out.print("Do you want to save this order? (1 for Yes, 0 for No): ");
+        int saveOrder = scanner.nextInt();
+
+        if (saveOrder == 1) {
+            // Create an Order object
+            Order order = new Order(item, quantity);
+
+            // Add the order to HandleMyOrder's list
+            handleOrder.addOrder(order);
+
+            // Display the order summary
             System.out.println("\nOrder Summary:");
-            int total = 0;
-            for (int i = 0; i < orderCount.count; i++) {
-                String itemName = "";
-                switch (orders[i].getCategory()) {
-                    case "Breakfast":
-                        itemName = MenuData.breakfastItemNames[orders[i].getItemIndex()];
-                        break;
-                    case "ChickenAndPlatters":
-                        itemName = MenuData.chickenAndPlattersItemNames[orders[i].getItemIndex()];
-                        break;
-                    case "Burger":
-                        itemName = MenuData.burgerItemNames[orders[i].getItemIndex()];
-                        break;
-                    case "DrinksAndDesserts":
-                        itemName = MenuData.drinksAndDessertsItemNames[orders[i].getItemIndex()];
-                        break;
-                    case "Coffee":
-                        itemName = MenuData.coffeeItemNames[orders[i].getItemIndex()];
-                        break;
-                    case "Fries":
-                        itemName = MenuData.friesItemNames[orders[i].getItemIndex()];
-                        break;
-                }
-
-                System.out.printf("Item: %s\n", itemName);
-                System.out.printf("Quantity: %d\n", orders[i].getQuantity());
-                System.out.printf("Price: %d PHP\n", orders[i].getPrice());
-                total += orders[i].getPrice();
-                System.out.println();
-            }
-            System.out.printf("Total Price: %d PHP\n", total);
+            System.out.println("Item: " + item.getName());
+            System.out.println("Quantity: " + quantity);
+            System.out.println("Price: " + totalPrice + " PHP");
+            System.out.println("\nTotal Price: " + totalPrice + " PHP");
+            System.out.println("Press Enter to continue...");
+            scanner.nextLine(); // Consume newline
+            scanner.nextLine(); // Wait for user to press Enter
+        } else {
+            System.out.println("Order not saved. Returning to menu.");
         }
-
-        public void waitForEnter() {
-            System.out.print("Press Enter to continue...");
-            scanner.nextLine(); // Consume the leftover newline
-            scanner.nextLine(); // Wait for the user to press Enter
-        }
-    
     }
-
+}
