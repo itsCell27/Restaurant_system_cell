@@ -141,6 +141,39 @@ public class TicketOrder {
             System.out.println("Receipt generation cancelled.");
         }
     }
+    
+    // Receipt space calculator
+    public static String padToWidth(String label, String value, int totalWidth) {
+        int spacesNeeded = totalWidth - (label.length() + value.length());
+        spacesNeeded = Math.max(0, spacesNeeded); // Ensure non-negative space count
+        StringBuilder padding = new StringBuilder();
+        for (int i = 0; i < spacesNeeded; i++) {
+            padding.append(" ");
+        }
+        return label + padding + value; // Combine label, spaces, and value
+    }
+    
+    public static String periodValue(String value, int totalWidth) {
+        int spacesNeeded = totalWidth - value.length();
+        spacesNeeded = Math.max(0, spacesNeeded); // Ensure non-negative space count
+        StringBuilder padding = new StringBuilder();
+        for (int i = 0; i < spacesNeeded; i++) {
+            padding.append(".");
+        }
+        return padding + value; // Combine spaces and value
+    }
+    
+    public static String reverseValue(String value, int totalWidth) {
+        int spacesNeeded = totalWidth - value.length();
+        spacesNeeded = Math.max(0, spacesNeeded); // Ensure non-negative space count
+        StringBuilder padding = new StringBuilder();
+        for (int i = 0; i < spacesNeeded; i++) {
+            padding.append(" ");
+        }
+        return value + padding; // Combine spaces and value
+    }
+    // Receipt space calculator ending
+
 
     // Method to generate the receipt and save it to a folder
     private static void generateReceiptFile(String orderNumber, List<Order> orderItems, int totalPrice) {
@@ -157,21 +190,24 @@ public class TicketOrder {
         String fileName = folderPath + File.separator + "receipt_" + orderNumber + ".txt";
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
-            writer.write("====================================\n");
-            writer.write("              ORDER #" + orderNumber + "\n");
-            writer.write("====================================\n");
+            writer.write("\t========================================\n");
+            writer.write("\t              	ORDER #" + orderNumber + "\n");
+            writer.write("\t========================================\n");
 
             // Write order details
             Order firstOrder = orderItems.get(0);
-            writer.write(firstOrder.getDate() + "                              Dining Option: " + firstOrder.getDiningOption() + "\n");
-            writer.write("                                                 Payment Method: " + firstOrder.getPaymentMethod() + "\n");
+            writer.write("\t" + padToWidth("DATE:", firstOrder.getDate(), 40) + "\n");
+            writer.write("\t" + padToWidth("DINING OPTION:", firstOrder.getDiningOption(), 40) + "\n");
+            writer.write("\t" + padToWidth("PAYMENT METHOD:", firstOrder.getPaymentMethod(), 40) + "\n\n");
+            writer.write("\t========================================\n");
+            writer.write("\tQty\n\n");
 
             for (Order order : orderItems) {
-                writer.write(String.format("%d %-15s ..................................%d PHP\n", order.getQuantity(), order.getItemName(), order.getTotalPrice()));
+                writer.write("\t" + reverseValue(String.format("%d", order.getQuantity()), 4) + reverseValue(String.format("%s", order.getItemName()), 16) + periodValue(String.format("%d PHP", order.getTotalPrice()), 20) + "\n");
             }
 
-            writer.write("\nTotal               .................................."+ totalPrice + " PHP\n");
-            writer.write("\n====================================\n");
+            writer.write("\n\t"+ reverseValue("TOTAL:", 20) + periodValue(String.format(" %d PHP", totalPrice), 20) + "\n");
+            writer.write("\n\t========================================\n");
 
         } catch (IOException e) {
             System.out.println("Error writing the receipt: " + e.getMessage());
