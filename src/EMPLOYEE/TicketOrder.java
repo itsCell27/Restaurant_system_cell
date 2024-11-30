@@ -153,6 +153,7 @@ public class TicketOrder {
         return label + padding + value; // Combine label, spaces, and value
     }
     
+    // for individual price of item
     public static String periodValue(String value, int totalWidth) {
         int spacesNeeded = totalWidth - value.length();
         spacesNeeded = Math.max(0, spacesNeeded); // Ensure non-negative space count
@@ -163,6 +164,7 @@ public class TicketOrder {
         return padding + value; // Combine spaces and value
     }
     
+    // for total price of item
     public static String reverseValue(String value, int totalWidth) {
         int spacesNeeded = totalWidth - value.length();
         spacesNeeded = Math.max(0, spacesNeeded); // Ensure non-negative space count
