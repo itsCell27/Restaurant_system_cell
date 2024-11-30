@@ -1,17 +1,51 @@
 package EMPLOYEE;
 
 import java.io.*;
+import java.nio.file.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class TicketOrder {
+
+    // WatchService to monitor changes in the CSV file
+    private static WatchService watchService;
+
+    // Method to initialize the WatchService for monitoring the CSV file
+    private static void startFileWatcher(String csvFilePath) throws IOException {
+        Path path = Paths.get(csvFilePath).getParent(); // Get the directory of the CSV file
+        watchService = FileSystems.getDefault().newWatchService();
+        path.register(watchService, StandardWatchEventKinds.ENTRY_MODIFY);
+        
+        // Start a separate thread to monitor the file
+        new Thread(() -> {
+            while (true) {
+                try {
+                    WatchKey key = watchService.take(); // Wait for a change
+                    for (WatchEvent<?> event : key.pollEvents()) {
+                        if (event.kind() == StandardWatchEventKinds.ENTRY_MODIFY) {
+                            Path modifiedFilePath = (Path) event.context();
+                            if (modifiedFilePath.toString().equals(new File(csvFilePath).getName())) {
+                                // CSV file was modified, reload the orders
+                                System.out.println("CSV file changed. Reloading orders...");
+                                fetchOrdersFromCSV(csvFilePath); // Reload orders data
+                            }
+                        }
+                    }
+                    key.reset();
+                } catch (InterruptedException e) {
+                    System.out.println("File watcher interrupted: " + e.getMessage());
+                    break;
+                }
+            }
+        }).start();
+    }
 
     // Method to fetch the order data from the CSV file
     private static Map<String, List<Order>> fetchOrdersFromCSV(String csvFile) {
         Map<String, List<Order>> ordersMap = new HashMap<>();
         String line;
         String cvsSplitBy = ",";
-        
+
         try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
             // Skip the header line
             br.readLine();
@@ -48,8 +82,17 @@ public class TicketOrder {
     // Method to display the orders and generate the receipt
     public static void handleOrder() {
         System.out.println("Handling ticket order...");
-        
-        String csvFile = "OrderRecords/order_records.csv";  // Adjust this path if necessary
+
+        String csvFile = "OrderRecords/order_summary.csv";  // Adjust this path if necessary
+        try {
+            startFileWatcher(csvFile); // Start the file watcher when handling orders
+        } catch (IOException e) {
+            System.out.println("Error starting file watcher: " + e.getMessage());
+            return;
+        }
+
+        // The rest of your code for handling orders remains the same
+
         Map<String, List<Order>> ordersMap = fetchOrdersFromCSV(csvFile);
 
         if (ordersMap.isEmpty()) {
@@ -68,7 +111,7 @@ public class TicketOrder {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Select Order number (0 to go back): ");
         int selectedOrderIndex = scanner.nextInt();
-        
+
         if (selectedOrderIndex == 0) {
             System.out.println("Going back...");
             return;
@@ -103,7 +146,7 @@ public class TicketOrder {
     private static void generateReceiptFile(String orderNumber, List<Order> orderItems, int totalPrice) {
         // Folder path to store receipts
         String folderPath = "Receipts";
-        
+
         // Create the folder if it doesn't exist
         File folder = new File(folderPath);
         if (!folder.exists()) {
@@ -112,7 +155,7 @@ public class TicketOrder {
 
         // Define the receipt file path
         String fileName = folderPath + File.separator + "receipt_" + orderNumber + ".txt";
-        
+
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
             writer.write("====================================\n");
             writer.write("              ORDER #" + orderNumber + "\n");

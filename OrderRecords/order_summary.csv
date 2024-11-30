@@ -3,3 +3,4 @@ Order Number,Item,Quantity,Total Price,Payment Method,Dining Option,Status,Date,
 2,c1,1,90,Cash,Dine In,pending,2024-11-29,12:34 AM
 3,p1,1,40,Cash,Dine In,pending,2024-11-29,01:21 AM
 4,j1,1,70,Cash,Dine In,pending,2024-11-29,01:38 AM
+5,r1,1,50,Cash,Dine In,served,2024-11-30,01:18 PM
