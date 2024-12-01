@@ -4,13 +4,12 @@ import java.util.Scanner;
 
 class AdminMenu {
     private Scanner scanner = new Scanner(System.in);  // Initialize the scanner
-    RegisterEmployee registerEmployee = new RegisterEmployee();
+    RegisterEmployeeMenu registerEmployee = new RegisterEmployeeMenu();
     AddMenuItem addMenuItem = new AddMenuItem();
     UpdateMenuItem updateMenuItem = new UpdateMenuItem();
     DeleteMenuItem deleteMenuItem = new DeleteMenuItem();
 
     public void displayMenu() {
-        while (true) {
             System.out.println("\nAdmin Menu:");
             System.out.println("1. Add menu item");
             System.out.println("2. Update menu item");
@@ -35,7 +34,7 @@ class AdminMenu {
                         deleteMenuItem.displayCategoryMenu();
                         break;
                     case 4:
-                        registerEmployee.RegisterEmployee();
+                        registerEmployee.displayRegisterMenu();
                         break;
                     case 5:
                         System.out.println("Logging out...");
@@ -48,6 +47,5 @@ class AdminMenu {
                 scanner.nextLine();
                 System.out.println("Invalid choice. Please enter a valid number.");
             }
-        }
     }
 }

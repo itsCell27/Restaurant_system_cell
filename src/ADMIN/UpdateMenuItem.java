@@ -7,8 +7,7 @@ public class UpdateMenuItem {
 
     private static final String FOLDER_PATH = "MenuItems";  // Folder name where the CSV file is stored
     private static final String FILE_NAME = FOLDER_PATH + "/menu.csv";  // CSV file path
-
-    private Scanner scanner;
+     Scanner scanner;
 
     // Constructor
     public UpdateMenuItem() {
@@ -65,6 +64,7 @@ public class UpdateMenuItem {
 
     // Method to allow the user to update items in the selected category
     private void updateItemsInCategory(String category) {
+    	AdminMenu adminMenu = new AdminMenu();
         // Read the existing menu items from the CSV file
         List<String[]> menuItems = readMenuFromCSV();
 
@@ -126,6 +126,7 @@ public class UpdateMenuItem {
 
         // Write the updated items back to the CSV file
         writeToCSV(menuItems);
+        adminMenu.displayMenu();
     }
 
     // Method to read the menu from the CSV file

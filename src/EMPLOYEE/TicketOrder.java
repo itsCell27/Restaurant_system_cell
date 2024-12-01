@@ -15,7 +15,7 @@ public class TicketOrder {
         Path path = Paths.get(csvFilePath).getParent(); // Get the directory of the CSV file
         watchService = FileSystems.getDefault().newWatchService();
         path.register(watchService, StandardWatchEventKinds.ENTRY_MODIFY);
-        
+
         // Start a separate thread to monitor the file
         new Thread(() -> {
             while (true) {
@@ -109,12 +109,22 @@ public class TicketOrder {
 
         // Get user input to select an order
         Scanner scanner = new Scanner(System.in);
-        System.out.print("Select Order number (0 to go back): ");
-        int selectedOrderIndex = scanner.nextInt();
+        int selectedOrderIndex = -1;
 
-        if (selectedOrderIndex == 0) {
-            System.out.println("Going back...");
-            return;
+        while (true) {
+            System.out.print("Select Order number (0 to go back): ");
+            if (scanner.hasNextInt()) {
+                selectedOrderIndex = scanner.nextInt();
+                if (selectedOrderIndex == 0) {
+                    System.out.println("Going back...");
+                    return;
+                }
+                if (selectedOrderIndex > 0 && selectedOrderIndex <= ordersMap.size()) {
+                    break; // Valid input
+                }
+            }
+            System.out.println("Invalid choice. Please select a valid order number.");
+            scanner.nextLine(); // Clear invalid input
         }
 
         // Find the selected order number based on index
@@ -177,7 +187,43 @@ public class TicketOrder {
     // Receipt space calculator ending
 
 
+    // Receipt space calculator
+    public static String padToWidth(String label, String value, int totalWidth) {
+        int spacesNeeded = totalWidth - (label.length() + value.length());
+        spacesNeeded = Math.max(0, spacesNeeded); // Ensure non-negative space count
+        StringBuilder padding = new StringBuilder();
+        for (int i = 0; i < spacesNeeded; i++) {
+            padding.append(" ");
+        }
+        return label + padding + value; // Combine label, spaces, and value
+    }
+
+    // for individual price of item
+    public static String periodValue(String value, int totalWidth) {
+        int spacesNeeded = totalWidth - value.length();
+        spacesNeeded = Math.max(0, spacesNeeded); // Ensure non-negative space count
+        StringBuilder padding = new StringBuilder();
+        for (int i = 0; i < spacesNeeded; i++) {
+            padding.append(".");
+        }
+        return padding + value; // Combine spaces and value
+    }
+
+    // for total price of item
+    public static String reverseValue(String value, int totalWidth) {
+        int spacesNeeded = totalWidth - value.length();
+        spacesNeeded = Math.max(0, spacesNeeded); // Ensure non-negative space count
+        StringBuilder padding = new StringBuilder();
+        for (int i = 0; i < spacesNeeded; i++) {
+            padding.append(" ");
+        }
+        return value + padding; // Combine spaces and value
+    }
+    // Receipt space calculator ending
+
+
     // Method to generate the receipt and save it to a folder
+ // Method to generate the receipt and save it to a folder
     private static void generateReceiptFile(String orderNumber, List<Order> orderItems, int totalPrice) {
         // Folder path to store receipts
         String folderPath = "Receipts";
@@ -189,7 +235,15 @@ public class TicketOrder {
         }
 
         // Define the receipt file path
-        String fileName = folderPath + File.separator + "receipt_" + orderNumber + ".txt";
+        String fileName = folderPath + File.separator + "receipt_order_#" + orderNumber + ".txt";
+
+        // Prompt for amount paid by the customer
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter the Amount Paid by the customer: ");
+        int amountPaid = scanner.nextInt();
+
+        // Calculate the amount due
+        int amountDue = amountPaid - totalPrice;
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
             writer.write("\t========================================\n");
@@ -204,17 +258,26 @@ public class TicketOrder {
             writer.write("\t========================================\n");
             writer.write("\tQty\n\n");
 
+            // Write individual item details
             for (Order order : orderItems) {
                 writer.write("\t" + reverseValue(String.format("%d", order.getQuantity()), 4) + reverseValue(String.format("%s", order.getItemName()), 16) + periodValue(String.format("%d PHP", order.getTotalPrice()), 20) + "\n");
             }
+           
+            // Write total price
+            writer.write("\n\t" + reverseValue("TOTAL:", 20) + periodValue(String.format(" %d PHP", totalPrice), 20) + "\n");
 
-            writer.write("\n\t"+ reverseValue("TOTAL:", 20) + periodValue(String.format(" %d PHP", totalPrice), 20) + "\n");
+            // Write amount paid and amount due
+            writer.write("\n\t" + reverseValue("AMOUNT PAID:", 20) + periodValue(String.format(" %d PHP", amountPaid), 20) + "\n");
+            writer.write("\t" + reverseValue("AMOUNT DUE:", 20) + periodValue(String.format(" %d PHP", amountDue), 20) + "\n");
+
+
             writer.write("\n\t========================================\n");
 
         } catch (IOException e) {
             System.out.println("Error writing the receipt: " + e.getMessage());
         }
     }
+
 
     // Order class to hold order details
     private static class Order {
