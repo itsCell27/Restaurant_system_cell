@@ -35,23 +35,54 @@ public class HandleMyOrder {
 
         // Ask user if they want to checkout
         Scanner scanner = new Scanner(System.in);
-        System.out.print("Do you want to checkout the order? (yes/no): ");
-        String userInput = scanner.nextLine();
+        System.out.print("Do you want to checkout the order? (1 for Yes / 0 for No): ");
+        int userInput = scanner.nextInt();
 
-        if ("yes".equalsIgnoreCase(userInput)) {
+        if (userInput == 1) {
             // Ask for the payment method
-            System.out.print("Choose a payment method (Cash/E-money): ");
-            String paymentMethod = scanner.nextLine();
+            System.out.print("Choose a payment method (1 for Cash / 2 for E-money / 0 to Go Back): ");
+            int paymentMethodInput = scanner.nextInt();
+            scanner.nextLine(); // Consume newline
 
-            if (!paymentMethod.equalsIgnoreCase("cash") && !paymentMethod.equalsIgnoreCase("e-money")) {
-                System.out.println("Invalid payment method. Please choose 'Cash' or 'E-money'.");
-                return;  // Exit the method if invalid input
+            String paymentMethod = null;
+
+            switch (paymentMethodInput) {
+                case 1:
+                    paymentMethod = "Cash";
+                    break;
+                case 2:
+                    paymentMethod = "E-money";
+                    break;
+                case 0:
+                    System.out.println("Returning to the previous menu...");
+                    return; // Exit the method without proceeding
+                default:
+                    System.out.println("Invalid choice. Please select 1 for Cash, 2 for E-money, or 0 to go back.");
+                    return; // Exit the method for invalid input
             }
 
+            // Save the order to CSV and clear the orders
             saveOrderToCSV(paymentMethod);
-            clearOrders();  // Clear orders after successful checkout
-        } else {
+            clearOrders();
+
+            // Ask if the user wants to continue or exit
+            System.out.print("Do you want to add more orders or exit? (1 for Add more / 0 for Exit): ");
+            int continueInput = scanner.nextInt();
+            if (continueInput == 1) {
+                // Proceed to add more orders
+                System.out.println("You can now add more orders.");
+            } else if (continueInput == 0) {
+                // Exit the system or stop the process
+                System.out.println("Exiting the system. Thank you!");
+                return;  // Exit the method and the program
+            } else {
+                System.out.println("Invalid input. Exiting...");
+                return;
+            }
+        } else if (userInput == 0) {
             System.out.println("Order not checked out.");
+        } else {
+            System.out.println("Invalid input. Please enter 1 for Yes or 0 for No.");
         }
     }
 
@@ -68,9 +99,39 @@ public class HandleMyOrder {
             throw new IllegalArgumentException("Invalid dining option. Choose 'Dine In' or 'Take Out'.");
         }
     }
+    
+ // Method to generate and save a ticket to a text file
+ // Method to generate and save a ticket to a text file with a dynamic name
+    public void generateTicketFile(int orderNumber) {
+        // Define the directory path
+        String directoryPath = "Tickets";
+        File directory = new File(directoryPath);
+
+        // Create the "Tickets" directory if it does not exist
+        if (!directory.exists()) {
+            directory.mkdir();  // Create directory if not exists
+        }
+
+        // Define the file name dynamically as ticket_order_#<order_number>.txt
+        String fileName = directoryPath + "/ticket_order_#" + orderNumber + ".txt";  // Dynamic filename
+
+        // Try-with-resources to ensure the FileWriter is closed after use
+        try (FileWriter fileWriter = new FileWriter(fileName)) {
+            // Write the ticket in the desired format
+            fileWriter.append("====================================\n");
+            fileWriter.append("              ORDER #" + orderNumber + "\n");
+            fileWriter.append("====================================\n\n");
+
+            System.out.println("Ticket for ORDER #" + orderNumber + " has been saved to " + fileName);
+
+        } catch (IOException e) {
+            System.out.println("An error occurred while saving the ticket: " + e.getMessage());
+        }
+    }
+
+
 
     // Method to save orders to CSV file
- // Method to save orders to CSV file
     private void saveOrderToCSV(String paymentMethod) {
         // Define the new file path in the "OrderRecords" folder
         String directoryPath = "OrderRecords";
@@ -119,12 +180,12 @@ public class HandleMyOrder {
 
             // Increment orderCount after saving the order
             orderCount++;
+            generateTicketFile(orderCount - 1);
 
         } catch (IOException e) {
             System.out.println("An error occurred while saving the order to CSV: " + e.getMessage());
         }
     }
-
 
     // Method to clear orders
     private void clearOrders() {

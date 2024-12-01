@@ -13,7 +13,7 @@ public class RegisterEmployee {
         String regPassword = in.nextLine();
         System.out.print("Confirm password: ");
         String regConfirmPass = in.nextLine();
-        do{
+       
         System.out.println("1.Submit");
         System.out.println("0.Cancel");
         int choice = in.nextInt();
@@ -26,10 +26,10 @@ public class RegisterEmployee {
                 System.out.println("Registration unsuccessful.");
             }
         }else if(choice == 0){
+        	adminMenu.displayMenu();
             return;
         }else{
             System.out.println("Invalid Choice. Please enter a valid choice.");
             }
-        }while(true);
     }
 }

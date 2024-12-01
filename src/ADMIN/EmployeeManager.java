@@ -11,6 +11,7 @@ public class EmployeeManager {
     private EmployeeVar[] employees;
     private int count;
     private static final String FILE_PATH = "EmployeeList/employees.csv";  // Relative path to the CSV file
+    AdminMenu adminMenu = new AdminMenu();
 
     public EmployeeManager(int size) {
         employees = new EmployeeVar[size];
@@ -44,6 +45,7 @@ public class EmployeeManager {
         // Check if passwords match
         if (!password.equals(confirmPassword)) {
             System.out.println("Passwords do not match.");
+            adminMenu.displayMenu();
             return false;
         }
 

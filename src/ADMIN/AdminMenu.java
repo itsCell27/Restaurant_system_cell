@@ -10,7 +10,6 @@ class AdminMenu {
     DeleteMenuItem deleteMenuItem = new DeleteMenuItem();
 
     public void displayMenu() {
-        while (true) {
             System.out.println("\nAdmin Menu:");
             System.out.println("1. Add menu item");
             System.out.println("2. Update menu item");
@@ -48,6 +47,5 @@ class AdminMenu {
                 scanner.nextLine();
                 System.out.println("Invalid choice. Please enter a valid number.");
             }
-        }
     }
 }
