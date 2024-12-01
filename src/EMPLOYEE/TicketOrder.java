@@ -187,43 +187,8 @@ public class TicketOrder {
     // Receipt space calculator ending
 
 
-    // Receipt space calculator
-    public static String padToWidth(String label, String value, int totalWidth) {
-        int spacesNeeded = totalWidth - (label.length() + value.length());
-        spacesNeeded = Math.max(0, spacesNeeded); // Ensure non-negative space count
-        StringBuilder padding = new StringBuilder();
-        for (int i = 0; i < spacesNeeded; i++) {
-            padding.append(" ");
-        }
-        return label + padding + value; // Combine label, spaces, and value
-    }
-
-    // for individual price of item
-    public static String periodValue(String value, int totalWidth) {
-        int spacesNeeded = totalWidth - value.length();
-        spacesNeeded = Math.max(0, spacesNeeded); // Ensure non-negative space count
-        StringBuilder padding = new StringBuilder();
-        for (int i = 0; i < spacesNeeded; i++) {
-            padding.append(".");
-        }
-        return padding + value; // Combine spaces and value
-    }
-
-    // for total price of item
-    public static String reverseValue(String value, int totalWidth) {
-        int spacesNeeded = totalWidth - value.length();
-        spacesNeeded = Math.max(0, spacesNeeded); // Ensure non-negative space count
-        StringBuilder padding = new StringBuilder();
-        for (int i = 0; i < spacesNeeded; i++) {
-            padding.append(" ");
-        }
-        return value + padding; // Combine spaces and value
-    }
-    // Receipt space calculator ending
-
-
     // Method to generate the receipt and save it to a folder
- // Method to generate the receipt and save it to a folder
+    // Method to generate the receipt and save it to a folder
     private static void generateReceiptFile(String orderNumber, List<Order> orderItems, int totalPrice) {
         // Folder path to store receipts
         String folderPath = "Receipts";
@@ -270,7 +235,7 @@ public class TicketOrder {
             writer.write("\n\t" + reverseValue("AMOUNT PAID:", 20) + periodValue(String.format(" %d PHP", amountPaid), 20) + "\n");
             writer.write("\t" + reverseValue("AMOUNT DUE:", 20) + periodValue(String.format(" %d PHP", amountDue), 20) + "\n");
 
-
+            // added comment
             writer.write("\n\t========================================\n");
 
         } catch (IOException e) {
