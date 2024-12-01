@@ -4,7 +4,7 @@ import java.util.Scanner;
 
 class AdminMenu {
     private Scanner scanner = new Scanner(System.in);  // Initialize the scanner
-    RegisterEmployee registerEmployee = new RegisterEmployee();
+    RegisterEmployeeMenu registerEmployee = new RegisterEmployeeMenu();
     AddMenuItem addMenuItem = new AddMenuItem();
     UpdateMenuItem updateMenuItem = new UpdateMenuItem();
     DeleteMenuItem deleteMenuItem = new DeleteMenuItem();
@@ -34,7 +34,7 @@ class AdminMenu {
                         deleteMenuItem.displayCategoryMenu();
                         break;
                     case 4:
-                        registerEmployee.RegisterEmployee();
+                        registerEmployee.displayRegisterMenu();
                         break;
                     case 5:
                         System.out.println("Logging out...");

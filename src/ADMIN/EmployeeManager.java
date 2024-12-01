@@ -11,7 +11,7 @@ public class EmployeeManager {
     private EmployeeVar[] employees;
     private int count;
     private static final String FILE_PATH = "EmployeeList/employees.csv";  // Relative path to the CSV file
-    AdminMenu adminMenu = new AdminMenu();
+    RegisterEmployeeMenu rgs = new RegisterEmployeeMenu();
 
     public EmployeeManager(int size) {
         employees = new EmployeeVar[size];
@@ -45,7 +45,7 @@ public class EmployeeManager {
         // Check if passwords match
         if (!password.equals(confirmPassword)) {
             System.out.println("Passwords do not match.");
-            adminMenu.displayMenu();
+            rgs.displayRegisterMenu();
             return false;
         }
 
@@ -67,6 +67,11 @@ public class EmployeeManager {
         }
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH))) {
+            // Write the header line
+            writer.write("Username,Password");
+            writer.newLine();
+
+            // Write the employee data
             for (int i = 0; i < count; i++) {
                 writer.write(employees[i].getUsername() + "," + employees[i].getPassword());
                 writer.newLine();
@@ -74,5 +79,7 @@ public class EmployeeManager {
         } catch (IOException e) {
             System.out.println("Error while saving employee data: " + e.getMessage());
         }
+        
     }
+
 }

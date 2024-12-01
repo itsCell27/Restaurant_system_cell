@@ -21,6 +21,7 @@ public class DeleteMenuItem {
 
     // Display the category menu to the user
     public void displayCategoryMenu() {
+    	AdminMenu adminMenu = new AdminMenu();
         // Display the categories
         System.out.println("Please select a category:");
         System.out.println("1. Chicken and Platters");
@@ -29,6 +30,7 @@ public class DeleteMenuItem {
         System.out.println("4. Drinks and Desserts");
         System.out.println("5. Coffee");
         System.out.println("6. Fries");
+        System.out.println("7. Go back");
 
         // Ask the user to choose a category
         System.out.print("Enter the number of the category: ");
@@ -58,6 +60,9 @@ public class DeleteMenuItem {
             case 6:
                 category = "Fries";
                 break;
+            case 7:
+            	adminMenu.displayMenu();
+                break;
             default:
                 System.out.println("Invalid selection. Please choose a valid category.");
                 return;  // Exit the method if invalid category is selected
@@ -85,12 +90,38 @@ public class DeleteMenuItem {
         System.out.print("Enter the item name to delete: ");
         String itemToDelete = scanner.nextLine();
 
-        // Remove the selected item
-        updatedMenuItems.removeIf(item -> item[0].equalsIgnoreCase(itemToDelete));
+        // Check if the item exists
+        boolean itemExists = false;
+        for (String[] item : menuItems) {
+            if (item[0].equalsIgnoreCase(itemToDelete)) {
+                itemExists = true;
+                break;
+            }
+        }
 
-        // Write the updated menu back to the CSV file
-        writeToCSV(updatedMenuItems);
+        if (!itemExists) {
+            System.out.println("Item not found. Please enter a valid item name.");
+            return;
+        }
+
+        // Ask for confirmation before deleting
+        System.out.print("Are you sure you want to delete the item: " + itemToDelete + "? (Y/N): ");
+        String confirmation = scanner.nextLine();
+
+        if (confirmation.equalsIgnoreCase("Y")) {
+            // Remove the selected item from the menu
+            updatedMenuItems.removeIf(item -> item[0].equalsIgnoreCase(itemToDelete));
+
+            // Write the updated menu back to the CSV file
+            writeToCSV(updatedMenuItems);
+            displayCategoryMenu();
+        } else {
+        	
+            System.out.println("Item deletion canceled.");
+            displayCategoryMenu();
+        }
     }
+
 
     // Method to read the menu from the CSV file
     private List<String[]> readMenuFromCSV() {
