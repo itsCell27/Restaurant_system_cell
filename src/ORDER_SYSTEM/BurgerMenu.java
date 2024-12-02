@@ -61,27 +61,25 @@ public class BurgerMenu {
 
         if (burgerMenu.isEmpty()) {
             System.out.println("No items found in the Burger menu.");
-            return; // Exit to main menu if no items are found
+            return;
         }
 
-        while (true) {
-            System.out.println("\nBurger Menu:");
-            for (int i = 0; i < burgerMenu.size(); i++) {
-                System.out.println((i + 1) + ". " + burgerMenu.get(i));
-            }
-            System.out.print("Please select an option (1-" + burgerMenu.size() + "), or input 0 to go back: ");
-            int itemChoice = scanner.nextInt();
-            scanner.nextLine(); // Consume newline
+        System.out.println("\nBurger Menu:");
+        for (int i = 0; i < burgerMenu.size(); i++) {
+            System.out.println((i + 1) + ". " + burgerMenu.get(i));
+        }
 
-            if (itemChoice == 0) {
-                break; // Exit the menu and return to the main menu
-            }
+        System.out.print("Please select an option (1-" + burgerMenu.size() + "), input 0 to go back: ");
+        int itemChoice = scanner.nextInt();
+        if (itemChoice == 0) {
+            return; // Go back to main menu
+        }
 
-            if (itemChoice > 0 && itemChoice <= burgerMenu.size()) {
-                processOrder(burgerMenu.get(itemChoice - 1), scanner, handleOrder);
-            } else {
-                System.out.println("Invalid choice. Please try again.");
-            }
+        // Process the order if valid
+        if (itemChoice > 0 && itemChoice <= burgerMenu.size()) {
+            processOrder(burgerMenu.get(itemChoice - 1), scanner, handleOrder);
+        } else {
+            System.out.println("Invalid choice. Going back...");
         }
     }
 

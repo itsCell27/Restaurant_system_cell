@@ -61,30 +61,27 @@ public class FriesMenu {
 
         if (friesMenu.isEmpty()) {
             System.out.println("No items found in the Fries menu.");
-            return; // Exit to main menu if no items are found
+            return;
         }
 
-        while (true) {
-            System.out.println("\nFries Menu:");
-            for (int i = 0; i < friesMenu.size(); i++) {
-                System.out.println((i + 1) + ". " + friesMenu.get(i));
-            }
-            System.out.print("Please select an option (1-" + friesMenu.size() + "), or input 0 to go back: ");
-            int itemChoice = scanner.nextInt();
-            scanner.nextLine(); // Consume newline
+        System.out.println("\nFries Menu:");
+        for (int i = 0; i < friesMenu.size(); i++) {
+            System.out.println((i + 1) + ". " + friesMenu.get(i));
+        }
 
-            if (itemChoice == 0) {
-                break; // Exit the menu and return to the main menu
-            }
+        System.out.print("Please select an option (1-" + friesMenu.size() + "), input 0 to go back: ");
+        int itemChoice = scanner.nextInt();
+        if (itemChoice == 0) {
+            return; // Go back to main menu
+        }
 
-            if (itemChoice > 0 && itemChoice <= friesMenu.size()) {
-                processOrder(friesMenu.get(itemChoice - 1), scanner, handleOrder);
-            } else {
-                System.out.println("Invalid choice. Please try again.");
-            }
+        // Process the order if valid
+        if (itemChoice > 0 && itemChoice <= friesMenu.size()) {
+            processOrder(friesMenu.get(itemChoice - 1), scanner, handleOrder);
+        } else {
+            System.out.println("Invalid choice. Going back...");
         }
     }
-
 
     // Method to process the order for a specific menu item
     private void processOrder(MenuItem item, Scanner scanner, HandleMyOrder handleOrder) {

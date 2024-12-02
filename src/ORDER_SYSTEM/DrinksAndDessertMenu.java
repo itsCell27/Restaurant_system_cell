@@ -54,37 +54,34 @@ public class DrinksAndDessertMenu {
         // Reload the menu items from the CSV file each time
         List<MenuItem> menuItems = readMenuItems();
 
-        // Filter the items that belong to the "Drinks and Desserts" category
+        // Filter the items that belong to the "Drinks and Dessert" category
         List<MenuItem> drinksAndDessertsMenu = menuItems.stream()
-                .filter(item -> item.getCategory().equalsIgnoreCase("Drinks and Desserts"))
+                .filter(item -> item.getCategory().equalsIgnoreCase("Drinks and Dessert"))
                 .collect(Collectors.toList());
 
         if (drinksAndDessertsMenu.isEmpty()) {
             System.out.println("No items found in the Drinks and Desserts menu.");
-            return; // Exit to main menu if no items are found
+            return;
         }
 
-        while (true) {
-            System.out.println("\nDrinks and Desserts Menu:");
-            for (int i = 0; i < drinksAndDessertsMenu.size(); i++) {
-                System.out.println((i + 1) + ". " + drinksAndDessertsMenu.get(i));
-            }
-            System.out.print("Please select an option (1-" + drinksAndDessertsMenu.size() + "), or input 0 to go back: ");
-            int itemChoice = scanner.nextInt();
-            scanner.nextLine(); // Consume newline
+        System.out.println("\nDrinks and Desserts Menu:");
+        for (int i = 0; i < drinksAndDessertsMenu.size(); i++) {
+            System.out.println((i + 1) + ". " + drinksAndDessertsMenu.get(i));
+        }
 
-            if (itemChoice == 0) {
-                break; // Exit the menu and return to the main menu
-            }
+        System.out.print("Please select an option (1-" + drinksAndDessertsMenu.size() + "), input 0 to go back: ");
+        int itemChoice = scanner.nextInt();
+        if (itemChoice == 0) {
+            return; // Go back to main menu
+        }
 
-            if (itemChoice > 0 && itemChoice <= drinksAndDessertsMenu.size()) {
-                processOrder(drinksAndDessertsMenu.get(itemChoice - 1), scanner, handleOrder);
-            } else {
-                System.out.println("Invalid choice. Please try again.");
-            }
+        // Process the order if valid
+        if (itemChoice > 0 && itemChoice <= drinksAndDessertsMenu.size()) {
+            processOrder(drinksAndDessertsMenu.get(itemChoice - 1), scanner, handleOrder);
+        } else {
+            System.out.println("Invalid choice. Going back...");
         }
     }
-
 
     // Method to process the order for a specific menu item
     private void processOrder(MenuItem item, Scanner scanner, HandleMyOrder handleOrder) {

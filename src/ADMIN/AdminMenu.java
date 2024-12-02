@@ -1,6 +1,7 @@
 package ADMIN;
 
 import java.util.Scanner;
+import ORDER_SYSTEM.MainOrderSystem;
 
 class AdminMenu {
     private Scanner scanner = new Scanner(System.in);  // Initialize the scanner
@@ -8,7 +9,6 @@ class AdminMenu {
     AddMenuItem addMenuItem = new AddMenuItem();
     UpdateMenuItem updateMenuItem = new UpdateMenuItem();
     DeleteMenuItem deleteMenuItem = new DeleteMenuItem();
-    AdminSystem ads = new AdminSystem();
 
     public void displayMenu() {
             System.out.println("\nAdmin Menu:");
@@ -39,8 +39,7 @@ class AdminMenu {
                         break;
                     case 5:
                         System.out.println("Logging out...");
-                        ads.start();
-                        
+                        MainOrderSystem.main(null);
                     default:
                         System.out.println("Invalid choice. Please try again.");
                 }

@@ -11,29 +11,27 @@ import java.util.Scanner;
 public class MainOrderSystem {
 
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in); // Create the scanner once her    
-        displayRoleChoice() ;   
-    }
+        Scanner scanner = new Scanner(System.in); // Create the scanner once here
+
+        // Create instances of the menu classes
+        ChickenAndPlattersMenu chickenMenu = new ChickenAndPlattersMenu();
+        BreakfastMenu breakfastMenu = new BreakfastMenu();
+        DrinksAndDessertMenu drinksAndDessertMenu = new DrinksAndDessertMenu(); // Drinks & Desserts menu
+        BurgerMenu burgerMenu = new BurgerMenu(); // Burger menu
+        CoffeeMenu coffeeMenu = new CoffeeMenu(); // Coffee menu
+        FriesMenu friesMenu = new FriesMenu(); // Fries menu
+
+        // Load menu items from the CSV file
+        List<MenuItem> menuItems = chickenMenu.readMenuItems();
+
+        // Create an instance of HandleMyOrder class to manage the orders
+        HandleMyOrder handleOrder = new HandleMyOrder();
+        List<Order> orders = new ArrayList<>();  // List of orders
+
+        // Dining option
+        String diningOption = "";
+
         // Role selection loop
-        public static void displayRoleChoice() {
-        	ChickenAndPlattersMenu chickenMenu = new ChickenAndPlattersMenu();
-            BreakfastMenu breakfastMenu = new BreakfastMenu();
-            DrinksAndDessertMenu drinksAndDessertMenu = new DrinksAndDessertMenu(); // Drinks & Desserts menu
-            BurgerMenu burgerMenu = new BurgerMenu(); // Burger menu
-            CoffeeMenu coffeeMenu = new CoffeeMenu(); // Coffee menu
-            FriesMenu friesMenu = new FriesMenu(); // Fries menu
-
-            // Load menu items from the CSV file
-            List<MenuItem> menuItems = chickenMenu.readMenuItems();
-        
-        	HandleMyOrder handleOrder = new HandleMyOrder();
-            List<Order> orders = new ArrayList<>();  // List of orders
-
-            // Dining option
-            String diningOption = "";
-        
-        Scanner scanner = new Scanner(System.in);	
-        
         while (true) {
             int roleChoice = getRoleChoice();  // Get the role choice from a helper method
 
@@ -119,7 +117,7 @@ public class MainOrderSystem {
                             System.out.println("Invalid option, please select a valid option.");
                             continue;  // Restart loop if invalid option
                     }
-                
+                }
 
                 if (diningOption.isEmpty()) {
                     break; // Exit the dining option loop if logged out
@@ -172,9 +170,9 @@ public class MainOrderSystem {
 
             // After logging out from dining options, return to the role selection menu
             System.out.println("Returning to role selection...");
-            }
-    }
         }
+    }
+
     // Helper method to get role choice (No Scanner parameter)
     private static int getRoleChoice() {
         Scanner scanner = new Scanner(System.in);  // Create a new Scanner object here
