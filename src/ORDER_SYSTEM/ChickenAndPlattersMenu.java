@@ -55,33 +55,36 @@ public class ChickenAndPlattersMenu {
         List<MenuItem> menuItems = readMenuItems();
 
         // Filter the items that belong to the "Chicken and Platters" category
-        List<MenuItem> chickenMenu = menuItems.stream()
+        List<MenuItem> chickenAndPlattersMenu = menuItems.stream()
                 .filter(item -> item.getCategory().equalsIgnoreCase("Chicken and Platters"))
                 .collect(Collectors.toList());
 
-        if (chickenMenu.isEmpty()) {
+        if (chickenAndPlattersMenu.isEmpty()) {
             System.out.println("No items found in the Chicken and Platters menu.");
-            return;
+            return; // Exit to main menu if no items are found
         }
 
-        System.out.println("\nChicken And Platters Menu:");
-        for (int i = 0; i < chickenMenu.size(); i++) {
-            System.out.println((i + 1) + ". " + chickenMenu.get(i));
-        }
+        while (true) {
+            System.out.println("\nChicken and Platters Menu:");
+            for (int i = 0; i < chickenAndPlattersMenu.size(); i++) {
+                System.out.println((i + 1) + ". " + chickenAndPlattersMenu.get(i));
+            }
+            System.out.print("Please select an option (1-" + chickenAndPlattersMenu.size() + "), or input 0 to go back: ");
+            int itemChoice = scanner.nextInt();
+            scanner.nextLine(); // Consume newline
 
-        System.out.print("Please select an option (1-" + chickenMenu.size() + "), input 0 to go back: ");
-        int itemChoice = scanner.nextInt();
-        if (itemChoice == 0) {
-            return; // Go back to main menu
-        }
+            if (itemChoice == 0) {
+                break; // Exit the menu and return to the main menu
+            }
 
-        // Process the order if valid
-        if (itemChoice > 0 && itemChoice <= chickenMenu.size()) {
-            processOrder(chickenMenu.get(itemChoice - 1), scanner, handleOrder);
-        } else {
-            System.out.println("Invalid choice. Going back...");
+            if (itemChoice > 0 && itemChoice <= chickenAndPlattersMenu.size()) {
+                processOrder(chickenAndPlattersMenu.get(itemChoice - 1), scanner, handleOrder);
+            } else {
+                System.out.println("Invalid choice. Please try again.");
+            }
         }
     }
+
 
     // Method to process the order for a specific menu item
     private void processOrder(MenuItem item, Scanner scanner, HandleMyOrder handleOrder) {
