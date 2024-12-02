@@ -19,6 +19,7 @@ public class AddMenuItem {
 
     // Display the category menu to the user
     public void displayCategoryMenu() {
+    	AdminMenu ads = new AdminMenu();
         // Display the categories
         System.out.println("Please select a category:");
         System.out.println("1. Chicken and Platters");
@@ -27,7 +28,7 @@ public class AddMenuItem {
         System.out.println("4. Drinks and Desserts");
         System.out.println("5. Coffee");
         System.out.println("6. Fries");
-
+        System.out.println("7. Go back");
         // Ask the user to choose a category
         System.out.print("Enter the number of the category: ");
         int categoryChoice = scanner.nextInt();
@@ -56,8 +57,11 @@ public class AddMenuItem {
             case 6:
                 category = "Fries";
                 break;
+            case 7:
+            	ads.displayMenu();
             default:
                 System.out.println("Invalid selection. Please choose a valid category.");
+                displayCategoryMenu();
                 return;  // Exit the method if invalid category is selected
         }
 

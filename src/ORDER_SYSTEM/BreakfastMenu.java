@@ -50,6 +50,7 @@ public class BreakfastMenu {
     }
 
     // Method to display the Breakfast menu and process orders
+ // Method to display the Breakfast menu and process orders
     public void displayMenu(Scanner scanner, HandleMyOrder handleOrder) {
         // Reload the menu items from the CSV file each time
         List<MenuItem> menuItems = readMenuItems();
@@ -61,25 +62,27 @@ public class BreakfastMenu {
 
         if (breakfastMenu.isEmpty()) {
             System.out.println("No items found in the Breakfast menu.");
-            return;
+            return; // Exit to main menu if no items are found
         }
 
-        System.out.println("\nBreakfast Menu:");
-        for (int i = 0; i < breakfastMenu.size(); i++) {
-            System.out.println((i + 1) + ". " + breakfastMenu.get(i));
-        }
+        while (true) {
+            System.out.println("\nBreakfast Menu:");
+            for (int i = 0; i < breakfastMenu.size(); i++) {
+                System.out.println((i + 1) + ". " + breakfastMenu.get(i));
+            }
+            System.out.print("Please select an option (1-" + breakfastMenu.size() + "), or input 0 to go back: ");
+            int itemChoice = scanner.nextInt();
+            scanner.nextLine(); // Consume newline
 
-        System.out.print("Please select an option (1-" + breakfastMenu.size() + "), input 0 to go back: ");
-        int itemChoice = scanner.nextInt();
-        if (itemChoice == 0) {
-            return; // Go back to main menu
-        }
+            if (itemChoice == 0) {
+                break; // Exit the menu and return to the main menu
+            }
 
-        // Process the order if valid
-        if (itemChoice > 0 && itemChoice <= breakfastMenu.size()) {
-            processOrder(breakfastMenu.get(itemChoice - 1), scanner, handleOrder);
-        } else {
-            System.out.println("Invalid choice. Going back...");
+            if (itemChoice > 0 && itemChoice <= breakfastMenu.size()) {
+                processOrder(breakfastMenu.get(itemChoice - 1), scanner, handleOrder);
+            } else {
+                System.out.println("Invalid choice. Please try again.");
+            }
         }
     }
 
@@ -87,12 +90,14 @@ public class BreakfastMenu {
     private void processOrder(MenuItem item, Scanner scanner, HandleMyOrder handleOrder) {
         System.out.print("Enter the quantity for this item: ");
         int quantity = scanner.nextInt();
+        scanner.nextLine(); // Consume newline
 
         // Calculate the total price
         int totalPrice = item.getPrice() * quantity;
 
         System.out.print("Do you want to save this order? (1 for Yes, 0 for No): ");
         int saveOrder = scanner.nextInt();
+        scanner.nextLine(); // Consume newline
 
         if (saveOrder == 1) {
             // Create an Order object
@@ -107,11 +112,10 @@ public class BreakfastMenu {
             System.out.println("Quantity: " + quantity);
             System.out.println("Price: " + totalPrice + " PHP");
             System.out.println("\nTotal Price: " + totalPrice + " PHP");
-            System.out.println("Press Enter to continue...");
-            scanner.nextLine(); // Consume newline
-            scanner.nextLine(); // Wait for user to press Enter
+            System.out.println("Order saved successfully!");
         } else {
             System.out.println("Order not saved. Returning to menu.");
         }
     }
+
 }

@@ -8,6 +8,7 @@ class AdminMenu {
     AddMenuItem addMenuItem = new AddMenuItem();
     UpdateMenuItem updateMenuItem = new UpdateMenuItem();
     DeleteMenuItem deleteMenuItem = new DeleteMenuItem();
+    AdminSystem ads = new AdminSystem();
 
     public void displayMenu() {
             System.out.println("\nAdmin Menu:");
@@ -38,7 +39,8 @@ class AdminMenu {
                         break;
                     case 5:
                         System.out.println("Logging out...");
-                        return;
+                        ads.start();
+                        
                     default:
                         System.out.println("Invalid choice. Please try again.");
                 }

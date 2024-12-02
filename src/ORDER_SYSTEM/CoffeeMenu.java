@@ -61,27 +61,30 @@ public class CoffeeMenu {
 
         if (coffeeMenu.isEmpty()) {
             System.out.println("No items found in the Coffee menu.");
-            return;
+            return; // Exit to main menu if no items are found
         }
 
-        System.out.println("\nCoffee Menu:");
-        for (int i = 0; i < coffeeMenu.size(); i++) {
-            System.out.println((i + 1) + ". " + coffeeMenu.get(i));
-        }
+        while (true) {
+            System.out.println("\nCoffee Menu:");
+            for (int i = 0; i < coffeeMenu.size(); i++) {
+                System.out.println((i + 1) + ". " + coffeeMenu.get(i));
+            }
+            System.out.print("Please select an option (1-" + coffeeMenu.size() + "), or input 0 to go back: ");
+            int itemChoice = scanner.nextInt();
+            scanner.nextLine(); // Consume newline
 
-        System.out.print("Please select an option (1-" + coffeeMenu.size() + "), input 0 to go back: ");
-        int itemChoice = scanner.nextInt();
-        if (itemChoice == 0) {
-            return; // Go back to main menu
-        }
+            if (itemChoice == 0) {
+                break; // Exit the menu and return to the main menu
+            }
 
-        // Process the order if valid
-        if (itemChoice > 0 && itemChoice <= coffeeMenu.size()) {
-            processOrder(coffeeMenu.get(itemChoice - 1), scanner, handleOrder);
-        } else {
-            System.out.println("Invalid choice. Going back...");
+            if (itemChoice > 0 && itemChoice <= coffeeMenu.size()) {
+                processOrder(coffeeMenu.get(itemChoice - 1), scanner, handleOrder);
+            } else {
+                System.out.println("Invalid choice. Please try again.");
+            }
         }
     }
+
 
     // Method to process the order for a specific menu item
     private void processOrder(MenuItem item, Scanner scanner, HandleMyOrder handleOrder) {
