@@ -85,6 +85,7 @@ public class BreakfastMenu {
 
     // Method to process the order for a specific menu item
     private void processOrder(MenuItem item, Scanner scanner, HandleMyOrder handleOrder) {
+    	
         System.out.print("Enter the quantity for this item: ");
         int quantity = scanner.nextInt();
 
@@ -113,5 +114,6 @@ public class BreakfastMenu {
         } else {
             System.out.println("Order not saved. Returning to menu.");
         }
+        
     }
 }

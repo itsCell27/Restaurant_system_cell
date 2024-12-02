@@ -21,7 +21,7 @@ public class DeleteMenuItem {
 
     // Display the category menu to the user
     public void displayCategoryMenu() {
-    	AdminMenu adminMenu = new AdminMenu();
+    	AdminMenu ads = new AdminMenu();
         // Display the categories
         System.out.println("Please select a category:");
         System.out.println("1. Chicken and Platters");
@@ -61,10 +61,11 @@ public class DeleteMenuItem {
                 category = "Fries";
                 break;
             case 7:
-            	adminMenu.displayMenu();
+            	ads.displayMenu();
                 break;
             default:
                 System.out.println("Invalid selection. Please choose a valid category.");
+                displayCategoryMenu();
                 return;  // Exit the method if invalid category is selected
         }
 

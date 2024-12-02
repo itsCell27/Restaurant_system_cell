@@ -1,11 +1,12 @@
 package ADMIN;
 
 import java.util.Scanner;
-
+import ORDER_SYSTEM.MainOrderSystem;
 public class AdminSystem {
     private static final String DEFAULT_ADMIN_USERNAME = "admin";
     private static final String DEFAULT_ADMIN_PASSWORD = "admin123";
-    private AdminMenu adminMenu = new AdminMenu();  // Initialize here instead of in the constructor
+    private AdminMenu adminMenu;  // Initialize here instead of in the constructor
+    MainOrderSystem main = new MainOrderSystem();
 
     public void start() {
         Scanner scanner = new Scanner(System.in);  // Create a new Scanner instance for user input
@@ -30,12 +31,13 @@ public class AdminSystem {
             switch (choice) {
                 case 1:
                     if (login(scanner)) {  // Pass the scanner to the login method
+                    	 adminMenu = new AdminMenu();
                         adminMenu.displayMenu(); // Show the admin menu after successful login
                     }
                     break;
                 case 2:
                     System.out.println("Exiting...");
-                    return;
+                    main.displayRoleChoice();;
                 default:
                     System.out.println("Invalid choice. Please try again.");
             }
