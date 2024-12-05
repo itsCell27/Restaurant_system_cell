@@ -130,7 +130,7 @@ public class UpdateMenuItem {
 
         // Write the updated items back to the CSV file
         writeToCSV(menuItems);
-        adminMenu.displayMenu();
+        displayCategoryMenu();
     }
 
     // Method to read the menu from the CSV file

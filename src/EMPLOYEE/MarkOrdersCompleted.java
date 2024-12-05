@@ -4,9 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 public class MarkOrdersCompleted {
 
@@ -15,8 +13,8 @@ public class MarkOrdersCompleted {
         String csvFile = "OrderRecords/order_summary.csv";  // Path to your CSV file
         String line;
         String cvsSplitBy = ",";
-        Map<String, StringBuilder> ordersMap = new HashMap<>();
-        Map<String, Integer> totalPriceMap = new HashMap<>();
+        Map<Integer, StringBuilder> ordersMap = new TreeMap<>(Collections.reverseOrder()); // Map to store orders in descending order
+        Map<Integer, Integer> totalPriceMap = new HashMap<>();
 
         try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
             // Skip the header line
@@ -29,7 +27,7 @@ public class MarkOrdersCompleted {
                 // Ensure we have enough columns in the CSV row
                 if (orderDetails.length < 9) continue;
 
-                String orderNumber = orderDetails[0].trim();
+                int orderNumber = Integer.parseInt(orderDetails[0].trim());
                 String itemName = orderDetails[1].trim();
                 int quantity = Integer.parseInt(orderDetails[2].trim());
                 String totalAmount = orderDetails[3].trim();  // Total price for the quantity
@@ -39,7 +37,8 @@ public class MarkOrdersCompleted {
                 if (status.equalsIgnoreCase("pending")) {
                     // Add to the map for displaying orders
                     StringBuilder orderItems = ordersMap.getOrDefault(orderNumber, new StringBuilder());
-                    orderItems.append(String.format("%d %-15s ..................................%s PHP\n", quantity, itemName, totalAmount));
+                    orderItems.append(String.format("|| %-13s || %-13s || %-27s || %-27s || %-13s ||\n", 
+                            "", quantity, itemName, totalAmount + " PHP", ""));
                     ordersMap.put(orderNumber, orderItems);
 
                     // Calculate the total price for the order
@@ -48,21 +47,31 @@ public class MarkOrdersCompleted {
                 }
             }
 
-            // Display the orders
+            // Display the orders in descending order
             if (ordersMap.isEmpty()) {
                 System.out.println("No pending orders found.");
                 return;
             }
 
-            for (Map.Entry<String, StringBuilder> entry : ordersMap.entrySet()) {
-                String orderNumber = entry.getKey();
+            System.out.println("===================================================================================================================");
+            System.out.println(String.format("|| %-13s || %-13s || %-27s || %-27s || %-13s ||", 
+                    "Order No.", "Quantity", "Items", "Total Price By Item Qty", "Total Price"));
+            System.out.println("===================================================================================================================");
+
+            for (Map.Entry<Integer, StringBuilder> entry : ordersMap.entrySet()) {
+                int orderNumber = entry.getKey();
                 StringBuilder orderItems = entry.getValue();
                 int totalPrice = totalPriceMap.get(orderNumber);
 
-                System.out.println("ORDER #" + orderNumber);
+                // Print the order number and total price on the first line
+                System.out.printf("|| %-13s || %-13s || %-27s || %-27s || %-13s ||\n", 
+                        orderNumber, "", "", "", totalPrice + " PHP");
+
+                // Print the items for this order
                 System.out.print(orderItems.toString());
-                System.out.printf("Total               ..................................%d PHP\n", totalPrice);
-                System.out.println();
+
+                // Print the closing line for the order
+                System.out.println("===================================================================================================================");
             }
 
             // Get user input to mark an order as completed
@@ -77,11 +86,16 @@ public class MarkOrdersCompleted {
             }
 
             // Validate the order number and mark as served
-            if (ordersMap.containsKey(input)) {
-                updateOrderStatus(csvFile, input);
-                System.out.println("Order #" + input + " marked as served.");
-            } else {
-                System.out.println("Invalid order number.");
+            try {
+                int orderInput = Integer.parseInt(input);
+                if (ordersMap.containsKey(orderInput)) {
+                    updateOrderStatus(csvFile, orderInput);
+                    System.out.println("Order #" + orderInput + " marked as served.");
+                } else {
+                    System.out.println("Invalid order number.");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a valid order number.");
             }
 
         } catch (IOException e) {
@@ -92,7 +106,7 @@ public class MarkOrdersCompleted {
     }
 
     // Method to update the status of an order to "served"
-    private static void updateOrderStatus(String csvFile, String orderNumber) {
+    private static void updateOrderStatus(String csvFile, int orderNumber) {
         StringBuilder fileContent = new StringBuilder();
         String line;
         String cvsSplitBy = ",";
@@ -104,7 +118,7 @@ public class MarkOrdersCompleted {
                 String[] orderDetails = line.split(cvsSplitBy);
 
                 // Check if the order number matches
-                if (orderDetails[0].trim().equals(orderNumber)) {
+                if (orderDetails[0].trim().equals(String.valueOf(orderNumber))) {
                     // Change the status to "served"
                     orderDetails[6] = "served";
                     updated = true;

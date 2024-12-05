@@ -3,6 +3,7 @@ package ORDER_SYSTEM;
 import EMPLOYEE.Login;  // Import the Login class from the EMPLOYEE package
 import EMPLOYEE.EmployeeMenu;  // Import the EmployeeMenu class
 import ADMIN.AdminSystem;
+import ADMIN.AdminAuthForLogout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -96,6 +97,7 @@ public class MainOrderSystem {
                     System.out.print("Please select an option: ");
                     
                     int diningChoice = scanner.nextInt();
+                    scanner.nextLine();
                     
                     // Handle the dining choice and set the global dining option
                     switch (diningChoice) {
@@ -111,8 +113,16 @@ public class MainOrderSystem {
                             break;  // Take Out selected
                         case 3:
                             System.out.println("Logging out...");
-                            diningOption = "";  // Clear dining option after logout
-                            break; // Log out and return to role selection
+                            AdminAuthForLogout adminAuth = new AdminAuthForLogout();
+                            if (adminAuth.login(scanner)) { // Call the login method for authentication
+                                System.out.println("Logout successful.");
+                                diningOption = ""; // Clear dining option after successful logout
+                            } else {
+                                System.out.println("Authentication failed. Returning to menu...");
+                                continue;
+                            }
+                             
+                            break;
                         default:
                             System.out.println("Invalid option, please select a valid option.");
                             continue;  // Restart loop if invalid option

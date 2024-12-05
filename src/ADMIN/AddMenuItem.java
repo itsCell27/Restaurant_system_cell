@@ -139,6 +139,7 @@ public class AddMenuItem {
 
         // You can implement a method to read from CSV and display the updated menu
         readMenuFromCSV();
+        displayCategoryMenu();
     }
 
     // Method to read and display the updated menu from the CSV file

@@ -13,7 +13,7 @@ public class BreakfastMenu {
         List<MenuItem> menuItems = new ArrayList<>();
 
         // Print the current working directory for debugging purposes
-        System.out.println("Current working directory: " + System.getProperty("user.dir"));
+        
 
         // Check if the file exists before trying to read it
         File file = new File(FILE_PATH);

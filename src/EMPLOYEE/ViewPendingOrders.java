@@ -3,8 +3,10 @@ package EMPLOYEE;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class ViewPendingOrders {
 
@@ -14,14 +16,14 @@ public class ViewPendingOrders {
         String cvsSplitBy = ",";
 
         // A map to hold the orders, with the order number as the key
-        Map<String, StringBuilder> ordersMap = new HashMap<>();
-        Map<String, Integer> totalPriceMap = new HashMap<>();
+        Map<Integer, StringBuilder> ordersMap = new TreeMap<>(Collections.reverseOrder());  // TreeMap to sort by order number in descending order
+        Map<Integer, Integer> totalPriceMap = new HashMap<>();
 
         try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
             // Skip the header line
             br.readLine();
 
-            // Read the file line by line
+            // Process data first
             while ((line = br.readLine()) != null) {
                 // Split the line by commas
                 String[] orderDetails = line.split(cvsSplitBy);
@@ -32,15 +34,11 @@ public class ViewPendingOrders {
                 }
 
                 // Extract the relevant details from the CSV columns
-                String orderNumber = orderDetails[0].trim();
+                int orderNumber = Integer.parseInt(orderDetails[0].trim());
                 String itemName = orderDetails[1].trim();
                 int quantity = Integer.parseInt(orderDetails[2].trim());
                 String totalAmount = orderDetails[3].trim();  // This is the total price for the quantity
-                String paymentMethod = orderDetails[4].trim();  // We may not use this now
-                String diningOption = orderDetails[5].trim();   // We may not use this now
                 String status = orderDetails[6].trim();         // Order status
-                String date = orderDetails[7].trim();           // We may not use this now
-                String time = orderDetails[8].trim();           // Time column
 
                 // Only process orders with "pending" status
                 if (status.equalsIgnoreCase("pending")) {
@@ -49,7 +47,8 @@ public class ViewPendingOrders {
 
                     // Add this item to the map for the given order number
                     StringBuilder orderItems = ordersMap.getOrDefault(orderNumber, new StringBuilder());
-                    orderItems.append(String.format("%d %-15s ..................................%d PHP\n", quantity, itemName, itemTotalPrice));
+                    orderItems.append(String.format("|| %-13s || %-13s || %-27s || %-27s || %-13s ||\n", 
+                            "", quantity, itemName, totalAmount + " PHP", ""));
                     ordersMap.put(orderNumber, orderItems);
 
                     // Add total price to the order
@@ -57,17 +56,27 @@ public class ViewPendingOrders {
                 }
             }
 
-            // Now, print the orders
-            for (Map.Entry<String, StringBuilder> entry : ordersMap.entrySet()) {
-                String orderNumber = entry.getKey();
+            // Now, print the orders in the desired format
+            System.out.println("===================================================================================================================");
+            System.out.println(String.format("|| %-13s || %-13s || %-27s || %-27s || %-13s ||", 
+                    "Order No.", "Quantity", "Items", "Total Price By Item Qty", "Total Price"));
+            System.out.println("===================================================================================================================");
+
+            // After all data has been processed, print the results
+            for (Map.Entry<Integer, StringBuilder> entry : ordersMap.entrySet()) {
+                int orderNumber = entry.getKey();
                 StringBuilder orderItems = entry.getValue();
                 int totalPrice = totalPriceMap.get(orderNumber);
 
-                // Print the order number and items
-                System.out.println("ORDER #" + orderNumber);
+                // Print the order number and total price on the first line
+                System.out.printf("|| %-13d || %-13s || %-27s || %-27s || %-13s ||\n", 
+                        orderNumber, "", "", "", totalPrice + " PHP");
+
+                // Print the items for this order
                 System.out.print(orderItems.toString());
-                System.out.printf("Total               ..................................%d PHP\n", totalPrice);
-                System.out.println();
+
+                // Print the closing line for the order
+                System.out.println("===================================================================================================================");
             }
 
         } catch (IOException e) {

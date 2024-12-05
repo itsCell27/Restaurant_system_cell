@@ -12,9 +12,7 @@ public class ChickenAndPlattersMenu {
     public List<MenuItem> readMenuItems() {
         List<MenuItem> menuItems = new ArrayList<>();
 
-        // Print the current working directory for debugging purposes
-        System.out.println("Current working directory: " + System.getProperty("user.dir"));
-
+       
         // Check if the file exists before trying to read it
         File file = new File(FILE_PATH);
         if (!file.exists()) {
