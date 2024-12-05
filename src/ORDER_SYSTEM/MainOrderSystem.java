@@ -39,13 +39,12 @@ public class MainOrderSystem {
             // Handle the role selection
             switch (roleChoice) {
                 case 1:
-                    System.out.println("You selected Admin.");
+                    
                     AdminSystem adminSystem = new AdminSystem();  // Create an instance of AdminSystem
                     adminSystem.start();  // Start the admin system
                     break;
                 case 2:
-                    System.out.println("You selected Employee.");
-                    // Loop to allow retry if login fails
+                   
                     boolean loginSuccess = false;
                     while (!loginSuccess) {
                         Login login = new Login();  // Create an instance of the Login class
@@ -72,7 +71,6 @@ public class MainOrderSystem {
                     }
                     break;
                 case 3:
-                    System.out.println("You selected Customer.");
                     break;
                 default:
                     System.out.println("Invalid option, please restart and select a valid role.");
@@ -90,11 +88,14 @@ public class MainOrderSystem {
             while (true) {
                 // Display Dine In, Take Out, and Logout options
                 if (diningOption.isEmpty()) {
-                    System.out.println("\nSelect an option:");
-                    System.out.println("1. Dine In");
-                    System.out.println("2. Take Out");
-                    System.out.println("3. Logout");
-                    System.out.print("Please select an option: ");
+                	clearScreen();
+                	System.out.println("                                                                                                                  DINING OPTION                       ");
+                    System.out.println("                                                                                         ===================================================================");
+                    System.out.println("                                                                                         |                        [1] Dine In                              |");
+                    System.out.println("                                                                                         |                        [2] Take Out                             |");
+                    System.out.println("                                                                                         |                        [3] Logout                               |");
+                    System.out.println("                                                                                         ===================================================================\n\n");
+                    System.out.print("                                                                                                                     Enter: ");
                     
                     int diningChoice = scanner.nextInt();
                     scanner.nextLine();
@@ -185,26 +186,40 @@ public class MainOrderSystem {
 
     // Helper method to get role choice (No Scanner parameter)
     private static int getRoleChoice() {
-        Scanner scanner = new Scanner(System.in);  // Create a new Scanner object here
-        System.out.println("Select your role:");
-        System.out.println("1. Admin");
-        System.out.println("2. Employee");
-        System.out.println("3. Customer");
-        System.out.print("Please select an option: ");
+    	System.out.println("\n\n\n");
+        Scanner scanner = new Scanner(System.in);  // Create a new Scanner object here\
+        System.out.println("                                                                                                                  USER TYPE SELECTION                       ");
+        System.out.println("                                                                                         ===================================================================");
+        System.out.println("                                                                                         |                        [1] Admin                                |");
+        System.out.println("                                                                                         |                        [2] Employee                             |");
+        System.out.println("                                                                                         |                        [3] Customer                             |");
+        System.out.println("                                                                                         ===================================================================\n\n");
+        System.out.print("                                                                                                                    Enter: ");
         return scanner.nextInt();  // Return the role choice
     }
 
     // Method to display the main menu
     private static void displayMainMenu() {
-        System.out.println("\nWelcome to the Restaurant!");
-        System.out.println("1. Breakfast Menu");
-        System.out.println("2. Chicken And Platters");
-        System.out.println("3. Burger Menu");
-        System.out.println("4. Drinks & Desserts Menu");
-        System.out.println("5. Coffee Menu");
-        System.out.println("6. Fries Menu");
-        System.out.println("7. My Order");
-        System.out.println("0. Go Back");
-        System.out.print("Please select an option: ");
+    	clearScreen();
+    	System.out.print("\033c");
+        System.out.println("                                                                                                                 WELCOME TO THE RESTAURANT!");
+        System.out.println("                                                                                         ===================================================================");
+        System.out.println("                                                                                         |                        [1] Breakfast Menu                        |");
+        System.out.println("                                                                                         |                        [2] Chicken And Platters                  |");
+        System.out.println("                                                                                         |                        [3] Burger Menu                           |");
+        System.out.println("                                                                                         |                        [4] Drinks & Desserts Menu                |");
+        System.out.println("                                                                                         |                        [5] Coffee Menu                           |");
+        System.out.println("                                                                                         |                        [6] Fries Menu                            |");
+        System.out.println("                                                                                         |                        [7] My Order                              |");
+        System.out.println("                                                                                         |                        [0] Go Back                               |");
+        System.out.println("                                                                                         ===================================================================\n\n");
+        System.out.print("                                                                                                                    Enter: ");
     }
+    
+    
+        public static void clearScreen() {
+            for (int i = 0; i < 50; i++) {  // Print 50 newlines
+                System.out.println();
+            }   
+        }
 }

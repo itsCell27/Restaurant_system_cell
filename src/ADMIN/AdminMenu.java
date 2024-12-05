@@ -11,13 +11,15 @@ class AdminMenu {
     DeleteMenuItem deleteMenuItem = new DeleteMenuItem();
 
     public void displayMenu() {
-            System.out.println("\nAdmin Menu:");
-            System.out.println("1. Add menu item");
-            System.out.println("2. Update menu item");
-            System.out.println("3. Delete menu item");
-            System.out.println("4. Register Employee");
-            System.out.println("5. Logout");
-            System.out.print("Choose an option: ");
+    	System.out.println("                                                                                                                       ADMIN MENU");
+    	 System.out.println("                                                                                         ===================================================================");
+         System.out.println("                                                                                         |                        [1] Add menu item                        |");
+         System.out.println("                                                                                         |                        [2] Update menu item                     |");
+         System.out.println("                                                                                         |                        [3] Delete menu item                     |");
+         System.out.println("                                                                                         |                        [4] Register Employee                    |");
+         System.out.println("                                                                                         |                        [5] Logout                               |");
+         System.out.println("                                                                                         ===================================================================\n\n");
+           System.out.print("                                                                                                                  Enter: ");
             
             // Check if the input is an integer before proceeding
             if (scanner.hasNextInt()) {

@@ -20,3 +20,7 @@ Order Number,Item,Quantity,Total Price,Payment Method,Dining Option,Status,Date,
 18,r1,1,50,Cash,Dine In,pending,2024-12-01,03:15 PM
 19,n1,1,30,Cash,Dine In,pending,2024-12-01,03:16 PM
 20,f1,1,90,Cash,Dine In,pending,2024-12-01,03:17 PM
+21,j1,6,420,Cash,Take Out,served,2024-12-05,08:52 AM
+21,f1,7,630,Cash,Take Out,served,2024-12-05,08:52 AM
+22,j1,6,420,Cash,Dine In,pending,2024-12-05,11:45 AM
+22,b2,3,180,Cash,Dine In,pending,2024-12-05,11:45 AM

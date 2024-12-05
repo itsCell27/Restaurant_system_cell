@@ -201,9 +201,7 @@ public class TicketOrder {
     // Receipt space calculator ending
 
 
-    // Method to generate the receipt and save it to a folder
- // Method to generate the receipt and save it to a folder
- // Method to generate the receipt and save it to a folder
+  
     private static void generateReceiptFile(String orderNumber, List<Order> orderItems, int totalPrice) {
         String folderPath = "Receipts";
 

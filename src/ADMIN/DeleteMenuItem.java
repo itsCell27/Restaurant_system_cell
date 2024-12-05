@@ -23,17 +23,18 @@ public class DeleteMenuItem {
     public void displayCategoryMenu() {
     	AdminMenu ads = new AdminMenu();
         // Display the categories
-        System.out.println("Please select a category:");
-        System.out.println("1. Chicken and Platters");
-        System.out.println("2. Breakfast");
-        System.out.println("3. Burgers");
-        System.out.println("4. Drinks and Desserts");
-        System.out.println("5. Coffee");
-        System.out.println("6. Fries");
-        System.out.println("7. Go back");
-
-        // Ask the user to choose a category
-        System.out.print("Enter the number of the category: ");
+    	System.out.println("                                                                                                                  CATEGORIES");
+    	System.out.println("                                                                                         ===================================================================");
+        System.out.println("                                                                                         |                        [1] Chicken and Platters                 |");
+        System.out.println("                                                                                         |                        [2] Breakfast                            |");
+        System.out.println("                                                                                         |                        [3] Burgers                              |");
+        System.out.println("                                                                                         |                        [4] Drinks and Desserts                  |");
+        System.out.println("                                                                                         |                        [5] Coffee                               |");
+        System.out.println("                                                                                         |                        [6] Fries                                |");
+        System.out.println("                                                                                         |                        [7] Go back                              |");
+        System.out.println("                                                                                         ===================================================================\n\n");
+          System.out.print("                                                                                                                  Enter: ");
+        
         int categoryChoice = scanner.nextInt();
         scanner.nextLine();  // Consume the newline character
 
@@ -72,23 +73,40 @@ public class DeleteMenuItem {
         // Ask user to input the item to delete
         deleteItemFromCategory(category);
     }
+    
+    
 
     // Method to delete an item from the selected category
     private void deleteItemFromCategory(String category) {
         List<String[]> menuItems = readMenuFromCSV();
         List<String[]> updatedMenuItems = new ArrayList<>();
 
-        // Filter items by category
+        // Print table headers
+        System.out.println("\n                                                                                         ======================================================================");
+        System.out.printf("                                                                                         | %-30s | %-10s | %-20s |\n", "Item", "Price", "Category");
+        System.out.println("                                                                                         =======================================================================");
+
+        // Filter items by category and display them in a table format
+        boolean categoryFound = false;
         for (String[] item : menuItems) {
             if (item[2].equalsIgnoreCase(category)) {
-                System.out.println("Item: " + item[0] + " | Price: " + item[1]);
+                categoryFound = true;
+                System.out.printf("                                                                                         | %-30s | %-10s | %-20s |\n", item[0], item[1], item[2]);
             } else {
                 updatedMenuItems.add(item);
             }
         }
 
+        if (!categoryFound) {
+            System.out.println("\n                                                                                         No items found for the selected category.");
+            displayCategoryMenu();  // Go back if no items found for the category
+            return;
+        }
+
+        System.out.println("                                                                                         =======================================================================");
+
         // Ask the user to choose the item to delete
-        System.out.print("Enter the item name to delete: ");
+        System.out.print("                                                                                         Enter the item name to delete: ");
         String itemToDelete = scanner.nextLine();
 
         // Check if the item exists
@@ -101,12 +119,13 @@ public class DeleteMenuItem {
         }
 
         if (!itemExists) {
-            System.out.println("Item not found. Please enter a valid item name.");
+            System.out.println("                                                                                         Item not found. Please enter a valid item name.");
+            displayCategoryMenu();
             return;
         }
 
         // Ask for confirmation before deleting
-        System.out.print("Are you sure you want to delete the item: " + itemToDelete + "? (Y/N): ");
+        System.out.print("                                                                                         Are you sure you want to delete the item: " + itemToDelete + "? (Y/N): ");
         String confirmation = scanner.nextLine();
 
         if (confirmation.equalsIgnoreCase("Y")) {
@@ -117,11 +136,11 @@ public class DeleteMenuItem {
             writeToCSV(updatedMenuItems);
             displayCategoryMenu();
         } else {
-        	
-            System.out.println("Item deletion canceled.");
+            System.out.println("                                                                                         Item deletion canceled.");
             displayCategoryMenu();
         }
     }
+
 
 
     // Method to read the menu from the CSV file

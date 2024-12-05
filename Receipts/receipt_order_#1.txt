@@ -6,14 +6,13 @@
 	PAYMENT METHOD:                     Cash
 
 	========================================
-	Qty
-
-	1   c1              ..............90 PHP
+	Qty               Unit Price          Total Price
+	----------------------------------------
+	1                90 PHP               90 PHP        
 
 	TOTAL:              ............. 90 PHP
 
-	AMOUNT PAID:        ............ 100 PHP
-
-	AMOUNT DUE:         ............. 10 PHP
+	AMOUNT PAID:        ............ 400 PHP
+	AMOUNT DUE:         ............ 310 PHP
 
 	========================================

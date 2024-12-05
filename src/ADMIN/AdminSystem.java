@@ -25,17 +25,21 @@ public class AdminSystem {
         int choice;
 
         while (true) {
-            System.out.println("1. Login");
-            System.out.println("2. Forgot Password");
-            System.out.println("3. Exit");
-            System.out.print("Choose an option: ");
+        	 System.out.println("                                                                                                                  ADMIN LOGIN                      ");
+             System.out.println("                                                                                         ===================================================================");
+             System.out.println("                                                                                         |                        [1] Login                                |");
+             System.out.println("                                                                                         |                        [2] Forgot Password                      |");
+             System.out.println("                                                                                         |                        [3] Exit                                 |");
+             System.out.println("                                                                                         ===================================================================\n\n");
+             System.out.print("                                                                                                                    Enter: ");
+            
 
             if (scanner.hasNextInt()) {
                 choice = scanner.nextInt();
                 scanner.nextLine(); // Clear the newline left by nextInt()
             } else {
                 scanner.nextLine(); // Clear invalid input
-                System.out.println("Invalid choice. Please try again.");
+                System.out.println("                                                                                                                  Invalid choice. Please try again.");
                 continue;
             }
 
@@ -53,16 +57,16 @@ public class AdminSystem {
                     }
                 case 2:
                     if (forgotPassword(scanner)) {
-                        System.out.println("Password successfully reset!");
+                        
                         break;
                     }else{
                     	return;
                     } 
                 case 3:
-                    System.out.println("Exiting...");
+                    
                     return;
                 default:
-                    System.out.println("Invalid choice. Please try again.");
+                    System.out.println("                                                                                                                  Invalid choice. Please try again.");
             }
         }
     }
@@ -77,7 +81,7 @@ public class AdminSystem {
                 securityAnswer = parts[2];
             }
         } catch (IOException e) {
-            System.err.println("Error reading admin credentials: " + e.getMessage());
+            System.err.println("                                                                                                                  Error reading admin credentials: " + e.getMessage());
             System.exit(1);
         }
     }
@@ -86,7 +90,7 @@ public class AdminSystem {
         try (BufferedReader br = new BufferedReader(new FileReader(ADMIN_KEY_FILE))) {
             hardcodedKey = br.readLine();
         } catch (IOException e) {
-            System.err.println("Error reading admin key: " + e.getMessage());
+            System.err.println("                                                                                                                  Error reading admin key: " + e.getMessage());
             System.exit(1);
         }
     }
@@ -94,37 +98,37 @@ public class AdminSystem {
     public boolean login(Scanner scanner) {
         int attemptsLeft = 3;
         while (attemptsLeft > 0) {
-            System.out.print("Enter username: ");
+            System.out.print("                                                                                                                  Enter username: ");
             String loginUsername = scanner.nextLine();
-            System.out.print("Enter password: ");
+            System.out.print("                                                                                                                  Enter password: ");
             String loginPassword = scanner.nextLine();
 
             if (loginUsername.equals(adminUsername) && loginPassword.equals(adminPassword)) {
-                System.out.println("Login successful!");
+                System.out.println("                                                                                                                  Login successful!");
                 return true;
             } else {
                 attemptsLeft--;
-                System.out.println("Invalid username or password. Attempts remaining: " + attemptsLeft);
+                System.out.println("                                                                                                                  Invalid username or password. Attempts remaining: " + attemptsLeft);
             }
         }
-        System.out.println("Too many failed attempts.");
+        System.out.println("                                                                                                                  Too many failed attempts.");
         return false;
     }
 
     public boolean forgotPassword(Scanner scanner) {
-        System.out.print("Security Question - What is the CEO's favorite food? ");
+        System.out.print("                                                                                                                  Security Question - What is the CEO's favorite food? ");
         String answer = scanner.nextLine();
-        System.out.print("Enter the hardcoded key: ");
+        System.out.print("                                                                                                                  Enter the hardcoded key: ");
         String key = scanner.nextLine();
 
         if (answer.equalsIgnoreCase(securityAnswer) && key.equals(hardcodedKey)) {
-            System.out.print("Enter new password: ");
+            System.out.print("                                                                                                                  Enter new password: ");
             String newPassword = scanner.nextLine();
             adminPassword = newPassword;
-            System.out.println("Password updated successfully.");
+            System.out.println("                                                                                                                  Password updated successfully.");
             return true; // Return true if password reset is successful
         } else {
-            System.out.println("Incorrect security answers.");
+            System.out.println("                                                                                                                  Incorrect security answers.");
             return false; // Return false if password reset fails
         }
     }

@@ -7,11 +7,14 @@ public class RegisterEmployeeMenu {
     	ViewEmployees viewEmployee = new ViewEmployees();
     	RegisterEmployee register = new RegisterEmployee();
     	AdminMenu ads = new AdminMenu();
-        System.out.println("==== Register Employee ====");
-        System.out.println("1. View Employees");
-        System.out.println("2. Register Employee");
-        System.out.println("3. Exit");
-        System.out.print("Enter your choice: ");
+    	 System.out.println("                                                                                                                  REGISTER EMPLOYEE                     ");
+         System.out.println("                                                                                         ===================================================================");
+         System.out.println("                                                                                         |                        [1] View Employees                       |");
+         System.out.println("                                                                                         |                        [2] Register Employee                    |");
+         System.out.println("                                                                                         |                        [3] Exit                                 |");
+         System.out.println("                                                                                         ===================================================================\n\n");
+         System.out.print("                                                                                                                    Enter: ");
+        
         int choice = in.nextInt();
         if(choice == 1){
         	viewEmployee.ViewEmployees();
