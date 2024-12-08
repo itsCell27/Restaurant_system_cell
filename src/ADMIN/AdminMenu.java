@@ -11,16 +11,30 @@ class AdminMenu {
     DeleteMenuItem deleteMenuItem = new DeleteMenuItem();
 
     public void displayMenu() {
-    	System.out.println("                                                                                                                       ADMIN MENU");
-    	 System.out.println("                                                                                         ===================================================================");
-         System.out.println("                                                                                         |                        [1] Add menu item                        |");
-         System.out.println("                                                                                         |                        [2] Update menu item                     |");
-         System.out.println("                                                                                         |                        [3] Delete menu item                     |");
-         System.out.println("                                                                                         |                        [4] Register Employee                    |");
-         System.out.println("                                                                                         |                        [5] Logout                               |");
-         System.out.println("                                                                                         ===================================================================\n\n");
-           System.out.print("                                                                                                                  Enter: ");
-            
+        try {
+            MainOrderSystem.clearScreen();
+            System.out.println("                                                                                                                       ADMIN MENU");
+            System.out.println("                                                                                         ===================================================================");
+            System.out.println("                                                                                         |                        [1] Add menu item                        |");
+            System.out.println("                                                                                         |                        [2] Update menu item                     |");
+            System.out.println("                                                                                         |                        [3] Delete menu item                     |");
+            System.out.println("                                                                                         |                        [4] Register Employee                    |");
+            System.out.println("                                                                                         |                        [5] Logout                               |");
+            System.out.println("                                                                                         ===================================================================\n\n");
+            System.out.println("\n");
+            System.out.println("\n");
+            System.out.println("\n");
+            System.out.println("\n");
+            System.out.println("\n");
+            System.out.println("\n");
+            System.out.println("\n");
+            System.out.println("\n");
+            System.out.println("\n");
+            System.out.println("\n");
+
+            MainOrderSystem.clearScreenBottom();
+            System.out.print("                                                                                                                  Enter: ");
+
             // Check if the input is an integer before proceeding
             if (scanner.hasNextInt()) {
                 int choice = scanner.nextInt();
@@ -42,13 +56,17 @@ class AdminMenu {
                     case 5:
                         System.out.println("Logging out...");
                         MainOrderSystem.main(null);
+                        break;
                     default:
-                        System.out.println("Invalid choice. Please try again.");
+                        System.out.println("                                                                                                                  Invalid choice. Please try again.");
                 }
             } else {
                 // Clear invalid input and prompt again
-                scanner.nextLine();
-                System.out.println("Invalid choice. Please enter a valid number.");
+                scanner.nextLine();  // Consume the invalid input
+                System.out.println("                                                                                                                  Invalid choice. Please enter a valid number.");
             }
+        } catch (Exception e) {
+            System.err.println("                                                                                                                  An error occurred: " + e.getMessage());
+        }
     }
 }

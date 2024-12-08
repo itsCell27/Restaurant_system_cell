@@ -12,10 +12,10 @@ public class Login {
     public boolean handleLogin(String username, String password) {
         // Verify credentials by calling the verifyCredentials method
         if (verifyCredentials(username, password)) {
-            System.out.println("Login successful!");
+            
             return true;  // Return true if login is successful
         } else {
-            System.out.println("Invalid username or password.");
+            System.out.println("                                                                                                                    Invalid username or password.");
             return false;  // Return false if login fails
         }
     }

@@ -17,14 +17,15 @@ public class Order {
         return quantity;
     }
 
-    public int getTotalAmount() {
-        return item.getPrice() * quantity;
+    // Update getTotalAmount to handle double
+    public double getTotalAmount() {
+        return item.getPrice() * quantity; // Assuming item.getPrice() returns a double
     }
 
     public void displaySummary() {
         System.out.println("Order Summary:");
         System.out.println("Item: " + item.getName());
         System.out.println("Quantity: " + quantity);
-        System.out.println("Price: " + getTotalAmount() + " PHP");
+        System.out.println("Price: " + String.format("%.2f", getTotalAmount()) + " PHP");
     }
 }

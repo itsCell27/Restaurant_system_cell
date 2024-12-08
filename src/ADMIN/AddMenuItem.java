@@ -1,8 +1,10 @@
 package ADMIN;
 
+import ORDER_SYSTEM.MainOrderSystem;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class AddMenuItem {
@@ -19,10 +21,10 @@ public class AddMenuItem {
 
     // Display the category menu to the user
     public void displayCategoryMenu() {
-    	
-    	AdminMenu ads = new AdminMenu();
-    	System.out.println("                                                                                                                  CATEGORIES");
-    	System.out.println("                                                                                         ===================================================================");
+        AdminMenu ads = new AdminMenu();
+        MainOrderSystem.clearScreen();
+        System.out.println("                                                                                                                  CATEGORIES");
+        System.out.println("                                                                                         ===================================================================");
         System.out.println("                                                                                         |                        [1] Chicken and Platters                 |");
         System.out.println("                                                                                         |                        [2] Breakfast                            |");
         System.out.println("                                                                                         |                        [3] Burgers                              |");
@@ -31,10 +33,27 @@ public class AddMenuItem {
         System.out.println("                                                                                         |                        [6] Fries                                |");
         System.out.println("                                                                                         |                        [7] Go back                              |");
         System.out.println("                                                                                         ===================================================================\n\n");
-          System.out.print("                                                                                                                  Enter: ");
-        
-        int categoryChoice = scanner.nextInt();
-        scanner.nextLine();  // Consume the newline character
+        MainOrderSystem.clearScreenBottom();
+        System.out.println("\n");
+        System.out.print("                                                                                                                  Enter: ");
+
+        int categoryChoice = -1;
+        while (true) {
+            try {
+                categoryChoice = scanner.nextInt();
+                scanner.nextLine();  // Consume the newline character
+
+                if (categoryChoice < 1 || categoryChoice > 7) {
+                    System.out.println("                                                                                         Invalid selection. Please choose a valid category.");
+                    displayCategoryMenu();
+                } else {
+                    break;
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("                                                                                         Invalid input. Please enter a number between 1 and 7.");
+                scanner.nextLine();  // Clear the invalid input
+            }
+        }
 
         // Define category variables
         String category = "";
@@ -60,22 +79,20 @@ public class AddMenuItem {
                 category = "Fries";
                 break;
             case 7:
-            	ads.displayMenu();
-            default:
-                System.out.println("Invalid selection. Please choose a valid category.");
-                displayCategoryMenu();
-                return;  // Exit the method if invalid category is selected
+                ads.displayMenu();
+                return;
+                
         }
 
         displayCategoryItems(category);
         addItemsToCategory(category);
     }
-    
+
     private void displayCategoryItems(String category) {
         System.out.println("                                                                                         ===================================================================");
         System.out.printf("                                                                                         | %-30s | %-10s | %-20s |\n", "Item Name", "Price", "Category");
         System.out.println("                                                                                         ===================================================================");
-        
+
         boolean itemsFound = false; // Track if items are found for the category
         try (Scanner fileScanner = new Scanner(new File(FILE_NAME))) {
             // Skip the header line
@@ -102,11 +119,9 @@ public class AddMenuItem {
         System.out.println("                                                                                         ===================================================================");
     }
 
-
-    // Method to allow the user to add items to the selected category
     private void addItemsToCategory(String category) {
         String[] itemNames = new String[10];
-        int[] itemPrices = new int[10];
+        double[] itemPrices = new double[10];
         int itemCount = 0;
 
         // Allow user to input items up to 10
@@ -114,18 +129,35 @@ public class AddMenuItem {
 
         while (itemCount < 10) {
             // Ask for the item name
-            System.out.print("                                                                                         Enter item name (or type 'done' to stop): ");
+            System.out.print("                                                                                         Enter item name (or type '0' to stop): ");
             String itemName = scanner.nextLine();
 
             // Check if the user wants to stop adding items
-            if (itemName.equalsIgnoreCase("done")) {
+            if (itemName.equalsIgnoreCase("0")) {
                 break;
             }
 
             // Ask for the item price
-            System.out.print("                                                                                         Enter price for " + itemName + ": ");
-            int itemPrice = scanner.nextInt();
-            scanner.nextLine();  // Consume the newline character
+            double itemPrice = -1;
+            while (true) {
+                System.out.print("                                                                                         Enter price for " + itemName + " (or type '0' to stop): ");
+                try {
+                    itemPrice = scanner.nextDouble();
+                    scanner.nextLine();  // Consume the newline character
+                    if (itemPrice < 0) {
+                        System.out.println("                                                                                         Invalid price. Please enter a positive number.");
+                    } else {
+                        break;
+                    }
+                } catch (InputMismatchException e) {
+                    System.out.println("                                                                                         Invalid input. Please enter a valid number.");
+                    scanner.nextLine();  // Clear the invalid input
+                }
+            }
+
+            if (itemPrice == 0) {
+                break;
+            }
 
             // Store the item details
             itemNames[itemCount] = itemName;
@@ -137,12 +169,10 @@ public class AddMenuItem {
         writeToCSV(itemNames, itemPrices, itemCount, category);
 
         // Reload the updated menu after adding items
-        
         displayCategoryMenu();
     }
 
-    // Method to write the items into the CSV file
-    private void writeToCSV(String[] itemNames, int[] itemPrices, int itemCount, String category) {
+    private void writeToCSV(String[] itemNames, double[] itemPrices, int itemCount, String category) {
         // Ensure the folder exists
         File folder = new File(FOLDER_PATH);
         if (!folder.exists()) {
@@ -158,22 +188,18 @@ public class AddMenuItem {
 
             // Write the menu items to the CSV file
             for (int i = 0; i < itemCount; i++) {
-                writer.append(itemNames[i] + ", " + itemPrices[i] + ", " + category + "\n");
+                writer.append(String.format("%s, %.2f, %s\n", itemNames[i], itemPrices[i], category));
             }
         } catch (IOException e) {
             System.out.println("An error occurred while saving the menu: " + e.getMessage());
         }
     }
 
- 
-
-    // Method to read and display the updated menu from the CSV file
- // Method to read and display the entire menu from the CSV file in a tabular format
     private void readMenuFromCSV() {
         System.out.println("                                                                                         ===================================================================");
         System.out.printf("                                                                                         %-30s %-10s %-20s\n", "Item Name", "Price", "Category");
         System.out.println("                                                                                         ===================================================================");
-        
+
         boolean itemsFound = false; // Track if items exist in the menu
         try (Scanner fileScanner = new Scanner(new File(FILE_NAME))) {
             // Skip the header line if it exists
@@ -199,5 +225,4 @@ public class AddMenuItem {
         }
         System.out.println("                                                                                         ===================================================================");
     }
-
 }

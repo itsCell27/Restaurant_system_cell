@@ -3,6 +3,8 @@ package ADMIN;
 import java.io.*;
 import java.util.*;
 
+import ORDER_SYSTEM.MainOrderSystem;
+
 public class UpdateMenuItem {
 
     private static final String FOLDER_PATH = "MenuItems";  // Folder name where the CSV file is stored
@@ -18,6 +20,7 @@ public class UpdateMenuItem {
     public void displayCategoryMenu() {
     	AdminMenu ads = new AdminMenu();
         // Display the categories
+    	MainOrderSystem.clearScreen();
     	System.out.println("                                                                                                                  CATEGORIES");
     	System.out.println("                                                                                         ===================================================================");
         System.out.println("                                                                                         |                        [1] Chicken and Platters                 |");
@@ -28,6 +31,16 @@ public class UpdateMenuItem {
         System.out.println("                                                                                         |                        [6] Fries                                |");
         System.out.println("                                                                                         |                        [7] Go back                              |");
         System.out.println("                                                                                         ===================================================================\n\n");
+        MainOrderSystem.clearScreenBottom();
+        System.out.println("\n");
+        System.out.println("\n");
+        System.out.println("\n");
+        System.out.println("\n");
+        System.out.println("\n");
+        System.out.println("\n");
+        System.out.println("\n");
+        System.out.println("\n");
+        System.out.println("\n");
           System.out.print("                                                                                                                  Enter: ");
         
         int categoryChoice = scanner.nextInt();

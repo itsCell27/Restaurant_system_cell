@@ -12,8 +12,10 @@
 	7     f1                 90.0 PHP          630 PHP
 
 	TOTAL:                                    1050 PHP
+	TAX (12%):                              126.00 PHP
+	GRAND TOTAL:                           1176.00 PHP
 
 	AMOUNT PAID:                              1500 PHP
-	AMOUNT DUE:                                450 PHP
+	AMOUNT DUE:                                324 PHP
 
 	==================================================

@@ -20,7 +20,7 @@ public class HandleMyOrder {
             return;
         }
 
-        double totalAmount = 0;  // Variable to store the total amount of all orders
+        double totalAmount = 0.0;  // Variable to store the total amount of all orders
 
         // Display the summary for each order and calculate the total amount
         for (Order order : orders) {
@@ -100,24 +100,21 @@ public class HandleMyOrder {
         }
     }
     
- // Method to generate and save a ticket to a text file
- // Method to generate and save a ticket to a text file with a dynamic name
+    // Method to generate and save a ticket to a text file with a dynamic name
     public void generateTicketFile(int orderNumber) {
-        // Define the directory path
         String directoryPath = "Tickets";
         File directory = new File(directoryPath);
 
         // Create the "Tickets" directory if it does not exist
         if (!directory.exists()) {
-            directory.mkdir();  // Create directory if not exists
+            directory.mkdir();
         }
 
         // Define the file name dynamically as ticket_order_#<order_number>.txt
-        String fileName = directoryPath + "/ticket_order_#" + orderNumber + ".txt";  // Dynamic filename
+        String fileName = directoryPath + "/ticket_order_#" + orderNumber + ".txt";
 
         // Try-with-resources to ensure the FileWriter is closed after use
         try (FileWriter fileWriter = new FileWriter(fileName)) {
-            // Write the ticket in the desired format
             fileWriter.append("====================================\n");
             fileWriter.append("              ORDER #" + orderNumber + "\n");
             fileWriter.append("====================================\n\n");
@@ -129,56 +126,49 @@ public class HandleMyOrder {
         }
     }
 
-
-
     // Method to save orders to CSV file
     private void saveOrderToCSV(String paymentMethod) {
-        // Define the new file path in the "OrderRecords" folder
         String directoryPath = "OrderRecords";
         File directory = new File(directoryPath);
 
         // Create the "OrderRecords" directory if it does not exist
         if (!directory.exists()) {
-            directory.mkdir();  // Create directory
+            directory.mkdir();
         }
 
-        String fileName = directoryPath + "/order_summary.csv";  // File path inside OrderRecords folder
+        String fileName = directoryPath + "/order_summary.csv";
 
         // Try-with-resources to ensure the FileWriter is closed after use
         try (FileWriter fileWriter = new FileWriter(fileName, true)) {
-            // Write header if the file is empty
             if (new File(fileName).length() == 0) {
                 fileWriter.append("Order Number,Item,Quantity,Total Price,Payment Method,Dining Option,Status,Date,Time\n");
             }
 
-            // Get the current date and time
             String[] currentDateTime = getCurrentDateTime();
 
-            // Write each order to the CSV file
             for (Order order : orders) {
-                fileWriter.append(String.valueOf(orderCount)) // Order Number
+                fileWriter.append(String.valueOf(orderCount))
                           .append(",")
-                          .append(order.getItem().getName())  // Item Name
+                          .append(order.getItem().getName())
                           .append(",")
-                          .append(String.valueOf(order.getQuantity())) // Quantity
+                          .append(String.valueOf(order.getQuantity()))
                           .append(",")
-                          .append(String.valueOf(order.getTotalAmount())) // Total Price
+                          .append(String.format("%.2f", order.getTotalAmount()))
                           .append(",")
-                          .append(paymentMethod) // Payment Method
+                          .append(paymentMethod)
                           .append(",")
-                          .append(diningOption)  // Dining Option (Dine In / Take Out)
+                          .append(diningOption)
                           .append(",")
-                          .append("pending") // Status (could be "pending" initially)
+                          .append("pending")
                           .append(",")
-                          .append(currentDateTime[0]) // Date
+                          .append(currentDateTime[0])
                           .append(",")
-                          .append(currentDateTime[1]) // Time
+                          .append(currentDateTime[1])
                           .append("\n");
             }
 
             System.out.println("Order has been checked out and saved to " + fileName);
 
-            // Increment orderCount after saving the order
             orderCount++;
             generateTicketFile(orderCount - 1);
 
@@ -217,15 +207,13 @@ public class HandleMyOrder {
     // Helper method to get the current date and time
     private String[] getCurrentDateTime() {
         String[] dateTime = new String[2];
-
-        // Get the current date and time in the Asia/Manila timezone
         LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Manila"));
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("hh:mm a");  // 12-hour format with AM/PM
-        
-        dateTime[0] = now.format(dateFormatter);  // Get the current date
-        dateTime[1] = now.format(timeFormatter);  // Get the current time in 12-hour format with AM/PM
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("hh:mm a");
 
-        return dateTime;  // Return both as an array
+        dateTime[0] = now.format(dateFormatter);
+        dateTime[1] = now.format(timeFormatter);
+
+        return dateTime;
     }
 }

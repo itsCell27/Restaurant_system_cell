@@ -1,29 +1,59 @@
 package ADMIN;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Scanner;
+import ORDER_SYSTEM.MainOrderSystem;
 
 public class ViewEmployees {
 
-    // Constructor to read and display the CSV file content
-    public void ViewEmployees() {
+    // Method to read and display the CSV file content
+    public void viewEmployees() {
+    	Scanner scanner = new Scanner(System.in);
         String filePath = "Employeelist/employees.csv"; // Path to the CSV file
 
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line;
 
-            // Skip the header line (optional)
-            br.readLine();
+            // Display table header
+            MainOrderSystem.clearScreen();
+            System.out.println("                                                                                         EMPLOYEES");
+            System.out.println("                                                                                         ===========================================================================");
+            System.out.printf("                                                                                         | %-40s %-17s |\n", "Username", "Password");
+            System.out.println("                                                                                         ===========================================================================");
 
             // Read each line and display its content
             while ((line = br.readLine()) != null) {
                 String[] columns = line.split(","); // Split by comma
 
-                // Display the username and password
-                System.out.println("Username: " + columns[0] + ", Password: " + columns[1]);
+                // Display username and password in the table format
+                if (columns.length >= 2) {
+                    System.out.printf("                                                                                         | %-40s %-17s |\n", columns[0], columns[1]);
+                } else {
+                    System.out.printf("                                                                                         | %-40s %-17s |\n", "Invalid Data", "Invalid Data");
+                }
             }
+
+            // Display table footer
+            System.out.println("                                                                                         ============================================================================");
+
         } catch (IOException e) {
             e.printStackTrace();
         }
+        MainOrderSystem.clearScreenBottom();
+        System.out.println("\n");
+        System.out.println("\n");
+        System.out.println("\n");
+        System.out.println("\n");
+        System.out.println("\n");
+        System.out.println("\n");
+        System.out.println("\n");
+        System.out.println("\n");
+        System.out.println("\n");
+        
+        
+        scanner.nextLine(); // Consume newline
+        scanner.nextLine();
     }
 }

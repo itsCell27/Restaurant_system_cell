@@ -49,14 +49,13 @@ public class MainOrderSystem {
                     while (!loginSuccess) {
                         Login login = new Login();  // Create an instance of the Login class
                         Scanner scannerForEmployee = new Scanner(System.in);  // Scanner for employee login
-                        System.out.print("Enter username: ");
+                        System.out.print("                                                                                                                    Enter username: ");
                         String employeeUsername = scannerForEmployee.nextLine();  // Read employee username
-                        System.out.print("Enter password: ");
+                        System.out.print("                                                                                                                    Enter password: ");
                         String employeePassword = scannerForEmployee.nextLine();  // Read employee password
 
                         // Verify the credentials by calling the public method handleLogin
                         if (login.handleLogin(employeeUsername, employeePassword)) {
-                            System.out.println("Employee login successful!");
                             loginSuccess = true;  // Set flag to true to exit loop on success
                             
                             // After login success, start Employee Menu
@@ -64,22 +63,20 @@ public class MainOrderSystem {
                             employeeMenu.start();  // Start the employee menu
 
                         } else {
-                            System.out.println("Invalid username or password for Employee.");
-                            System.out.println("Returning to role selection...");
-                            break;  // Exit the loop and go back to role selection
+                           break;  // Exit the loop and go back to role selection
                         }
                     }
                     break;
                 case 3:
                     break;
                 default:
-                    System.out.println("Invalid option, please restart and select a valid role.");
+                    System.out.println("                                                                                                                    Invalid option, please restart and select a valid role.");
                     continue; // If invalid role, go back to role selection
             }
 
             // After the user completes their role-specific actions, go back to role selection
             if (roleChoice == 1 || roleChoice == 2) {
-                System.out.println("Returning to role selection...");
+        
                 continue;  // Go back to the role selection loop
             }
 
@@ -95,10 +92,48 @@ public class MainOrderSystem {
                     System.out.println("                                                                                         |                        [2] Take Out                             |");
                     System.out.println("                                                                                         |                        [3] Logout                               |");
                     System.out.println("                                                                                         ===================================================================\n\n");
+                    System.out.println("\n");
+                    System.out.println("\n");
+                    System.out.println("\n");
+                    System.out.println("\n");
+                    System.out.println("\n");
+                    System.out.println("\n");
+                    System.out.println("\n");
+                    System.out.println("\n");
+                    System.out.println("\n");
+                    System.out.println("\n");
+                    System.out.println("\n");
+                    System.out.println("\n");
+                    System.out.println("\n");
+                    System.out.println("\n");
+                    System.out.println("\n");
+                    System.out.println("\n");
+                    System.out.println("\n");
+                    System.out.println("\n");
+                    System.out.println("\n");
+                    System.out.println("\n");
+                    System.out.println("\n");
+                    System.out.println("\n");
+                    System.out.println("\n");
                     System.out.print("                                                                                                                     Enter: ");
                     
-                    int diningChoice = scanner.nextInt();
-                    scanner.nextLine();
+                    int diningChoice = -1;
+                    boolean validInput = false;
+
+                    while (!validInput) {
+                        try {
+                            String input = scanner.nextLine();
+                            diningChoice = Integer.parseInt(input.trim());
+                            if (diningChoice < 1 || diningChoice > 3) {
+                                System.out.println("Invalid input. Please enter a number between 1 and 3.");
+                            } else {
+                                validInput = true;
+                            }
+                        } catch (NumberFormatException e) {
+                            System.out.println("Invalid input. Please enter a valid number.");
+                        }
+                    }
+
                     
                     // Handle the dining choice and set the global dining option
                     switch (diningChoice) {
@@ -138,7 +173,24 @@ public class MainOrderSystem {
                 displayMainMenu();
 
                 // Get user's choice for the main menu
-                int choice = scanner.nextInt();
+                int choice = -1;
+                boolean validInput = false;
+
+                while (!validInput) {
+                    try {
+                        String input = scanner.nextLine();
+                        choice = Integer.parseInt(input.trim());
+                        if (choice < 0 || choice > 7) {
+                            System.out.println("Invalid input. Please enter a number between 0 and 7.");
+                        } else {
+                            validInput = true;
+                        }
+                    } catch (NumberFormatException e) {
+                        System.out.println("Invalid input. Please enter a valid number.");
+                    }
+                }
+
+
 
                 // Handle the user's choice
                 switch (choice) {
@@ -186,22 +238,41 @@ public class MainOrderSystem {
 
     // Helper method to get role choice (No Scanner parameter)
     private static int getRoleChoice() {
-    	System.out.println("\n\n\n");
-        Scanner scanner = new Scanner(System.in);  // Create a new Scanner object here\
-        System.out.println("                                                                                                                  USER TYPE SELECTION                       ");
-        System.out.println("                                                                                         ===================================================================");
-        System.out.println("                                                                                         |                        [1] Admin                                |");
-        System.out.println("                                                                                         |                        [2] Employee                             |");
-        System.out.println("                                                                                         |                        [3] Customer                             |");
-        System.out.println("                                                                                         ===================================================================\n\n");
-        System.out.print("                                                                                                                    Enter: ");
-        return scanner.nextInt();  // Return the role choice
+        Scanner scanner = new Scanner(System.in);
+        int roleChoice = -1; // Default invalid value
+        boolean validInput = false;
+
+        while (!validInput) {
+            System.out.println("\n\n\n");
+            System.out.println("                                                                                                                  USER TYPE SELECTION                       ");
+            System.out.println("                                                                                         ===================================================================");
+            System.out.println("                                                                                         |                        [1] Admin                                |");
+            System.out.println("                                                                                         |                        [2] Employee                             |");
+            System.out.println("                                                                                         |                        [3] Customer                             |");
+            System.out.println("                                                                                         ===================================================================\n\n");
+            clearScreenBottom();
+            System.out.print("                                                                                                                    Enter: ");
+
+            try {
+                String input = scanner.nextLine();
+                roleChoice = Integer.parseInt(input.trim());
+                if (roleChoice < 1 || roleChoice > 3) {
+                    System.out.println("Invalid input. Please enter a number between 1 and 3.");
+                } else {
+                    validInput = true;
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a valid number.");
+            }
+        }
+        return roleChoice;
     }
+
 
     // Method to display the main menu
     private static void displayMainMenu() {
     	clearScreen();
-    	System.out.print("\033c");
+    	
         System.out.println("                                                                                                                 WELCOME TO THE RESTAURANT!");
         System.out.println("                                                                                         ===================================================================");
         System.out.println("                                                                                         |                        [1] Breakfast Menu                        |");
@@ -213,12 +284,30 @@ public class MainOrderSystem {
         System.out.println("                                                                                         |                        [7] My Order                              |");
         System.out.println("                                                                                         |                        [0] Go Back                               |");
         System.out.println("                                                                                         ===================================================================\n\n");
+        System.out.println("\n");
+        System.out.println("\n");
+        System.out.println("\n");
+        System.out.println("\n");
+        System.out.println("\n");
+        System.out.println("\n");
+        System.out.println("\n");
+        System.out.println("\n");
+        System.out.println("\n");
+        System.out.println("\n");
+        clearScreenBottom();
+        
         System.out.print("                                                                                                                    Enter: ");
     }
     
     
         public static void clearScreen() {
             for (int i = 0; i < 50; i++) {  // Print 50 newlines
+                System.out.println();
+            }   
+        }
+        
+        public static void clearScreenBottom() {
+            for (int i = 0; i < 25; i++) {  // Print 50 newlines
                 System.out.println();
             }   
         }

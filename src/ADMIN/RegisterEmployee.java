@@ -2,6 +2,8 @@ package ADMIN;
 
 import java.util.Scanner;
 
+import ORDER_SYSTEM.MainOrderSystem;
+
 public class RegisterEmployee {
 	public void RegisterEmployee(){
         Scanner in = new Scanner(System.in);
@@ -9,15 +11,7 @@ public class RegisterEmployee {
         AdminMenu adminMenu = new AdminMenu();
         RegisterEmployeeMenu rgs = new RegisterEmployeeMenu();
         
-        System.out.println("                                                                                                                  REGISTER EMPLOYEE                     ");
-        System.out.println("                                                                                         ===================================================================");
-        System.out.println("                                                                                         |                        [1] View Employees                       |");
-        System.out.println("                                                                                         |                        [2] Register Employee                    |");
-        System.out.println("                                                                                         |                        [3] Exit                                 |");
-        System.out.println("                                                                                         ===================================================================\n\n");
-        System.out.print("                                                                                                                    Enter: \n");
-       
-
+        
         System.out.print("                                                                                                                    Enter username: ");
         String regUsername = in.nextLine();
         System.out.print("                                                                                                                    Enter password: ");
@@ -31,10 +25,10 @@ public class RegisterEmployee {
         if(choice == 1){
     
             if (employeeManager.register(regUsername, regPassword,regConfirmPass)) {
-                System.out.println("                                                                                                                  Registration successful!");
+               
                 rgs.displayRegisterMenu();
                 } else {
-                System.out.println("                                                                                                                  Registration unsuccessful.");
+               
             }
         }else if(choice == 0){
         	rgs.displayRegisterMenu();

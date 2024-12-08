@@ -1,5 +1,6 @@
 package EMPLOYEE;
 
+import ORDER_SYSTEM.MainOrderSystem;
 import java.io.*;
 import java.nio.file.*;
 import java.util.*;
@@ -58,7 +59,7 @@ public class TicketOrder {
                 String orderNumber = orderDetails[0].trim();
                 String itemName = orderDetails[1].trim();
                 int quantity = Integer.parseInt(orderDetails[2].trim());
-                String totalAmount = orderDetails[3].trim();  // Remove 'PHP' later
+                double totalAmount = Double.parseDouble(orderDetails[3].trim().replace(" PHP", "").trim()); // Now parsing as double
                 String paymentMethod = orderDetails[4].trim();
                 String diningOption = orderDetails[5].trim();
                 String status = orderDetails[6].trim();
@@ -81,7 +82,6 @@ public class TicketOrder {
 
     // Method to display the orders and generate the receipt
     public static void handleOrder() {
-        System.out.println("Handling ticket order...");
 
         String csvFile = "OrderRecords/order_summary.csv"; // Adjust this path if necessary
         try {
@@ -99,31 +99,36 @@ public class TicketOrder {
             return;
         }
 
-        // Display the available order numbers
+        MainOrderSystem.clearScreen();
         System.out.println("Order numbers:");
         int index = 1;
         for (String orderNumber : ordersMap.keySet()) {
-            System.out.println(index++ + ". Order#" + orderNumber);
+            System.out.println("[" + index++ + "] Order#" + orderNumber);
         }
 
         // Get user input to select an order
         Scanner scanner = new Scanner(System.in);
         int selectedOrderIndex = -1;
-
         while (true) {
-            System.out.print("Select Order number (0 to go back): ");
-            if (scanner.hasNextInt()) {
-                selectedOrderIndex = scanner.nextInt();
-                if (selectedOrderIndex == 0) {
-                    System.out.println("Going back...");
-                    return;
+            try {
+                System.out.print("Select Order number (0 to go back): ");
+                if (scanner.hasNextInt()) {
+                    selectedOrderIndex = scanner.nextInt();
+                    if (selectedOrderIndex == 0) {
+                        System.out.println("Going back...");
+                        return;
+                    }
+                    if (selectedOrderIndex > 0 && selectedOrderIndex <= ordersMap.size()) {
+                        break; // Valid input
+                    }
+                } else {
+                    System.out.println("Invalid choice. Please enter a number.");
+                    scanner.next(); // Clear invalid input
                 }
-                if (selectedOrderIndex > 0 && selectedOrderIndex <= ordersMap.size()) {
-                    break; // Valid input
-                }
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter a valid integer.");
+                scanner.next(); // Clear invalid input
             }
-            System.out.println("Invalid choice. Please select a valid order number.");
-            scanner.nextLine(); // Clear invalid input
         }
 
         // Find the selected order number based on index
@@ -131,27 +136,26 @@ public class TicketOrder {
         List<Order> selectedOrderItems = ordersMap.get(selectedOrderNumber);
 
         // Display the selected order details in tabular format
-        System.out.println("==================================================================================");
-        System.out.printf("|| %-13s || %-10s || %-10s || %-12s || %-15s ||%n",
-                "Order No.", "Quantity", "Items", "Price", "Total Price");
-        System.out.println("==================================================================================");
+        System.out.println("=======================================================================");
+        System.out.printf("| %-13s  %-10s  %-10s  %-12s  %-15s |%n", "Order No.", "Quantity", "Items", "Price", "Total Price");
+        System.out.println("=======================================================================");
 
         boolean isFirstRow = true;
-        int totalPrice = 0;
+        double totalPrice = 0;
         for (Order order : selectedOrderItems) {
-            int totalItemPrice = order.getTotalPrice();
+            double totalItemPrice = order.getTotalPrice();
             totalPrice += totalItemPrice;
 
-            System.out.printf("|| %-13s || %-10d || %-10s || %-12s || %-15s ||%n",
+            System.out.printf("| %-13s  %-10d  %-10s  %-12s  %-15s |%n",
                     isFirstRow ? selectedOrderNumber : "",
                     order.getQuantity(), order.getItemName(),
-                    order.getUnitPrice() + " PHP", totalItemPrice + " PHP");
+                    String.format("%.2f PHP", order.getUnitPrice()), String.format("%.2f PHP", totalItemPrice));
             isFirstRow = false;
         }
 
-        System.out.println("==================================================================================");
-        System.out.printf("|| %-57s || %-15s ||%n", "Total", totalPrice + " PHP");
-        System.out.println("==================================================================================");
+        System.out.println("=======================================================================");
+        System.out.printf("| %-51s  %-15s |%n", "Total", String.format("%.2f PHP", totalPrice));
+        System.out.println("=======================================================================");
 
         // Ask if the user wants to generate the receipt
         System.out.print("Do you want to generate receipt (1 yes / 0 no)? ");
@@ -164,7 +168,6 @@ public class TicketOrder {
             System.out.println("Receipt generation cancelled.");
         }
     }
-
 
     // Receipt space calculator
     public static String padToWidth(String label, String value, int totalWidth) {
@@ -201,8 +204,7 @@ public class TicketOrder {
     // Receipt space calculator ending
 
 
-  
-    private static void generateReceiptFile(String orderNumber, List<Order> orderItems, int totalPrice) {
+    private static void generateReceiptFile(String orderNumber, List<Order> orderItems, double totalPrice) {
         String folderPath = "Receipts";
 
         // Create the folder if it doesn't exist
@@ -214,23 +216,28 @@ public class TicketOrder {
         String fileName = folderPath + File.separator + "receipt_order_#" + orderNumber + ".txt";
 
         Scanner scanner = new Scanner(System.in);
-        int amountPaid = 0;
+        double amountPaid = 0;
 
-        // Prompt user for a valid amount
+        // Define tax rate (e.g., 12%)
+        double taxRate = 0.12;
+        double tax = totalPrice * taxRate;
+        double grandTotal = totalPrice + tax;
+
+               // Prompt user for a valid amount
         while (true) {
             System.out.print("Enter the Amount Paid by the customer: ");
-            if (scanner.hasNextInt()) {
-                amountPaid = scanner.nextInt();
-                if (amountPaid >= totalPrice) {
+            if (scanner.hasNextDouble()) {
+                amountPaid = scanner.nextDouble();
+                if (amountPaid >= grandTotal) {
                     break; // Valid input, exit loop
                 }
             } else {
                 scanner.nextLine(); // Clear invalid input
             }
-            System.out.println("Invalid amount. The amount paid must be greater than or equal to " + totalPrice + " PHP.");
+            System.out.println("Invalid amount. The amount paid must be greater than or equal to " + Math.ceil(grandTotal) + " PHP.");
         }
 
-        int amountDue = amountPaid - totalPrice;
+        double amountDue = amountPaid - grandTotal;
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
             writer.write("\t==================================================\n");
@@ -251,20 +258,22 @@ public class TicketOrder {
             // Write individual item details
             for (Order order : orderItems) {
                 writer.write(String.format(
-                    "\t%-5d %-18s %-17s %-5s\n",
+                    "\t%-5d %-16s %-15s %-5s\n",
                     order.getQuantity(),
                     order.getItemName(),
-                    order.getUnitPrice() + " PHP",
-                    order.getTotalPrice() + " PHP"
+                    String.format("%.2f PHP", order.getUnitPrice()),
+                    String.format("%.2f PHP", order.getTotalPrice())
                 ));
             }
 
-            // Write total price
-            writer.write("\n\t" + padToWidth("TOTAL:", totalPrice + " PHP", 50) + "\n");
+            // Write total price, tax, and grand total
+            writer.write("\n\t" + padToWidth("TOTAL:", String.format("%.2f PHP", totalPrice), 50) + "\n");
+            writer.write("\t" + padToWidth("TAX (12%):", String.format("%.2f PHP", tax), 50) + "\n");
+            writer.write("\t" + padToWidth("GRAND TOTAL:", String.format("%.2f PHP", grandTotal), 50) + "\n");
 
             // Write amount paid and amount due
-            writer.write("\n\t" + padToWidth("AMOUNT PAID:", amountPaid + " PHP", 50) + "\n");
-            writer.write("\t" + padToWidth("AMOUNT DUE:", amountDue + " PHP", 50) + "\n");
+            writer.write("\n\t" + padToWidth("AMOUNT PAID:", String.format("%.2f PHP", amountPaid), 50) + "\n");
+            writer.write("\t" + padToWidth("AMOUNT DUE:", String.format("%.2f PHP", amountDue), 50) + "\n");
 
             writer.write("\n\t==================================================\n");
         } catch (IOException e) {
@@ -272,20 +281,17 @@ public class TicketOrder {
         }
     }
 
-
-
-
     // Order class to hold order details
     private static class Order {
         private String orderNumber;
         private String itemName;
         private int quantity;
-        private String totalAmount;
+        private double totalAmount;  // Changed to double to support decimals
         private String paymentMethod;
         private String diningOption;
         private String date;
 
-        public Order(String orderNumber, String itemName, int quantity, String totalAmount, String paymentMethod, String diningOption, String date) {
+        public Order(String orderNumber, String itemName, int quantity, double totalAmount, String paymentMethod, String diningOption, String date) {
             this.orderNumber = orderNumber;
             this.itemName = itemName;
             this.quantity = quantity;
@@ -295,16 +301,15 @@ public class TicketOrder {
             this.date = date;
         }
 
-        public int getTotalPrice() {
-            // Assuming totalAmount is in format "2225 PHP", so remove the " PHP" part and convert it to an integer
-            return Integer.parseInt(totalAmount.replace(" PHP", "").trim());
-        }
-        
-        public double getUnitPrice() {
-            // Assuming totalAmount is in format "2225 PHP", so remove the " PHP" part and divide by quantity
-            return Double.parseDouble(totalAmount.replace(" PHP", "").trim()) / quantity;
+        public double getTotalPrice() {
+            // Return total amount as a double (already parsed as double)
+            return totalAmount;
         }
 
+        public double getUnitPrice() {
+            // Return the unit price calculated from totalAmount and quantity
+            return totalAmount / quantity;
+        }
 
         public String getItemName() {
             return itemName;
@@ -327,3 +332,4 @@ public class TicketOrder {
         }
     }
 }
+

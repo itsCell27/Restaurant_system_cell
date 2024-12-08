@@ -4,85 +4,119 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
-import java.util.TreeMap;
+import java.util.*;
 
 public class CancelOrders {
+
+    // Custom class to hold order details
+    static class Order {
+        int orderNumber;
+        List<OrderItem> items = new ArrayList<>();
+        
+        // Add item to the order
+        void addItem(OrderItem item) {
+            items.add(item);
+        }
+        
+        // Calculate the total price of the order
+        double getTotalPrice() {
+            double totalPrice = 0;
+            for (OrderItem item : items) {
+                totalPrice += item.totalAmount;
+            }
+            return totalPrice;
+        }
+    }
+
+    // Custom class to hold individual order item details
+    static class OrderItem {
+        int quantity;
+        String itemName;
+        double totalAmount;
+
+        OrderItem(int quantity, String itemName, double totalAmount) {
+            this.quantity = quantity;
+            this.itemName = itemName;
+            this.totalAmount = totalAmount;  // totalAmount is already the total for that quantity, no need to multiply again
+        }
+    }
 
     // Method to display pending orders and cancel them
     public static void cancelOrder() {
         String csvFile = "OrderRecords/order_summary.csv";  // Path to your CSV file
         String line;
         String cvsSplitBy = ",";
-        Map<Integer, StringBuilder> ordersMap = new TreeMap<>(Collections.reverseOrder());  // TreeMap to sort orders by order number in descending order
-        Map<Integer, Integer> totalPriceMap = new HashMap<>();
+        
+        // A map to hold the orders, with the order number as the key
+        // Use TreeMap with reverseOrder() to sort order numbers in descending order
+        Map<Integer, Order> ordersMap = new TreeMap<>(Collections.reverseOrder());  // Sorting by order number in descending order
 
         try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
             // Skip the header line
             br.readLine();
 
-            // Read through the file and process pending orders
+            // Process data first
             while ((line = br.readLine()) != null) {
                 String[] orderDetails = line.split(cvsSplitBy);
 
-                // Ensure we have enough columns in the CSV row
-                if (orderDetails.length < 9) continue;
+                // Ensure we have enough columns in the CSV row (9 expected)
+                if (orderDetails.length < 9) {
+                    System.out.println("Skipping malformed line in CSV: " + line);
+                    continue;
+                }
 
+                // Extract order details
                 int orderNumber = Integer.parseInt(orderDetails[0].trim());
                 String itemName = orderDetails[1].trim();
                 int quantity = Integer.parseInt(orderDetails[2].trim());
-                String totalAmount = orderDetails[3].trim();  // Total price for the quantity
-                String status = orderDetails[6].trim();       // Order status
+                double totalAmount = Double.parseDouble(orderDetails[3].trim());  // Parse as double for decimals
+                String status = orderDetails[6].trim(); // Order status
 
                 // Only process orders with "pending" status
                 if (status.equalsIgnoreCase("pending")) {
-                    // Add to the map for displaying orders
-                	StringBuilder orderItems = ordersMap.getOrDefault(orderNumber, new StringBuilder());
-                    orderItems.append(String.format("|| %-13s || %-13s || %-27s || %-27s || %-13s ||\n", 
-                            "", quantity, itemName, totalAmount + " PHP", ""));
-                    ordersMap.put(orderNumber, orderItems);
+                    // Add item to the order
+                    Order order = ordersMap.getOrDefault(orderNumber, new Order());
+                    order.orderNumber = orderNumber;  // Set order number
+                    
+                    // We directly use the totalAmount from the CSV file here, which is already the total for that quantity
+                    order.addItem(new OrderItem(quantity, itemName, totalAmount));
 
-                    // Calculate the total price for the order
-                    int itemTotalPrice = Integer.parseInt(totalAmount.trim());
-                    totalPriceMap.put(orderNumber, totalPriceMap.getOrDefault(orderNumber, 0) + itemTotalPrice);
+                    // Put the order back into the map
+                    ordersMap.put(orderNumber, order);
                 }
             }
 
-            // Display the orders in tabular format
+            // Display the orders in descending order
             if (ordersMap.isEmpty()) {
                 System.out.println("No pending orders found.");
                 return;
             }
 
-            // Print the header for the table
-            System.out.println("===================================================================================================================");
-            System.out.println(String.format("|| %-13s || %-13s || %-27s || %-27s || %-13s ||", 
+            // Print header
+            System.out.println(" ===============================================================================================================");
+            System.out.println(String.format(" | %-13s  %-13s  %-27s  %-27s  %-13s |", 
                     "Order No.", "Quantity", "Items", "Total Price By Item Qty", "Total Price"));
-            System.out.println("===================================================================================================================");
+            System.out.println(" ===============================================================================================================");
 
-            // Display orders in descending order of order number
-            for (Map.Entry<Integer, StringBuilder> entry : ordersMap.entrySet()) {
-                int orderNumber = entry.getKey();
-                StringBuilder orderItems = entry.getValue();
-                int totalPrice = totalPriceMap.get(orderNumber);
+            // After all data has been processed, print everything in the unified format
+            for (Order order : ordersMap.values()) {
+                double totalPrice = order.getTotalPrice();
 
-                // Print the order number and total price on the first line
-                System.out.printf("|| %-13s || %-13s || %-27s || %-27s || %-13s ||\n", 
-                        orderNumber, "", "", "", totalPrice + " PHP");
-
-                // Print the items for this order
-                System.out.print(orderItems.toString());
+                // Print the order details along with its items
+                for (OrderItem item : order.items) {
+                    System.out.printf(" | %-13d  %-13d  %-27s  %-27s  %-13s |\n", 
+                            order.orderNumber, item.quantity, item.itemName, 
+                            String.format("%.2f PHP", item.totalAmount), 
+                            (item == order.items.get(order.items.size() - 1) ? String.format("%.2f PHP", totalPrice) : ""));
+                }
 
                 // Print the closing line for the order
-                System.out.println("===================================================================================================================");
+                System.out.println(" ===============================================================================================================");
             }
 
             // Get user input to cancel an order
             Scanner scanner = new Scanner(System.in);
-            System.out.print("Input the Order number to cancel (0 to go back): ");
+            System.out.print(" Input the Order number to cancel (0 to go back): ");
             String input = scanner.nextLine();
 
             // Handle the "go back" option
@@ -93,21 +127,19 @@ public class CancelOrders {
 
             // Validate the order number and mark as cancelled
             try {
-                int orderInput = Integer.parseInt(input);  // Ensure valid integer input
+                int orderInput = Integer.parseInt(input);
                 if (ordersMap.containsKey(orderInput)) {
                     updateOrderStatus(csvFile, orderInput);
-                    System.out.println("Order #" + orderInput + " marked as cancelled.");
+                    System.out.println(" Order #" + orderInput + " marked as cancelled.");
                 } else {
-                    System.out.println("Invalid order number.");
+                    System.out.println(" Invalid order number.");
                 }
             } catch (NumberFormatException e) {
-                System.out.println("Invalid input format. Please enter a valid order number.");
+                System.out.println(" Invalid input. Please enter a valid order number.");
             }
 
         } catch (IOException e) {
             System.out.println("Error reading the CSV file: " + e.getMessage());
-        } catch (NumberFormatException e) {
-            System.out.println("Error: Invalid number format in the file.");
         }
     }
 

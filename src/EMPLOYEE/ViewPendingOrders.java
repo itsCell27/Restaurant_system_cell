@@ -1,23 +1,61 @@
 package EMPLOYEE;
 
+import java.util.Scanner;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Collections;
 
 public class ViewPendingOrders {
 
+    // Custom class to hold order details
+    static class Order {
+        int orderNumber;
+        List<OrderItem> items = new ArrayList<>();
+        
+        // Add item to the order
+        void addItem(OrderItem item) {
+            items.add(item);
+        }
+        
+        // Calculate the total price of the order
+        BigDecimal getTotalPrice() {
+            BigDecimal totalPrice = BigDecimal.ZERO;
+            for (OrderItem item : items) {
+                totalPrice = totalPrice.add(item.totalAmount);
+            }
+            return totalPrice;
+        }
+    }
+
+    // Custom class to hold individual order item details
+    static class OrderItem {
+        int quantity;
+        String itemName;
+        BigDecimal totalAmount;
+
+        OrderItem(int quantity, String itemName, BigDecimal totalAmount) {
+            this.quantity = quantity;
+            this.itemName = itemName;
+            this.totalAmount = totalAmount;
+        }
+    }
+
     public static void displayPendingOrders() {
+        Scanner scanner = new Scanner(System.in);
         String csvFile = "OrderRecords/order_summary.csv";  // Path to your CSV file
         String line;
         String cvsSplitBy = ",";
 
         // A map to hold the orders, with the order number as the key
-        Map<Integer, StringBuilder> ordersMap = new TreeMap<>(Collections.reverseOrder());  // TreeMap to sort by order number in descending order
-        Map<Integer, Integer> totalPriceMap = new HashMap<>();
+        // Use TreeMap with reverseOrder() to sort the order numbers in descending order
+        Map<Integer, Order> ordersMap = new TreeMap<>(Collections.reverseOrder());  // Sorts order numbers in descending order
 
         try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
             // Skip the header line
@@ -34,53 +72,67 @@ public class ViewPendingOrders {
                 }
 
                 // Extract the relevant details from the CSV columns
-                int orderNumber = Integer.parseInt(orderDetails[0].trim());
+                String orderNumberStr = orderDetails[0].trim();
                 String itemName = orderDetails[1].trim();
                 int quantity = Integer.parseInt(orderDetails[2].trim());
-                String totalAmount = orderDetails[3].trim();  // This is the total price for the quantity
+                String totalAmountStr = orderDetails[3].trim();  // This is the total price for the quantity
                 String status = orderDetails[6].trim();         // Order status
+
+                // Validate and parse order number
+                int orderNumber = 0;
+                if (!orderNumberStr.isEmpty()) {
+                    try {
+                        orderNumber = Integer.parseInt(orderNumberStr);
+                    } catch (NumberFormatException e) {
+                        System.out.println("Invalid order number: " + orderNumberStr);
+                        continue;  // Skip rows with invalid order number
+                    }
+                }
 
                 // Only process orders with "pending" status
                 if (status.equalsIgnoreCase("pending")) {
-                    // Extract the total price from the "Total Price" field
-                    int itemTotalPrice = Integer.parseInt(totalAmount.trim());
+                    // Convert total amount to BigDecimal for more precise handling
+                    BigDecimal itemTotalPrice = new BigDecimal(totalAmountStr.trim());
 
-                    // Add this item to the map for the given order number
-                    StringBuilder orderItems = ordersMap.getOrDefault(orderNumber, new StringBuilder());
-                    orderItems.append(String.format("|| %-13s || %-13s || %-27s || %-27s || %-13s ||\n", 
-                            "", quantity, itemName, totalAmount + " PHP", ""));
-                    ordersMap.put(orderNumber, orderItems);
+                    // Get the order, or create a new one if it doesn't exist
+                    Order order = ordersMap.getOrDefault(orderNumber, new Order());
+                    order.orderNumber = orderNumber;  // Set the order number (in case it's a new order)
 
-                    // Add total price to the order
-                    totalPriceMap.put(orderNumber, totalPriceMap.getOrDefault(orderNumber, 0) + itemTotalPrice);
+                    // Add item to the order
+                    order.addItem(new OrderItem(quantity, itemName, itemTotalPrice));
+
+                    // Put the order back into the map with the order number as key
+                    ordersMap.put(orderNumber, order);
                 }
             }
 
-            // Now, print the orders in the desired format
-            System.out.println("===================================================================================================================");
-            System.out.println(String.format("|| %-13s || %-13s || %-27s || %-27s || %-13s ||", 
+            // Print header
+            System.out.println(" ===============================================================================================================");
+            System.out.println(String.format(" | %-13s  %-13s  %-27s  %-27s  %-13s |", 
                     "Order No.", "Quantity", "Items", "Total Price By Item Qty", "Total Price"));
-            System.out.println("===================================================================================================================");
+            System.out.println(" ===============================================================================================================");
 
-            // After all data has been processed, print the results
-            for (Map.Entry<Integer, StringBuilder> entry : ordersMap.entrySet()) {
-                int orderNumber = entry.getKey();
-                StringBuilder orderItems = entry.getValue();
-                int totalPrice = totalPriceMap.get(orderNumber);
+            // After all data has been processed, print everything in the unified format
+            for (Order order : ordersMap.values()) {
+                BigDecimal totalPrice = order.getTotalPrice();
 
-                // Print the order number and total price on the first line
-                System.out.printf("|| %-13d || %-13s || %-27s || %-27s || %-13s ||\n", 
-                        orderNumber, "", "", "", totalPrice + " PHP");
-
-                // Print the items for this order
-                System.out.print(orderItems.toString());
+                // Print the order details along with its items in a unified format
+                for (OrderItem item : order.items) {
+                    System.out.printf(" | %-13d  %-13d  %-27s  %-27s  %-13s |\n", 
+                            order.orderNumber, item.quantity, item.itemName, 
+                            item.totalAmount.setScale(2, BigDecimal.ROUND_HALF_UP) + " PHP", 
+                            (item == order.items.get(order.items.size() - 1) ? totalPrice.setScale(2, BigDecimal.ROUND_HALF_UP) + " PHP" : ""));
+                }
 
                 // Print the closing line for the order
-                System.out.println("===================================================================================================================");
+                System.out.println(" ===============================================================================================================");
             }
 
         } catch (IOException e) {
             System.out.println("Error reading the CSV file: " + e.getMessage());
         }
+
+        scanner.nextLine(); // Consume newline
+        scanner.nextLine();
     }
 }
