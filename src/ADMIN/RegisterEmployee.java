@@ -7,10 +7,9 @@ import ORDER_SYSTEM.MainOrderSystem;
 public class RegisterEmployee {
 	public void RegisterEmployee(){
         Scanner in = new Scanner(System.in);
-        EmployeeManager employeeManager = new EmployeeManager(10);
+        EmployeeManager employeeManager = new EmployeeManager(50); // number of employees
         AdminMenu adminMenu = new AdminMenu();
         RegisterEmployeeMenu rgs = new RegisterEmployeeMenu();
-        
         
         System.out.print("\t\t\tEnter username: ");
         String regUsername = in.nextLine();

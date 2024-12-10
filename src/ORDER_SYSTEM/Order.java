@@ -23,9 +23,9 @@ public class Order {
     }
 
     public void displaySummary() {
-        System.out.println("Order Summary:");
-        System.out.println("Item: " + item.getName());
-        System.out.println("Quantity: " + quantity);
-        System.out.println("Price: " + String.format("%.2f", getTotalAmount()) + " PHP");
+        System.out.println("\t\t\tOrder Summary:");
+        System.out.println("\t\t\tItem: " + item.getName());
+        System.out.println("\t\t\tQuantity: " + quantity);
+        System.out.println("\t\t\tPrice: " + String.format("%.2f", getTotalAmount()) + " PHP");
     }
 }

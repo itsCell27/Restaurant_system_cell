@@ -129,7 +129,6 @@ public class TicketOrder {
         int selectedOrderIndex = -1;
         while (true) {
             try {
-            	clearScreenBottom();
                 System.out.print("\t\t\tSelect Order number (0 to go back): ");
                 if (scanner.hasNextInt()) {
                     selectedOrderIndex = scanner.nextInt();
@@ -316,7 +315,7 @@ public class TicketOrder {
 
             writer.write("\n\t==================================================\n");
         } catch (IOException e) {
-            System.out.println("Error writing the receipt: " + e.getMessage());
+            System.out.println("\t\t\tError writing the receipt: " + e.getMessage());
         }
     }
 

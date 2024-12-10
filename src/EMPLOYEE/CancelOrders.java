@@ -61,7 +61,7 @@ public class CancelOrders {
 
                 // Ensure we have enough columns in the CSV row (9 expected)
                 if (orderDetails.length < 9) {
-                    System.out.println("Skipping malformed line in CSV: " + line);
+                    System.out.println("\t\t\tSkipping malformed line in CSV: " + line);
                     continue;
                 }
 

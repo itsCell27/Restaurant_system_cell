@@ -72,11 +72,11 @@ public class AdminAuthForLogout {
             String newPassword = scanner.nextLine();
             adminPassword = newPassword;
             clearScreen();
-            System.out.println("\t\t\tPassword updated successfully.");
+            System.out.println("\t\t\tPassword updated successfully.\n\n");
             return true; // Return true if password reset is successful
         } else {
         	clearScreen();
-            System.out.println("\t\t\tIncorrect security answers or key.");
+            System.out.println("\t\t\tIncorrect security answers or key.\n\n");
             return false; // Return false if password reset fails
         }
     }
