@@ -7,6 +7,24 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class TicketOrder {
+	
+	public static void clearScreen() {
+        for (int i = 0; i < 50; i++) {  // Print 50 newlines
+            System.out.println();
+        }   
+    }
+    
+    public static void clearScreenBottom() {
+        for (int i = 0; i < 30; i++) {  // Print 50 newlines
+            System.out.println();
+        }   
+    }
+    
+    public static void clearScreenSmall() {
+        for (int i = 0; i < 20; i++) {  // Print 50 newlines
+            System.out.println();
+        }   
+    }
 
     // WatchService to monitor changes in the CSV file
     private static WatchService watchService;
@@ -74,7 +92,7 @@ public class TicketOrder {
             }
 
         } catch (IOException e) {
-            System.out.println("Error reading the CSV file: " + e.getMessage());
+            System.out.println("\t\t\tError reading the CSV file: " + e.getMessage());
         }
 
         return ordersMap;
@@ -87,7 +105,7 @@ public class TicketOrder {
         try {
             startFileWatcher(csvFile); // Start the file watcher when handling orders
         } catch (IOException e) {
-            System.out.println("Error starting file watcher: " + e.getMessage());
+            System.out.println("\t\t\tError starting file watcher: " + e.getMessage());
             return;
         }
 
@@ -95,15 +113,15 @@ public class TicketOrder {
         Map<String, List<Order>> ordersMap = fetchOrdersFromCSV(csvFile);
 
         if (ordersMap.isEmpty()) {
-            System.out.println("No served orders found.");
+            System.out.println("\t\t\tNo served orders found.");
             return;
         }
 
         MainOrderSystem.clearScreen();
-        System.out.println("Order numbers:");
+        System.out.println("\t\t\tOrder numbers:\n\n");
         int index = 1;
         for (String orderNumber : ordersMap.keySet()) {
-            System.out.println("[" + index++ + "] Order#" + orderNumber);
+            System.out.println("\t\t\t[" + index++ + "] Order#" + orderNumber);
         }
 
         // Get user input to select an order
@@ -111,22 +129,23 @@ public class TicketOrder {
         int selectedOrderIndex = -1;
         while (true) {
             try {
-                System.out.print("Select Order number (0 to go back): ");
+            	clearScreenBottom();
+                System.out.print("\t\t\tSelect Order number (0 to go back): ");
                 if (scanner.hasNextInt()) {
                     selectedOrderIndex = scanner.nextInt();
                     if (selectedOrderIndex == 0) {
-                        System.out.println("Going back...");
+                        System.out.println("\t\t\tGoing back...");
                         return;
                     }
                     if (selectedOrderIndex > 0 && selectedOrderIndex <= ordersMap.size()) {
                         break; // Valid input
                     }
                 } else {
-                    System.out.println("Invalid choice. Please enter a number.");
+                    System.out.println("\n\n\n\t\t\tInvalid choice. Please enter a number.");
                     scanner.next(); // Clear invalid input
                 }
             } catch (InputMismatchException e) {
-                System.out.println("Invalid input. Please enter a valid integer.");
+                System.out.println("\n\n\n\t\t\tInvalid input. Please enter a valid integer.\n\n\n");
                 scanner.next(); // Clear invalid input
             }
         }
@@ -136,9 +155,9 @@ public class TicketOrder {
         List<Order> selectedOrderItems = ordersMap.get(selectedOrderNumber);
 
         // Display the selected order details in tabular format
-        System.out.println("=======================================================================");
-        System.out.printf("| %-13s  %-10s  %-10s  %-12s  %-15s |%n", "Order No.", "Quantity", "Items", "Price", "Total Price");
-        System.out.println("=======================================================================");
+        System.out.println("\t\t\t========================================================================");
+        System.out.printf("\t\t\t| %-13s  %-10s  %-10s  %-12s  %-15s |%n", "Order No.", "Quantity", "Items", "Price", "Total Price");
+        System.out.println("\t\t\t========================================================================");
 
         boolean isFirstRow = true;
         double totalPrice = 0;
@@ -146,26 +165,27 @@ public class TicketOrder {
             double totalItemPrice = order.getTotalPrice();
             totalPrice += totalItemPrice;
 
-            System.out.printf("| %-13s  %-10d  %-10s  %-12s  %-15s |%n",
+            System.out.printf("\t\t\t| %-13s  %-10d  %-10s  %-12s  %-15s |%n",
                     isFirstRow ? selectedOrderNumber : "",
                     order.getQuantity(), order.getItemName(),
                     String.format("%.2f PHP", order.getUnitPrice()), String.format("%.2f PHP", totalItemPrice));
             isFirstRow = false;
         }
 
-        System.out.println("=======================================================================");
-        System.out.printf("| %-51s  %-15s |%n", "Total", String.format("%.2f PHP", totalPrice));
-        System.out.println("=======================================================================");
+        System.out.println("\t\t\t========================================================================");
+        System.out.printf("\t\t\t| %-51s  %-15s |%n", "Total", String.format("%.2f PHP", totalPrice));
+        System.out.println("\t\t\t========================================================================");
+        clearScreenSmall();
 
         // Ask if the user wants to generate the receipt
-        System.out.print("Do you want to generate receipt (1 yes / 0 no)? ");
+        System.out.print("\n\t\t\tDo you want to generate receipt (1 yes / 0 no)? ");
         int generateReceipt = scanner.nextInt();
 
         if (generateReceipt == 1) {
             generateReceiptFile(selectedOrderNumber, selectedOrderItems, totalPrice);
-            System.out.println("Receipt has been generated and saved to the 'Receipts' folder.");
+            System.out.println("\n\t\t\tReceipt has been generated and saved to the 'Receipts' folder.\n");
         } else {
-            System.out.println("Receipt generation cancelled.");
+            System.out.println("\n\t\t\tReceipt generation cancelled.\n");
         }
     }
 
@@ -192,7 +212,7 @@ public class TicketOrder {
     }
 
     // for total price of item
-    public static String reverseValue(String value, int totalWidth) {
+    public static String spaceRight(String value, int totalWidth) {
         int spacesNeeded = totalWidth - value.length();
         spacesNeeded = Math.max(0, spacesNeeded); // Ensure non-negative space count
         StringBuilder padding = new StringBuilder();
@@ -200,6 +220,16 @@ public class TicketOrder {
             padding.append(" ");
         }
         return value + padding; // Combine spaces and value
+    }
+    
+    public static String spaceLeft(String value, int totalWidth) {
+        int spacesNeeded = totalWidth - value.length();
+        spacesNeeded = Math.max(0, spacesNeeded); // Ensure non-negative space count
+        StringBuilder padding = new StringBuilder();
+        for (int i = 0; i < spacesNeeded; i++) {
+            padding.append(" ");
+        }
+        return padding + value; // Combine spaces and value
     }
     // Receipt space calculator ending
 
@@ -225,7 +255,7 @@ public class TicketOrder {
 
                // Prompt user for a valid amount
         while (true) {
-            System.out.print("Enter the Amount Paid by the customer: ");
+            System.out.print("\t\t\tEnter the Amount Paid by the customer: ");
             if (scanner.hasNextDouble()) {
                 amountPaid = scanner.nextDouble();
                 if (amountPaid >= grandTotal) {
@@ -234,7 +264,7 @@ public class TicketOrder {
             } else {
                 scanner.nextLine(); // Clear invalid input
             }
-            System.out.println("Invalid amount. The amount paid must be greater than or equal to " + Math.ceil(grandTotal) + " PHP.");
+            System.out.println("\t\t\tInvalid amount. The amount paid must be greater than or equal to " + Math.ceil(grandTotal) + " PHP.");
         }
 
         double amountDue = amountPaid - grandTotal;
@@ -242,38 +272,47 @@ public class TicketOrder {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
             writer.write("\t==================================================\n");
             writer.write("\t                   ORDER #" + orderNumber + "\n");
-            writer.write("\t==================================================\n");
+            writer.write("\t--------------------------------------------------\n");
 
             // Write order details
             Order firstOrder = orderItems.get(0);
             writer.write("\t" + padToWidth("DATE:", firstOrder.getDate(), 50) + "\n");
             writer.write("\t" + padToWidth("DINING OPTION:", firstOrder.getDiningOption(), 50) + "\n");
             writer.write("\t" + padToWidth("PAYMENT METHOD:", firstOrder.getPaymentMethod(), 50) + "\n\n");
-            writer.write("\t==================================================\n");
+            writer.write("\t--------------------------------------------------\n");
 
             // Write table headers
-            writer.write(String.format("\t%-5s %-16s %-15s %-5s\n", "Qty", "Item", "Unit Price", "Total Price"));
-            writer.write("\t==================================================\n");
+            writer.write(String.format("\t%-5s %-16s %-15s %-5s\n", "QTY", "ITEM", "UNIT PRICE", "TOTAL PRICE"));
+            writer.write("\t--------------------------------------------------\n\n");
 
             // Write individual item details
             for (Order order : orderItems) {
-                writer.write(String.format(
-                    "\t%-5d %-16s %-15s %-5s\n",
-                    order.getQuantity(),
-                    order.getItemName(),
-                    String.format("%.2f PHP", order.getUnitPrice()),
-                    String.format("%.2f PHP", order.getTotalPrice())
-                ));
+            	writer.write(
+            			"\t" +
+            			spaceRight(String.format("%d", order.getQuantity()), 6) +
+            			spaceRight(order.getItemName(), 17) +
+            			spaceLeft(String.format("₱%.2f", order.getUnitPrice()), 10) +
+            			"      " +
+            			spaceLeft(String.format("₱%.2f", order.getTotalPrice()), 11) +
+            			"\n"
+            			);
+//                writer.write(String.format(
+//                    "\t%-5d %-16s %-15s %-5s\n",
+//                    order.getQuantity(),
+//                    order.getItemName(),
+//                    String.format("%.2f PHP", order.getUnitPrice()),
+//                    String.format("%.2f PHP", order.getTotalPrice())
+//                ));
             }
 
             // Write total price, tax, and grand total
-            writer.write("\n\t" + padToWidth("TOTAL:", String.format("%.2f PHP", totalPrice), 50) + "\n");
-            writer.write("\t" + padToWidth("TAX (12%):", String.format("%.2f PHP", tax), 50) + "\n");
-            writer.write("\t" + padToWidth("GRAND TOTAL:", String.format("%.2f PHP", grandTotal), 50) + "\n");
+            writer.write("\n\t" + padToWidth("TOTAL:", String.format("₱%.2f", totalPrice), 50) + "\n");
+            writer.write("\t" + padToWidth("TAX (12%):", String.format("₱%.2f", tax), 50) + "\n");
+            writer.write("\t" + padToWidth("GRAND TOTAL:", String.format("₱%.2f", grandTotal), 50) + "\n");
 
             // Write amount paid and amount due
-            writer.write("\n\t" + padToWidth("AMOUNT PAID:", String.format("%.2f PHP", amountPaid), 50) + "\n");
-            writer.write("\t" + padToWidth("AMOUNT DUE:", String.format("%.2f PHP", amountDue), 50) + "\n");
+            writer.write("\n\t" + padToWidth("AMOUNT PAID:", String.format("₱%.2f", amountPaid), 50) + "\n");
+            writer.write("\t" + padToWidth("AMOUNT DUE:", String.format("₱%.2f", amountDue), 50) + "\n");
 
             writer.write("\n\t==================================================\n");
         } catch (IOException e) {

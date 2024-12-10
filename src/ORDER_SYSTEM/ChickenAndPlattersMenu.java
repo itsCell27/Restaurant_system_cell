@@ -15,7 +15,7 @@ public class ChickenAndPlattersMenu {
         // Check if the file exists before trying to read it
         File file = new File(FILE_PATH);
         if (!file.exists()) {
-            System.out.println("                                                                                         Error: File not found - " + FILE_PATH);
+            System.out.println("\t\t\tError: File not found - " + FILE_PATH);
             return menuItems; // Return empty list if file does not exist
         }
 
@@ -40,11 +40,11 @@ public class ChickenAndPlattersMenu {
                         menuItems.add(new MenuItem(name, price, category));
                     }
                 } catch (NumberFormatException e) {
-                    System.out.println("                                                                                         Error: Invalid data format in file. Skipping a line...");
+                    System.out.println("\t\t\tError: Invalid data format in file. Skipping a line...");
                 }
             }
         } catch (IOException e) {
-            System.out.println("                                                                                         Error: Unable to read the file.");
+            System.out.println("\t\t\tError: Unable to read the file.");
             e.printStackTrace();
         }
 
@@ -62,23 +62,25 @@ public class ChickenAndPlattersMenu {
                 .collect(Collectors.toList());
 
         if (chickenMenu.isEmpty()) {
-            System.out.println("                                                                                         No items found in the Chicken menu.");
+            System.out.println("\t\t\tNo items found in the Chicken menu.");
+            System.out.println("\t\t\tPress ENTER to continue...");
+            scanner.nextLine();
             return;
         }
 
         // Print the chicken menu in tabular format
-        System.out.println("                                                                                                                   CHICKEN MENU\n");
-        System.out.println("                                                                                         ==================================================================");
-        System.out.printf("                                                                                         | %-5s | %-30s | %-10s |\n", "No.", "Item", "Price");
-        System.out.println("                                                                                         ==================================================================");
+        System.out.println("\t\t\tCHICKEN MENU\n");
+        System.out.println("\t\t\t===================================================================");
+        System.out.printf("\t\t\t| %-5s | %-36s | %-16s |\n", "No.", "Item", "Price");
+        System.out.println("\t\t\t===================================================================");
         for (int i = 0; i < chickenMenu.size(); i++) {
             MenuItem item = chickenMenu.get(i);
-            System.out.printf("                                                                                         | %-5d | %-30s | %-10.2f |\n",
+            System.out.printf("\t\t\t| %-5d | %-36s | %-16.2f |\n",
                     i + 1, item.getName(), item.getPrice());
         }
-        System.out.println("                                                                                         ==================================================================");
+        System.out.println("\t\t\t===================================================================");
 
-        int itemChoice = getValidatedInput(scanner, "                                                                                         Please select an option (1-" + chickenMenu.size() + "), input 0 to go back: ", 0, chickenMenu.size());
+        int itemChoice = getValidatedInput(scanner, "\t\t\tPlease select an option (1-" + chickenMenu.size() + "), input 0 to go back: ", 0, chickenMenu.size());
         if (itemChoice == 0) {
             return; // Go back to main menu
         }
@@ -89,12 +91,12 @@ public class ChickenAndPlattersMenu {
 
     // Method to process the order for a specific menu item
     private void processOrder(MenuItem item, Scanner scanner, HandleMyOrder handleOrder) {
-        int quantity = getValidatedInput(scanner, "                                                                                         Enter the quantity for this item: ", 1, Integer.MAX_VALUE);
+        int quantity = getValidatedInput(scanner, "\t\t\tEnter the quantity for this item: ", 1, Integer.MAX_VALUE);
 
         // Calculate the total price
         double totalPrice = item.getPrice() * quantity;
 
-        int saveOrder = getValidatedInput(scanner, "                                                                                         Do you want to save this order? (1 for Yes, 0 for No): ", 0, 1);
+        int saveOrder = getValidatedInput(scanner, "\t\t\tDo you want to save this order? (1 for Yes, 0 for No): ", 0, 1);
 
         if (saveOrder == 1) {
             // Create an Order object
@@ -104,16 +106,26 @@ public class ChickenAndPlattersMenu {
             handleOrder.addOrder(order);
 
             // Display the order summary
-            System.out.println("                                                                                         \nOrder Summary:");
-            System.out.println("                                                                                         Item: " + item.getName());
-            System.out.println("                                                                                         Quantity: " + quantity);
-            System.out.printf("                                                                                         Price: %.2f PHP\n", totalPrice);
-            System.out.printf("                                                                                         \nTotal Price: %.2f PHP\n", totalPrice);
-            System.out.println("                                                                                         Press Enter to continue...");
+            System.out.println("\n\t\t\tOrder Summary:");
+            System.out.println("\t\t\tItem: " + item.getName());
+            System.out.println("\t\t\tQuantity: " + quantity);
+            System.out.printf("\t\t\tPrice: %.2f PHP\n", totalPrice);
+            System.out.printf("\n\t\t\tTotal Price: %.2f PHP\n", totalPrice);
+            System.out.println("\t\t\tPress Enter to continue...");
             scanner.nextLine(); // Consume newline
             scanner.nextLine(); // Wait for user to press Enter
         } else {
-            System.out.println("                                                                                         Order not saved. Returning to menu.");
+        	System.out.println("\t\t\tOrder not saved. ");
+            //timer
+            for (int i = 3; i > 0; i--) { // Countdown 
+                System.out.println("\t\t\t" + i + " returning to menu in...");
+                try {
+                    Thread.sleep(1000); // Wait for 1 second
+                } catch (InterruptedException e) {
+                    System.out.println("Timer was interrupted!");
+                }
+            }
+            //timer
         }
     }
 
@@ -126,10 +138,10 @@ public class ChickenAndPlattersMenu {
                 if (input >= min && input <= max) {
                     return input;
                 } else {
-                    System.out.println("                                                                                         Error: Please enter a number between " + min + " and " + max + ".");
+                    System.out.println("\t\t\tError: Please enter a number between " + min + " and " + max + ".");
                 }
             } catch (InputMismatchException e) {
-                System.out.println("                                                                                         Error: Invalid input. Please enter a number.");
+                System.out.println("\t\t\tError: Invalid input. Please enter a number.");
                 scanner.next(); // Consume invalid input
             }
         }

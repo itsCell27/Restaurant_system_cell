@@ -18,10 +18,10 @@ public class ViewEmployees {
 
             // Display table header
             MainOrderSystem.clearScreen();
-            System.out.println("                                                                                         EMPLOYEES");
-            System.out.println("                                                                                         ===========================================================================");
-            System.out.printf("                                                                                         | %-40s %-17s |\n", "Username", "Password");
-            System.out.println("                                                                                         ===========================================================================");
+            System.out.println("\t\t\t\t\t\t\tEMPLOYEES");
+            System.out.println("\t\t\t===========================================================================");
+            System.out.printf("\t\t\t| %-40s %-30s |\n", "Username", "Password");
+            System.out.println("\t\t\t===========================================================================");
 
             // Read each line and display its content
             while ((line = br.readLine()) != null) {
@@ -29,31 +29,21 @@ public class ViewEmployees {
 
                 // Display username and password in the table format
                 if (columns.length >= 2) {
-                    System.out.printf("                                                                                         | %-40s %-17s |\n", columns[0], columns[1]);
+                    System.out.printf("\t\t\t| %-40s %-30s |\n", columns[0], columns[1]);
                 } else {
-                    System.out.printf("                                                                                         | %-40s %-17s |\n", "Invalid Data", "Invalid Data");
+                    System.out.printf("\t\t\t| %-40s %-30s |\n", "Invalid Data", "Invalid Data");
                 }
             }
 
             // Display table footer
-            System.out.println("                                                                                         ============================================================================");
+            System.out.println("\t\t\t===========================================================================\n\n");
 
         } catch (IOException e) {
             e.printStackTrace();
         }
         MainOrderSystem.clearScreenBottom();
-        System.out.println("\n");
-        System.out.println("\n");
-        System.out.println("\n");
-        System.out.println("\n");
-        System.out.println("\n");
-        System.out.println("\n");
-        System.out.println("\n");
-        System.out.println("\n");
-        System.out.println("\n");
         
-        
-        scanner.nextLine(); // Consume newline
+        System.out.print("\t\t\tPress ENTER to continue...");
         scanner.nextLine();
     }
 }

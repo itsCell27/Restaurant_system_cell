@@ -10,25 +10,14 @@ public class RegisterEmployeeMenu {
     	RegisterEmployee register = new RegisterEmployee();
     	AdminMenu ads = new AdminMenu();
     	MainOrderSystem.clearScreen();
-    	 System.out.println("                                                                                                                  REGISTER EMPLOYEE                     ");
-         System.out.println("                                                                                         ===================================================================");
-         System.out.println("                                                                                         |                        [1] View Employees                       |");
-         System.out.println("                                                                                         |                        [2] Register Employee                    |");
-         System.out.println("                                                                                         |                        [3] Exit                                 |");
-         System.out.println("                                                                                         ===================================================================\n\n");
-         MainOrderSystem.clearScreenBottom();
-         System.out.println("\n");
-         System.out.println("\n");
-         System.out.println("\n");
-         System.out.println("\n");
-         System.out.println("\n");
-         System.out.println("\n");
-         System.out.println("\n");
-         System.out.println("\n");
-         System.out.println("\n");
-         System.out.println("\n");
-         System.out.println("\n");
-         System.out.print("                                                                                                                    Enter: ");
+    	 System.out.println("\t\t\t\t\t\tREGISTER EMPLOYEE");
+         System.out.println("\t\t\t===================================================================");
+         System.out.println("\t\t\t|                        [1] View Employees                       |");
+         System.out.println("\t\t\t|                        [2] Register Employee                    |");
+         System.out.println("\t\t\t|                        [3] Exit                                 |");
+         System.out.println("\t\t\t===================================================================\n\n");
+         clearScreenBottom();
+         System.out.print("\t\t\tEnter: ");
         
         int choice = in.nextInt();
         if(choice == 1){
@@ -42,7 +31,19 @@ public class RegisterEmployeeMenu {
         }else if(choice == 3){
         	ads.displayMenu();
             }else {
-            	System.out.println("Invalid Choice. Please enter a valid choice.");
+            	System.out.println("\t\t\tInvalid Choice. Please enter a valid choice.");
             }
+    }
+    
+    public static void clearScreen() {
+        for (int i = 0; i < 50; i++) {  // Print 50 newlines
+            System.out.println();
+        }   
+    }
+    
+    public static void clearScreenBottom() {
+        for (int i = 0; i < 40; i++) {  // Print 50 newlines
+            System.out.println();
+        }   
     }
 }

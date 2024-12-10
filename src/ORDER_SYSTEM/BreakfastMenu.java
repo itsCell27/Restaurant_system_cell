@@ -14,7 +14,7 @@ public class BreakfastMenu {
      File file = new File(FILE_PATH);
 
      if (!file.exists()) {
-         System.out.println("                                                                                         Error: File not found at " + FILE_PATH);
+         System.out.println("\t\t\tError: File not found at " + FILE_PATH);
          return menuItems;
      }
 
@@ -31,14 +31,14 @@ public class BreakfastMenu {
                      String category = data[2].trim();
                      menuItems.add(new MenuItem(name, price, category));
                  } catch (NumberFormatException e) {
-                     System.out.println("                                                                                         Warning: Invalid price format in line: " + line);
+                     System.out.println("\t\t\tWarning: Invalid price format in line: " + line);
                  }
              } else {
-                 System.out.println("                                                                                         Warning: Invalid data format in line: " + line);
+                 System.out.println("\t\t\tWarning: Invalid data format in line: " + line);
              }
          }
      } catch (IOException e) {
-         System.out.println("                                                                                         Error reading file: " + e.getMessage());
+         System.out.println("\t\t\tError reading file: " + e.getMessage());
      }
 
      return menuItems;
@@ -51,34 +51,36 @@ public class BreakfastMenu {
              .collect(Collectors.toList());
 
      if (breakfastMenu.isEmpty()) {
-         System.out.println("                                                                                         No items found in the Breakfast menu.");
+         System.out.println("\t\t\tNo items found in the Breakfast menu.");
+         System.out.println("\t\t\tPress ENTER to continue...");
+         scanner.nextLine();
          return;
      }
 
-     System.out.println("                                                                                                                   BREAKFAST MENU\n");
-     System.out.println("                                                                                         ==================================================================");
-     System.out.printf("                                                                                         | %-5s | %-30s | %-10s |\n", "No.", "Item", "Price");
-     System.out.println("                                                                                         ==================================================================");
+     System.out.println("\t\t\t\t\t\tBREAKFAST MENU\n");
+     System.out.println("\t\t\t===================================================================");
+     System.out.printf("\t\t\t| %-5s | %-36s | %-16s |\n", "No.", "Item", "Price");
+     System.out.println("\t\t\t===================================================================");
      for (int i = 0; i < breakfastMenu.size(); i++) {
          MenuItem item = breakfastMenu.get(i);
-         System.out.printf("                                                                                         | %-5d | %-30s | %-10.2f |\n",
+         System.out.printf("\t\t\t| %-5d | %-36s | %-16.2f |\n",
                  i + 1, item.getName(), item.getPrice());
      }
-     System.out.println("                                                                                         ==================================================================");
+     System.out.println("\t\t\t===================================================================");
 
      int itemChoice = -1;
      while (itemChoice < 0 || itemChoice > breakfastMenu.size()) {
-         System.out.print("                                                                                         Please select an option (1-" + breakfastMenu.size() + "), input 0 to go back: ");
+         System.out.print("\t\t\tPlease select an option (1-" + breakfastMenu.size() + "), input 0 to go back: ");
          try {
              itemChoice = scanner.nextInt();
              if (itemChoice == 0) {
                  return; // Go back to the main menu
              } else if (itemChoice < 1 || itemChoice > breakfastMenu.size()) {
-                 System.out.println("                                                                                         Invalid choice. Please try again.");
+                 System.out.println("\t\t\tInvalid choice. Please try again.");
              }
          } catch (InputMismatchException e) {
-             System.out.println("                                                                                         Invalid input. Please enter a number.");
-             scanner.next(); // Clear invalid input
+        	 System.out.println("\t\t\tError: Please enter a valid number.");
+             scanner.nextLine(); // Clear the invalid input
          }
      }
 
@@ -88,14 +90,14 @@ public class BreakfastMenu {
  private void processOrder(MenuItem item, Scanner scanner, HandleMyOrder handleOrder) {
      int quantity = -1;
      while (quantity < 1) {
-         System.out.print("                                                                                         Enter the quantity for this item: ");
+         System.out.print("\t\t\tEnter the quantity for this item: ");
          try {
              quantity = scanner.nextInt();
              if (quantity < 1) {
-                 System.out.println("                                                                                         Quantity must be at least 1. Please try again.");
+                 System.out.println("\t\t\tQuantity must be at least 1. Please try again.");
              }
          } catch (InputMismatchException e) {
-             System.out.println("                                                                                         Invalid input. Please enter a valid number.");
+             System.out.println("\t\t\tInvalid input. Please enter a valid number.");
              scanner.next(); // Clear invalid input
          }
      }
@@ -104,14 +106,14 @@ public class BreakfastMenu {
 
      int saveOrder = -1;
      while (saveOrder != 0 && saveOrder != 1) {
-         System.out.print("                                                                                         Do you want to save this order? (1 for Yes, 0 for No): ");
+         System.out.print("\t\t\tDo you want to save this order? (1 for Yes, 0 for No): ");
          try {
              saveOrder = scanner.nextInt();
              if (saveOrder != 0 && saveOrder != 1) {
-                 System.out.println("                                                                                         Invalid choice. Please enter 1 or 0.");
+                 System.out.println("\t\t\tInvalid choice. Please enter 1 or 0.");
              }
          } catch (InputMismatchException e) {
-             System.out.println("                                                                                         Invalid input. Please enter 1 or 0.");
+             System.out.println("\t\t\tInvalid input. Please enter 1 or 0.");
              scanner.next(); // Clear invalid input
          }
      }
@@ -120,16 +122,26 @@ public class BreakfastMenu {
          Order order = new Order(item, quantity);
          handleOrder.addOrder(order);
 
-         System.out.println("                                                                                         \nOrder Summary:");
-         System.out.println("                                                                                         Item: " + item.getName());
-         System.out.println("                                                                                         Quantity: " + quantity);
-         System.out.println("                                                                                         Price: " + String.format("%.2f", totalPrice) + " PHP");
-         System.out.println("                                                                                         \nTotal Price: " + String.format("%.2f", totalPrice) + " PHP");
-         System.out.println("                                                                                         Press Enter to continue...");
+         System.out.println("\n\t\t\tOrder Summary:");
+         System.out.println("\t\t\tItem: " + item.getName());
+         System.out.println("\t\t\tQuantity: " + quantity);
+         System.out.println("\t\t\tPrice: " + String.format("%.2f", totalPrice) + " PHP");
+         System.out.println("\n\t\t\tTotal Price: " + String.format("%.2f", totalPrice) + " PHP");
+         System.out.println("\t\t\tPress Enter to continue...");
          scanner.nextLine(); // Consume newline
          scanner.nextLine(); // Wait for Enter
      } else {
-         System.out.println("                                                                                         Order not saved. Returning to menu.");
+         System.out.println("\t\t\tOrder not saved. ");
+         //timer
+         for (int i = 3; i > 0; i--) { // Countdown 
+             System.out.println("\t\t\t" + i + " returning to menu in...");
+             try {
+                 Thread.sleep(1000); // Wait for 1 second
+             } catch (InterruptedException e) {
+                 System.out.println("Timer was interrupted!");
+             }
+         }
+         //timer
      }
  }
 }

@@ -28,22 +28,23 @@ public class AdminSystem {
         int choice;
 
         while (true) {
-            MainOrderSystem.clearScreen();
-            System.out.println("                                                                                                                  ADMIN LOGIN                      ");
-            System.out.println("                                                                                         ===================================================================");
-            System.out.println("                                                                                         |                        [1] Login                                |");
-            System.out.println("                                                                                         |                        [2] Forgot Password                      |");
-            System.out.println("                                                                                         |                        [3] Exit                                 |");
-            System.out.println("                                                                                         ===================================================================\n\n");
-            MainOrderSystem.clearScreenBottom();
-            System.out.print("                                                                                                                    Enter: ");
+//            MainOrderSystem.clearScreen();
+            System.out.println("\t\t\t\t\t\tADMIN LOGIN");
+            System.out.println("\t\t\t===================================================================");
+            System.out.println("\t\t\t|                        [1] Login                                |");
+            System.out.println("\t\t\t|                        [2] Forgot Password                      |");
+            System.out.println("\t\t\t|                        [3] Exit                                 |");
+            System.out.println("\t\t\t===================================================================\n\n");
+            clearScreenBottom();
+            System.out.print("\t\t\tEnter: ");
 
             if (scanner.hasNextInt()) {
                 choice = scanner.nextInt();
                 scanner.nextLine(); // Clear the newline left by nextInt()
             } else {
                 scanner.nextLine(); // Clear invalid input
-                System.out.println("                                                                                                                  Invalid choice. Please try again.");
+                clearScreen();
+                System.out.println("\t\t\tInvalid choice. Please try again.\n");
                 continue;
             }
 
@@ -68,7 +69,8 @@ public class AdminSystem {
                 case 3:
                     return;
                 default:
-                    System.out.println("                                                                                                                  Invalid choice. Please try again.");
+                	clearScreen();
+                    System.out.println("\t\t\tInvalid choice. Please try again.\n");
             }
         }
     }
@@ -83,7 +85,7 @@ public class AdminSystem {
                 securityAnswer = parts[2];
             }
         } catch (IOException e) {
-            System.err.println("                                                                                                                  Error reading admin credentials: " + e.getMessage());
+            System.err.println("\t\t\tError reading admin credentials: " + e.getMessage());
             System.exit(1);
         }
     }
@@ -92,7 +94,7 @@ public class AdminSystem {
         try (BufferedReader br = new BufferedReader(new FileReader(ADMIN_KEY_FILE))) {
             hardcodedKey = br.readLine();
         } catch (IOException e) {
-            System.err.println("                                                                                                                  Error reading admin key: " + e.getMessage());
+            System.err.println("\t\t\tError reading admin key: " + e.getMessage());
             System.exit(1);
         }
     }
@@ -100,30 +102,32 @@ public class AdminSystem {
     public boolean login(Scanner scanner) {
         int attemptsLeft = 3;
         while (attemptsLeft > 0) {
-            System.out.print("                                                                                                                    Enter username: ");
+            System.out.print("\t\t\tEnter username: ");
             String loginUsername = scanner.nextLine();
-            System.out.print("                                                                                                                    Enter password: ");
+            System.out.print("\t\t\tEnter password: ");
             String loginPassword = scanner.nextLine();
 
             if (loginUsername.equals(adminUsername) && loginPassword.equals(adminPassword)) {
                 return true;
             } else {
                 attemptsLeft--;
-                System.out.println("                                                                                                                    Invalid username or password. Attempts remaining: " + attemptsLeft);
+                clearScreenSmall();
+                System.out.println("\t\t\tInvalid username or password. Attempts remaining: " + attemptsLeft);
             }
         }
-        System.out.println("                                                                                                                    Too many failed attempts.");
+        clearScreenSmall();
+        System.out.println("\t\t\tToo many failed attempts.");
         return false;
     }
 
     public boolean forgotPassword(Scanner scanner) {
-        System.out.print("                                                                                                                    Security Question - What is the CEO's favorite food? ");
+        System.out.print("\t\t\tSecurity Question - What is the CEO's favorite food? ");
         String answer = scanner.nextLine();
-        System.out.print("                                                                                                                    Enter the hardcoded key: ");
+        System.out.print("\t\t\tEnter the hardcoded key: ");
         String key = scanner.nextLine();
 
         if (answer.equalsIgnoreCase(securityAnswer) && key.equals(hardcodedKey)) {
-            System.out.print("                                                                                                                    Enter new password: ");
+            System.out.print("\t\t\tEnter new password: ");
             String newPassword = scanner.nextLine();
 
             adminPassword = newPassword; // Update the password in memory
@@ -131,17 +135,36 @@ public class AdminSystem {
             // Write the updated password back to the CSV file
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(ADMIN_RECORD_FILE))) {
                 writer.write(adminUsername + "," + adminPassword + "," + securityAnswer);
-                System.out.println("                                                                                                                    Password updated successfully.");
+                System.out.println("\t\t\tPassword updated successfully.");
             } catch (IOException e) {
-                System.err.println("                                                                                                                  Error updating password: " + e.getMessage());
+                System.err.println("\t\t\tError updating password: " + e.getMessage());
                 return false; // Return false if saving fails
             }
 
             return true; // Return true if password reset is successful
         } else {
-            System.out.println("                                                                                                                    Incorrect security answers.");
+        	clearScreen();
+            System.out.println("\t\t\tIncorrect security answers.\n\n");
             start();
             return false; // Return false if password reset fails
         }
+    }
+    
+    public static void clearScreen() {
+        for (int i = 0; i < 50; i++) {  // Print 50 newlines
+            System.out.println();
+        }   
+    }
+    
+    public static void clearScreenBottom() {
+        for (int i = 0; i < 40; i++) {  // Print 50 newlines
+            System.out.println();
+        }   
+    }
+    
+    public static void clearScreenSmall() {
+        for (int i = 0; i < 5; i++) {  // Print 50 newlines
+            System.out.println();
+        }   
     }
 }

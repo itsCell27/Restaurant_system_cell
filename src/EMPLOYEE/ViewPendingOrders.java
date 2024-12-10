@@ -84,7 +84,7 @@ public class ViewPendingOrders {
                     try {
                         orderNumber = Integer.parseInt(orderNumberStr);
                     } catch (NumberFormatException e) {
-                        System.out.println("Invalid order number: " + orderNumberStr);
+                        System.out.println("\t\t\tInvalid order number: " + orderNumberStr);
                         continue;  // Skip rows with invalid order number
                     }
                 }
@@ -107,10 +107,10 @@ public class ViewPendingOrders {
             }
 
             // Print header
-            System.out.println(" ===============================================================================================================");
-            System.out.println(String.format(" | %-13s  %-13s  %-27s  %-27s  %-13s |", 
+            System.out.println("\t\t\t===============================================================================================================");
+            System.out.println(String.format("\t\t\t| %-13s  %-13s  %-27s  %-27s  %-19s |", 
                     "Order No.", "Quantity", "Items", "Total Price By Item Qty", "Total Price"));
-            System.out.println(" ===============================================================================================================");
+            System.out.println("\t\t\t===============================================================================================================");
 
             // After all data has been processed, print everything in the unified format
             for (Order order : ordersMap.values()) {
@@ -118,21 +118,22 @@ public class ViewPendingOrders {
 
                 // Print the order details along with its items in a unified format
                 for (OrderItem item : order.items) {
-                    System.out.printf(" | %-13d  %-13d  %-27s  %-27s  %-13s |\n", 
+                    System.out.printf("\t\t\t| %-13d  %-13d  %-27s  %-27s  %-19s |\n", 
                             order.orderNumber, item.quantity, item.itemName, 
                             item.totalAmount.setScale(2, BigDecimal.ROUND_HALF_UP) + " PHP", 
                             (item == order.items.get(order.items.size() - 1) ? totalPrice.setScale(2, BigDecimal.ROUND_HALF_UP) + " PHP" : ""));
                 }
 
                 // Print the closing line for the order
-                System.out.println(" ===============================================================================================================");
+                System.out.println("\t\t\t===============================================================================================================");
             }
 
         } catch (IOException e) {
-            System.out.println("Error reading the CSV file: " + e.getMessage());
+            System.out.println("\t\t\tError reading the CSV file: " + e.getMessage());
         }
 
+        System.out.print("\n\n\t\t\tPress Enter to continue");
         scanner.nextLine(); // Consume newline
-        scanner.nextLine();
+ 
     }
 }
