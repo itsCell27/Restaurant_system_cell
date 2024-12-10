@@ -12,15 +12,16 @@ public class RegisterEmployee {
         RegisterEmployeeMenu rgs = new RegisterEmployeeMenu();
         
         
-        System.out.print("                                                                                                                    Enter username: ");
+        System.out.print("\t\t\tEnter username: ");
         String regUsername = in.nextLine();
-        System.out.print("                                                                                                                    Enter password: ");
+        System.out.print("\t\t\tEnter password: ");
         String regPassword = in.nextLine();
-        System.out.print("                                                                                                                    Confirm password: ");
+        System.out.print("\t\t\tConfirm password: ");
         String regConfirmPass = in.nextLine();
        
-        System.out.println("                                                                                                                  1.Submit");
-        System.out.println("                                                                                                                  0.Cancel");
+        System.out.println("\t\t\t1.Submit");
+        System.out.println("\t\t\t0.Cancel");
+        System.out.print("\t\t\tEnter: ");
         int choice = in.nextInt();
         if(choice == 1){
     
@@ -34,7 +35,7 @@ public class RegisterEmployee {
         	rgs.displayRegisterMenu();
             return;
         }else{
-            System.out.println("                                                                                                                  Invalid Choice. Please enter a valid choice.");
+            System.out.println("\t\t\tInvalid Choice. Please enter a valid choice.");
             }
     }
 }

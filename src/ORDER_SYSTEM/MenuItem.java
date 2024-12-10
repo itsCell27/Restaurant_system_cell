@@ -27,6 +27,6 @@ public class MenuItem {
 
     @Override
     public String toString() {
-        return name + "                  " + String.format("%.2f", price) + " PHP"; // Format to 2 decimal places
+        return name + "                  " + String.format("₱%.2f", price); // Format to 2 decimal places
     }
 }

@@ -84,15 +84,16 @@ public class MarkOrdersCompleted {
 
             // Display the orders in descending order
             if (ordersMap.isEmpty()) {
-                System.out.println("No pending orders found.");
+                System.out.println("\t\t\tNo pending orders found.");
                 return;
             }
 
             // Print header
-            System.out.println(" ===============================================================================================================");
-            System.out.println(String.format(" | %-13s  %-13s  %-27s  %-27s  %-13s |", 
+            clearScreen();
+            System.out.println("\t\t\t===============================================================================================================");
+            System.out.println(String.format("\t\t\t| %-13s  %-13s  %-27s  %-27s  %-19s |", 
                     "Order No.", "Quantity", "Items", "Total Price By Item Qty", "Total Price"));
-            System.out.println(" ===============================================================================================================");
+            System.out.println("\t\t\t===============================================================================================================");
 
             // After all data has been processed, print everything in the unified format
             for (Order order : ordersMap.values()) {
@@ -100,41 +101,42 @@ public class MarkOrdersCompleted {
 
                 // Print the order details along with its items
                 for (OrderItem item : order.items) {
-                    System.out.printf(" | %-13d  %-13d  %-27s  %-27s  %-13s |\n", 
+                    System.out.printf("\t\t\t| %-13d  %-13d  %-27s  %-27s  %-19s |\n", 
                             order.orderNumber, item.quantity, item.itemName, 
                             String.format("%.2f PHP", item.totalAmount), 
                             (item == order.items.get(order.items.size() - 1) ? String.format("%.2f PHP", totalPrice) : ""));
                 }
 
                 // Print the closing line for the order
-                System.out.println(" ===============================================================================================================");
+                System.out.println("\t\t\t===============================================================================================================");
             }
+            
 
             // Get user input to mark an order as completed
             Scanner scanner = new Scanner(System.in);
             while (true) {  // Infinite loop until a valid number is entered
-                System.out.print(" Input the Order number to mark as served (0 to go back): ");
+                System.out.print("\n\n\t\t\tInput the Order number to mark as served (0 to go back): ");
                 String input = scanner.nextLine();
 
                 try {
                     int orderInput = Integer.parseInt(input);  // Attempt to parse input as an integer
                     if (ordersMap.containsKey(orderInput)) {
                         updateOrderStatus(csvFile, orderInput);
-                        System.out.println(" Order #" + orderInput + " marked as served.");
+                        System.out.println("\t\t\tOrder #" + orderInput + " marked as served.");
                         break;  // Exit the loop after marking the order as served
                     } else if (orderInput == 0) {
-                        System.out.println("Going back...");
+                        System.out.println("\t\t\tGoing back...");
                         return;  // Exit to go back
                     } else {
-                        System.out.println(" Invalid order number.");
+                        System.out.println("\n\n\t\t\tInvalid order number.\n");
                     }
                 } catch (NumberFormatException e) {
-                    System.out.println(" Invalid input. Please enter a valid order number.");
+                    System.out.println("\n\n\t\t\tInvalid input. Please enter a valid order number.\n");
                 }
             }
 
         } catch (IOException e) {
-            System.out.println("Error reading the CSV file: " + e.getMessage());
+            System.out.println("\t\t\tError reading the CSV file: " + e.getMessage());
         }
     }
     // Method to update the status of an order to "served"
@@ -167,7 +169,19 @@ public class MarkOrdersCompleted {
                 }
             }
         } catch (IOException e) {
-            System.out.println("Error updating the CSV file: " + e.getMessage());
+            System.out.println("\t\t\tError updating the CSV file: " + e.getMessage());
         }
+    }
+    
+    public static void clearScreen() {
+        for (int i = 0; i < 50; i++) {  // Print 50 newlines
+            System.out.println();
+        }   
+    }
+    
+    public static void clearScreenBottom() {
+        for (int i = 0; i < 40; i++) {  // Print 50 newlines
+            System.out.println();
+        }   
     }
 }

@@ -23,7 +23,7 @@ public class EmployeeManager {
     private void loadEmployeesFromFile() {
         File file = new File(FILE_PATH);
         if (!file.exists()) {
-            System.out.println("No employee data file found, starting fresh.");
+            System.out.println("\t\t\tNo employee data file found, starting fresh.");
             return;  // Skip loading if the file does not exist
         }
 
@@ -36,7 +36,7 @@ public class EmployeeManager {
                 }
             }
         } catch (IOException e) {
-            System.out.println("Error while loading employee data: " + e.getMessage());
+            System.out.println("\t\t\tError while loading employee data: " + e.getMessage());
         }
     }
 
@@ -44,7 +44,7 @@ public class EmployeeManager {
     public boolean register(String username, String password, String confirmPassword) {
         // Check if passwords match
         if (!password.equals(confirmPassword)) {
-            System.out.println("Passwords do not match.");
+            System.out.println("\t\t\tPasswords do not match.");
             rgs.displayRegisterMenu();
             return false;
         }
@@ -55,7 +55,7 @@ public class EmployeeManager {
             return true;
         }
 
-        System.out.println("Employee limit reached.");
+        System.out.println("\t\t\tEmployee limit reached.");
         return false;
     }
 
@@ -77,7 +77,7 @@ public class EmployeeManager {
                 writer.newLine();
             }
         } catch (IOException e) {
-            System.out.println("Error while saving employee data: " + e.getMessage());
+            System.out.println("\t\t\tError while saving employee data: " + e.getMessage());
         }
         
     }

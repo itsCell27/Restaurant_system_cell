@@ -40,6 +40,7 @@ public class MainOrderSystem {
             switch (roleChoice) {
                 case 1:
                     
+                	clearScreen();
                     AdminSystem adminSystem = new AdminSystem();  // Create an instance of AdminSystem
                     adminSystem.start();  // Start the admin system
                     break;
@@ -49,9 +50,9 @@ public class MainOrderSystem {
                     while (!loginSuccess) {
                         Login login = new Login();  // Create an instance of the Login class
                         Scanner scannerForEmployee = new Scanner(System.in);  // Scanner for employee login
-                        System.out.print("                                                                                                                    Enter username: ");
+                        System.out.print("\t\t\tEnter username: ");
                         String employeeUsername = scannerForEmployee.nextLine();  // Read employee username
-                        System.out.print("                                                                                                                    Enter password: ");
+                        System.out.print("\t\t\tEnter password: ");
                         String employeePassword = scannerForEmployee.nextLine();  // Read employee password
 
                         // Verify the credentials by calling the public method handleLogin
@@ -69,8 +70,12 @@ public class MainOrderSystem {
                     break;
                 case 3:
                     break;
+                case 0:
+                	System.out.println("\n\t\t\tExiting the program. Goodbye!");
+                	System.exit(0); // Exit the program
+                    break;
                 default:
-                    System.out.println("                                                                                                                    Invalid option, please restart and select a valid role.");
+                    System.out.println("\t\t\tInvalid option, please restart and select a valid role.");
                     continue; // If invalid role, go back to role selection
             }
 
@@ -86,36 +91,14 @@ public class MainOrderSystem {
                 // Display Dine In, Take Out, and Logout options
                 if (diningOption.isEmpty()) {
                 	clearScreen();
-                	System.out.println("                                                                                                                  DINING OPTION                       ");
-                    System.out.println("                                                                                         ===================================================================");
-                    System.out.println("                                                                                         |                        [1] Dine In                              |");
-                    System.out.println("                                                                                         |                        [2] Take Out                             |");
-                    System.out.println("                                                                                         |                        [3] Logout                               |");
-                    System.out.println("                                                                                         ===================================================================\n\n");
-                    System.out.println("\n");
-                    System.out.println("\n");
-                    System.out.println("\n");
-                    System.out.println("\n");
-                    System.out.println("\n");
-                    System.out.println("\n");
-                    System.out.println("\n");
-                    System.out.println("\n");
-                    System.out.println("\n");
-                    System.out.println("\n");
-                    System.out.println("\n");
-                    System.out.println("\n");
-                    System.out.println("\n");
-                    System.out.println("\n");
-                    System.out.println("\n");
-                    System.out.println("\n");
-                    System.out.println("\n");
-                    System.out.println("\n");
-                    System.out.println("\n");
-                    System.out.println("\n");
-                    System.out.println("\n");
-                    System.out.println("\n");
-                    System.out.println("\n");
-                    System.out.print("                                                                                                                     Enter: ");
+                	System.out.println("\t\t\t\t\t\tDINING OPTION");
+                    System.out.println("\t\t\t===================================================================");
+                    System.out.println("\t\t\t|                        [1] Dine In                              |");
+                    System.out.println("\t\t\t|                        [2] Take Out                             |");
+                    System.out.println("\t\t\t|                        [3] Logout                               |");
+                    System.out.println("\t\t\t===================================================================\n\n");
+                    clearScreenBottom();
+                    System.out.print("\t\t\tEnter: ");
                     
                     int diningChoice = -1;
                     boolean validInput = false;
@@ -125,12 +108,12 @@ public class MainOrderSystem {
                             String input = scanner.nextLine();
                             diningChoice = Integer.parseInt(input.trim());
                             if (diningChoice < 1 || diningChoice > 3) {
-                                System.out.println("Invalid input. Please enter a number between 1 and 3.");
+                                System.out.println("\t\t\tInvalid input. Please enter a number between 1 and 3.");
                             } else {
                                 validInput = true;
                             }
                         } catch (NumberFormatException e) {
-                            System.out.println("Invalid input. Please enter a valid number.");
+                            System.out.println("\t\t\tInvalid input. Please enter a valid number:");
                         }
                     }
 
@@ -138,29 +121,29 @@ public class MainOrderSystem {
                     // Handle the dining choice and set the global dining option
                     switch (diningChoice) {
                         case 1:
-                            System.out.println("You selected Dine In.");
+                            System.out.println("\t\t\tYou selected Dine In.");
                             HandleMyOrder.setDiningOption("Dine In"); // Set the dining option
                             diningOption = "Dine In"; // Store the option
                             break;  // Dine In selected
                         case 2:
-                            System.out.println("You selected Take Out.");
+                            System.out.println("\t\t\tYou selected Take Out.");
                             HandleMyOrder.setDiningOption("Take Out"); // Set the dining option
                             diningOption = "Take Out"; // Store the option
                             break;  // Take Out selected
                         case 3:
-                            System.out.println("Logging out...");
+                            System.out.println("\t\t\tLogging out...");
                             AdminAuthForLogout adminAuth = new AdminAuthForLogout();
                             if (adminAuth.login(scanner)) { // Call the login method for authentication
-                                System.out.println("Logout successful.");
+                                System.out.println("\t\t\tLogout successful.");
                                 diningOption = ""; // Clear dining option after successful logout
                             } else {
-                                System.out.println("Authentication failed. Returning to menu...");
+                                System.out.println("\t\t\tAuthentication failed. Returning to menu...");
                                 continue;
                             }
                              
                             break;
                         default:
-                            System.out.println("Invalid option, please select a valid option.");
+                            System.out.println("\t\t\tInvalid option, please select a valid option.");
                             continue;  // Restart loop if invalid option
                     }
                 }
@@ -181,12 +164,14 @@ public class MainOrderSystem {
                         String input = scanner.nextLine();
                         choice = Integer.parseInt(input.trim());
                         if (choice < 0 || choice > 7) {
-                            System.out.println("Invalid input. Please enter a number between 0 and 7.");
+                        	clearScreen();
+                            System.out.println("\t\t\tInvalid input. Please enter a number between 0 and 7.");
                         } else {
                             validInput = true;
                         }
                     } catch (NumberFormatException e) {
-                        System.out.println("Invalid input. Please enter a valid number.");
+                    	
+                        
                     }
                 }
 
@@ -195,7 +180,7 @@ public class MainOrderSystem {
                 // Handle the user's choice
                 switch (choice) {
                     case 0:
-                        System.out.println("Going back to dining options...");
+                        System.out.println("\t\t\tGoing back to dining options...");
                         diningOption = ""; // Reset dining option so it can ask for it again
                         break; // Go back to dining options
                     case 1:
@@ -227,12 +212,12 @@ public class MainOrderSystem {
                         handleOrder.showOrderSummary(); // Show temporary orders in the HandleMyOrder class
                         break;  // Keep the program running after viewing the orders
                     default:
-                        System.out.println("Option not implemented yet! Please select a valid option.");
+                        System.out.println("\t\t\tOption not implemented yet! Please select a valid option.");
                 }
             }
 
             // After logging out from dining options, return to the role selection menu
-            System.out.println("Returning to role selection...");
+            System.out.println("\t\t\tReturning to role selection...");
         }
     }
 
@@ -244,25 +229,29 @@ public class MainOrderSystem {
 
         while (!validInput) {
             System.out.println("\n\n\n");
-            System.out.println("                                                                                                                  USER TYPE SELECTION                       ");
-            System.out.println("                                                                                         ===================================================================");
-            System.out.println("                                                                                         |                        [1] Admin                                |");
-            System.out.println("                                                                                         |                        [2] Employee                             |");
-            System.out.println("                                                                                         |                        [3] Customer                             |");
-            System.out.println("                                                                                         ===================================================================\n\n");
+            System.out.println("\t\t\t\t\t\tUSER TYPE SELECTION");
+            System.out.println("\t\t\t===================================================================");
+            System.out.println("\t\t\t|                        [1] Admin                                |");
+            System.out.println("\t\t\t|                        [2] Employee                             |");
+            System.out.println("\t\t\t|                        [3] Customer                             |");
+            System.out.println("\t\t\t|                        [0] Exit                                 |");
+            System.out.println("\t\t\t===================================================================\n\n");
+            System.out.println("\n\n\n\n\n\n\n\n\n\n");
             clearScreenBottom();
-            System.out.print("                                                                                                                    Enter: ");
+            System.out.print("\t\t\tEnter: ");
 
             try {
                 String input = scanner.nextLine();
                 roleChoice = Integer.parseInt(input.trim());
-                if (roleChoice < 1 || roleChoice > 3) {
-                    System.out.println("Invalid input. Please enter a number between 1 and 3.");
+                if (roleChoice < 0 || roleChoice > 3) {
+                	clearScreen();
+                    System.out.println("\t\t\tInvalid input. Please enter a number between 0 and 3.");
                 } else {
                     validInput = true;
                 }
             } catch (NumberFormatException e) {
-                System.out.println("Invalid input. Please enter a valid number.");
+            	clearScreen();
+                System.out.println("\t\t\tInvalid input. Please enter a valid number.");
             }
         }
         return roleChoice;
@@ -272,31 +261,20 @@ public class MainOrderSystem {
     // Method to display the main menu
     private static void displayMainMenu() {
     	clearScreen();
-    	
-        System.out.println("                                                                                                                 WELCOME TO THE RESTAURANT!");
-        System.out.println("                                                                                         ===================================================================");
-        System.out.println("                                                                                         |                        [1] Breakfast Menu                        |");
-        System.out.println("                                                                                         |                        [2] Chicken And Platters                  |");
-        System.out.println("                                                                                         |                        [3] Burger Menu                           |");
-        System.out.println("                                                                                         |                        [4] Drinks & Desserts Menu                |");
-        System.out.println("                                                                                         |                        [5] Coffee Menu                           |");
-        System.out.println("                                                                                         |                        [6] Fries Menu                            |");
-        System.out.println("                                                                                         |                        [7] My Order                              |");
-        System.out.println("                                                                                         |                        [0] Go Back                               |");
-        System.out.println("                                                                                         ===================================================================\n\n");
-        System.out.println("\n");
-        System.out.println("\n");
-        System.out.println("\n");
-        System.out.println("\n");
-        System.out.println("\n");
-        System.out.println("\n");
-        System.out.println("\n");
-        System.out.println("\n");
-        System.out.println("\n");
-        System.out.println("\n");
+        System.out.println("\t\t\t\t\t\tWELCOME TO THE RESTAURANT!");
+        System.out.println("\t\t\t====================================================================");
+        System.out.println("\t\t\t|                        [1] Breakfast Menu                        |");
+        System.out.println("\t\t\t|                        [2] Chicken And Platters                  |");
+        System.out.println("\t\t\t|                        [3] Burger Menu                           |");
+        System.out.println("\t\t\t|                        [4] Drinks & Desserts Menu                |");
+        System.out.println("\t\t\t|                        [5] Coffee Menu                           |");
+        System.out.println("\t\t\t|                        [6] Fries Menu                            |");
+        System.out.println("\t\t\t|                        [7] My Order                              |");
+        System.out.println("\t\t\t|                        [0] Go Back                               |");
+        System.out.println("\t\t\t====================================================================\n\n");
         clearScreenBottom();
         
-        System.out.print("                                                                                                                    Enter: ");
+        System.out.print("\t\t\tEnter: ");
     }
     
     
@@ -307,7 +285,7 @@ public class MainOrderSystem {
         }
         
         public static void clearScreenBottom() {
-            for (int i = 0; i < 25; i++) {  // Print 50 newlines
+            for (int i = 0; i < 30; i++) {  // Print 50 newlines
                 System.out.println();
             }   
         }

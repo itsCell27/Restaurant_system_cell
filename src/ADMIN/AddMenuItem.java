@@ -23,19 +23,19 @@ public class AddMenuItem {
     public void displayCategoryMenu() {
         AdminMenu ads = new AdminMenu();
         MainOrderSystem.clearScreen();
-        System.out.println("                                                                                                                  CATEGORIES");
-        System.out.println("                                                                                         ===================================================================");
-        System.out.println("                                                                                         |                        [1] Chicken and Platters                 |");
-        System.out.println("                                                                                         |                        [2] Breakfast                            |");
-        System.out.println("                                                                                         |                        [3] Burgers                              |");
-        System.out.println("                                                                                         |                        [4] Drinks and Desserts                  |");
-        System.out.println("                                                                                         |                        [5] Coffee                               |");
-        System.out.println("                                                                                         |                        [6] Fries                                |");
-        System.out.println("                                                                                         |                        [7] Go back                              |");
-        System.out.println("                                                                                         ===================================================================\n\n");
-        MainOrderSystem.clearScreenBottom();
+        System.out.println("\t\t\t\t\t\tCATEGORIES");
+        System.out.println("\t\t\t===================================================================");
+        System.out.println("\t\t\t|                        [1] Chicken and Platters                 |");
+        System.out.println("\t\t\t|                        [2] Breakfast                            |");
+        System.out.println("\t\t\t|                        [3] Burgers                              |");
+        System.out.println("\t\t\t|                        [4] Drinks and Desserts                  |");
+        System.out.println("\t\t\t|                        [5] Coffee                               |");
+        System.out.println("\t\t\t|                        [6] Fries                                |");
+        System.out.println("\t\t\t|                        [7] Go back                              |");
+        System.out.println("\t\t\t===================================================================\n\n");
+        clearScreenBottom();
         System.out.println("\n");
-        System.out.print("                                                                                                                  Enter: ");
+        System.out.print("\t\t\tEnter: ");
 
         int categoryChoice = -1;
         while (true) {
@@ -44,13 +44,13 @@ public class AddMenuItem {
                 scanner.nextLine();  // Consume the newline character
 
                 if (categoryChoice < 1 || categoryChoice > 7) {
-                    System.out.println("                                                                                         Invalid selection. Please choose a valid category.");
+                    System.out.println("\t\t\tInvalid selection. Please choose a valid category.");
                     displayCategoryMenu();
                 } else {
                     break;
                 }
             } catch (InputMismatchException e) {
-                System.out.println("                                                                                         Invalid input. Please enter a number between 1 and 7.");
+                System.out.println("\t\t\tInvalid input. Please enter a number between 1 and 7.");
                 scanner.nextLine();  // Clear the invalid input
             }
         }
@@ -89,9 +89,9 @@ public class AddMenuItem {
     }
 
     private void displayCategoryItems(String category) {
-        System.out.println("                                                                                         ===================================================================");
-        System.out.printf("                                                                                         | %-30s | %-10s | %-20s |\n", "Item Name", "Price", "Category");
-        System.out.println("                                                                                         ===================================================================");
+    	System.out.println("\t\t\t============================================================================");
+        System.out.printf("\t\t\t| %-30s | %-10s | %-26s |\n", "Item Name", "Price", "Category");
+        System.out.println("\t\t\t============================================================================");
 
         boolean itemsFound = false; // Track if items are found for the category
         try (Scanner fileScanner = new Scanner(new File(FILE_NAME))) {
@@ -105,18 +105,18 @@ public class AddMenuItem {
                 String line = fileScanner.nextLine();
                 String[] parts = line.split(", ");
                 if (parts.length == 3 && parts[2].equalsIgnoreCase(category)) {
-                    System.out.printf("                                                                                         | %-30s | %-10s | %-20s |\n", parts[0], parts[1], parts[2]);
+                    System.out.printf("\t\t\t| %-30s | %-10s | %-26s |\n", parts[0], parts[1], parts[2]);
                     itemsFound = true;
                 }
             }
 
             if (!itemsFound) {
-                System.out.println("                                                                                         No items found for the " + category + " category.");
+                System.out.println("\t\t\tNo items found for the " + category + " category.");
             }
         } catch (IOException e) {
-            System.out.println("                                                                                         Error reading the menu: " + e.getMessage());
+            System.out.println("\t\t\tError reading the menu: " + e.getMessage());
         }
-        System.out.println("                                                                                         ===================================================================");
+        System.out.println("\t\t\t============================================================================");
     }
 
     private void addItemsToCategory(String category) {
@@ -125,11 +125,11 @@ public class AddMenuItem {
         int itemCount = 0;
 
         // Allow user to input items up to 10
-        System.out.println("                                                                                         Enter up to 10 items for the " + category + " category:");
+        System.out.println("\t\t\tEnter up to 10 items for the " + category + " category:");
 
         while (itemCount < 10) {
             // Ask for the item name
-            System.out.print("                                                                                         Enter item name (or type '0' to stop): ");
+            System.out.print("\t\t\tEnter item name (or type '0' to stop): ");
             String itemName = scanner.nextLine();
 
             // Check if the user wants to stop adding items
@@ -140,17 +140,17 @@ public class AddMenuItem {
             // Ask for the item price
             double itemPrice = -1;
             while (true) {
-                System.out.print("                                                                                         Enter price for " + itemName + " (or type '0' to stop): ");
+                System.out.print("\t\t\tEnter price for " + itemName + " (or type '0' to stop): ");
                 try {
                     itemPrice = scanner.nextDouble();
                     scanner.nextLine();  // Consume the newline character
                     if (itemPrice < 0) {
-                        System.out.println("                                                                                         Invalid price. Please enter a positive number.");
+                        System.out.println("\t\t\tInvalid price. Please enter a positive number.");
                     } else {
                         break;
                     }
                 } catch (InputMismatchException e) {
-                    System.out.println("                                                                                         Invalid input. Please enter a valid number.");
+                    System.out.println("\t\t\tInvalid input. Please enter a valid number.");
                     scanner.nextLine();  // Clear the invalid input
                 }
             }
@@ -191,14 +191,14 @@ public class AddMenuItem {
                 writer.append(String.format("%s, %.2f, %s\n", itemNames[i], itemPrices[i], category));
             }
         } catch (IOException e) {
-            System.out.println("An error occurred while saving the menu: " + e.getMessage());
+            System.out.println("\t\t\tAn error occurred while saving the menu: " + e.getMessage());
         }
     }
 
     private void readMenuFromCSV() {
-        System.out.println("                                                                                         ===================================================================");
-        System.out.printf("                                                                                         %-30s %-10s %-20s\n", "Item Name", "Price", "Category");
-        System.out.println("                                                                                         ===================================================================");
+    	System.out.println("\t\t\t============================================================================");
+        System.out.printf("\t\t\t%-30s %-10s %-26s\n", "Item Name", "Price", "Category");
+        System.out.println("\t\t\t============================================================================");
 
         boolean itemsFound = false; // Track if items exist in the menu
         try (Scanner fileScanner = new Scanner(new File(FILE_NAME))) {
@@ -212,17 +212,29 @@ public class AddMenuItem {
                 String line = fileScanner.nextLine();
                 String[] parts = line.split(", ");
                 if (parts.length == 3) {
-                    System.out.printf("                                                                                         %-30s %-10s %-20s\n", parts[0], parts[1], parts[2]);
+                    System.out.printf("\t\t\t%-30s %-10s %-26s\n", parts[0], parts[1], parts[2]);
                     itemsFound = true;
                 }
             }
 
             if (!itemsFound) {
-                System.out.println("No items found in the menu.");
+                System.out.println("\t\t\tNo items found in the menu.");
             }
         } catch (IOException e) {
-            System.out.println("Error reading the menu: " + e.getMessage());
+            System.out.println("\t\t\tError reading the menu: " + e.getMessage());
         }
-        System.out.println("                                                                                         ===================================================================");
+        System.out.println("\t\t\t============================================================================");
+    }
+    
+    public static void clearScreen() {
+        for (int i = 0; i < 50; i++) {  // Print 50 newlines
+            System.out.println();
+        }   
+    }
+    
+    public static void clearScreenBottom() {
+        for (int i = 0; i < 40; i++) {  // Print 50 newlines
+            System.out.println();
+        }   
     }
 }

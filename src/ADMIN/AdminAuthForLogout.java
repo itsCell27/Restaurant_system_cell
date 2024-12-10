@@ -27,7 +27,8 @@ public class AdminAuthForLogout {
                 adminPassword = parts[1];
             }
         } catch (IOException e) {
-            System.err.println("Error reading admin credentials: " + e.getMessage());
+        	clearScreen();
+            System.err.println("\t\t\tError reading admin credentials: " + e.getMessage());
             System.exit(1);
         }
     }
@@ -36,22 +37,24 @@ public class AdminAuthForLogout {
     public boolean login(Scanner scanner) {
         int attemptsLeft = 3; // Maximum attempts allowed
 
-        System.out.println("\n--- Admin Login ---");
+        System.out.println("\n\t\t\t--- Admin Login ---");
         while (attemptsLeft > 0) {
-            System.out.print("Enter username: ");
+            System.out.print("\t\t\tEnter username: ");
             String inputUsername = scanner.nextLine();
-            System.out.print("Enter password: ");
+            System.out.print("\t\t\tEnter password: ");
             String inputPassword = scanner.nextLine();
 
             if (inputUsername.equals(adminUsername) && inputPassword.equals(adminPassword)) {
-                System.out.println("Login successful!");
+            	clearScreen();
+                System.out.println("\t\t\tLogin successful!");
                 return true; // Login successful
             } else {
                 attemptsLeft--;
-                System.out.println("Invalid credentials. Attempts remaining: " + attemptsLeft);
+                clearScreen();
+                System.out.println("\t\t\tInvalid credentials. Attempts remaining: " + attemptsLeft);
             }
         }
-        System.out.println("Too many failed login attempts.");
+        System.out.println("\t\t\tToo many failed login attempts.");
 
         // If login fails after 3 attempts, ask security question
         return forgotPassword(scanner);
@@ -59,20 +62,34 @@ public class AdminAuthForLogout {
 
     // Forgot password method (with security question and hardcoded key)
     public boolean forgotPassword(Scanner scanner) {
-        System.out.print("Security Question - What is the CEO's favorite food? ");
+        System.out.print("\t\t\tSecurity Question - What is the CEO's favorite food? ");
         String answer = scanner.nextLine();
-        System.out.print("Enter the hardcoded key: ");
+        System.out.print("\t\t\tEnter the hardcoded key: ");
         String key = scanner.nextLine();
 
         if (answer.equalsIgnoreCase(securityAnswer) && key.equals(hardcodedKey)) {
-            System.out.print("Enter new password: ");
+            System.out.print("\t\t\tEnter new password: ");
             String newPassword = scanner.nextLine();
             adminPassword = newPassword;
-            System.out.println("Password updated successfully.");
+            clearScreen();
+            System.out.println("\t\t\tPassword updated successfully.");
             return true; // Return true if password reset is successful
         } else {
-            System.out.println("Incorrect security answers or key.");
+        	clearScreen();
+            System.out.println("\t\t\tIncorrect security answers or key.");
             return false; // Return false if password reset fails
         }
+    }
+    
+    public static void clearScreen() {
+        for (int i = 0; i < 50; i++) {  // Print 50 newlines
+            System.out.println();
+        }   
+    }
+    
+    public static void clearScreenBottom() {
+        for (int i = 0; i < 30; i++) {  // Print 50 newlines
+            System.out.println();
+        }   
     }
 }

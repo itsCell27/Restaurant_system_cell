@@ -15,7 +15,7 @@ public class Login {
             
             return true;  // Return true if login is successful
         } else {
-            System.out.println("                                                                                                                    Invalid username or password.");
+            System.out.println("\t\t\tInvalid username or password.");
             return false;  // Return false if login fails
         }
     }
@@ -31,7 +31,7 @@ public class Login {
                 }
             }
         } catch (IOException e) {
-            System.out.println("Error while verifying credentials: " + e.getMessage());
+            System.out.println("\t\t\tError while verifying credentials: " + e.getMessage());
         }
         return false;  // No match found
     }
