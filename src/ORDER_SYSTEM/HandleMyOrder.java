@@ -45,29 +45,7 @@ public class HandleMyOrder {
         int userInput = scanner.nextInt();
 
         if (userInput == 1) {
-            // Ask for the payment method
-//            System.out.print("\t\t\tChoose a payment method (1 for Cash / 2 for E-money / 0 to Go Back): ");
-//            int paymentMethodInput = scanner.nextInt();
-//            scanner.nextLine(); // Consume newline
-//
-//            String paymentMethod = null;
-//
-//            switch (paymentMethodInput) {
-//                case 1:
-//                    paymentMethod = "Cash";
-//                    break;
-//                case 2:
-//                    paymentMethod = "E-money";
-//                    break;
-//                case 0:
-//                    System.out.println("\t\t\tReturning to the previous menu...");
-//                    return; // Exit the method without proceeding
-//                default:
-//                    System.out.println("\t\t\tInvalid choice. Please select 1 for Cash, 2 for E-money, or 0 to go back.");
-//                    return; // Exit the method for invalid input
-//            }
-            
-            
+            // Use Cash as the default payment method
             String paymentMethod = "Cash";
 
             // Save the order to CSV and clear the orders

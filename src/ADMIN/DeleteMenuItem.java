@@ -11,8 +11,8 @@ import ORDER_SYSTEM.MainOrderSystem;
 
 public class DeleteMenuItem {
 
-    private static final String FOLDER_PATH = "MenuItems";  // Folder name where the CSV file is stored
-    private static final String FILE_NAME = FOLDER_PATH + "/menu.csv";  // CSV file path
+    private static final String FOLDER_PATH = "MenuItems"; // Folder name where the CSV file is stored
+    private static final String FILE_NAME = FOLDER_PATH + "/menu.csv"; // CSV file path
 
     private Scanner scanner;
 
@@ -23,142 +23,145 @@ public class DeleteMenuItem {
 
     // Display the category menu to the user
     public void displayCategoryMenu() {
-    	AdminMenu ads = new AdminMenu();
-        // Display the categories
-    	MainOrderSystem.clearScreen();
-    	System.out.println("\t\t\t\t\t\tCATEGORIES");
-    	System.out.println("\t\t\t===================================================================");
-        System.out.println("\t\t\t|                        [1] Chicken and Platters                 |");
-        System.out.println("\t\t\t|                        [2] Breakfast                            |");
-        System.out.println("\t\t\t|                        [3] Burgers                              |");
-        System.out.println("\t\t\t|                        [4] Drinks and Desserts                  |");
-        System.out.println("\t\t\t|                        [5] Coffee                               |");
-        System.out.println("\t\t\t|                        [6] Fries                                |");
-        System.out.println("\t\t\t|                        [7] Go back                              |");
-        System.out.println("\t\t\t===================================================================\n\n");
-        clearScreenBottom();
-          System.out.print("\t\t\tEnter: ");
-        
-        int categoryChoice = scanner.nextInt();
-        scanner.nextLine();  // Consume the newline character
+        AdminMenu ads = new AdminMenu();
+        try {
+            MainOrderSystem.clearScreen();
+            System.out.println("\t\t\t\t\t\tCATEGORIES");
+            System.out.println("\t\t\t===================================================================");
+            System.out.println("\t\t\t|                        [1] Chicken and Platters                 |");
+            System.out.println("\t\t\t|                        [2] Breakfast                            |");
+            System.out.println("\t\t\t|                        [3] Burgers                              |");
+            System.out.println("\t\t\t|                        [4] Drinks and Desserts                  |");
+            System.out.println("\t\t\t|                        [5] Coffee                               |");
+            System.out.println("\t\t\t|                        [6] Fries                                |");
+            System.out.println("\t\t\t|                        [7] Go back                              |");
+            System.out.println("\t\t\t===================================================================\n\n");
+            clearScreenBottom();
+            System.out.print("\t\t\tEnter: ");
 
-        // Define category variables
-        String category = "";
+            if (scanner.hasNextInt()) {
+                int categoryChoice = scanner.nextInt();
+                scanner.nextLine(); // Consume newline character
+                String category = "";
 
-        // Handle category selection
-        switch (categoryChoice) {
-            case 1:
-                category = "Chicken and Platters";
-                break;
-            case 2:
-                category = "Breakfast";
-                break;
-            case 3:
-                category = "Burger";
-                break;
-            case 4:
-                category = "Drinks and Dessert";
-                break;
-            case 5:
-                category = "Coffee";
-                break;
-            case 6:
-                category = "Fries";
-                break;
-            case 7:
-            	ads.displayMenu();
-                break;
-            default:
-                System.out.println("Invalid selection. Please choose a valid category.");
+                // Handle category selection
+                switch (categoryChoice) {
+                    case 1:
+                        category = "Chicken and Platters";
+                        break;
+                    case 2:
+                        category = "Breakfast";
+                        break;
+                    case 3:
+                        category = "Burger";
+                        break;
+                    case 4:
+                        category = "Drinks and Dessert";
+                        break;
+                    case 5:
+                        category = "Coffee";
+                        break;
+                    case 6:
+                        category = "Fries";
+                        break;
+                    case 7:
+                        ads.displayMenu();
+                        return;
+                    default:
+                        System.out.println("\t\t\tInvalid selection. Please choose a valid category.");
+                        displayCategoryMenu();
+                        return;
+                }
+
+                // Proceed to delete item from the selected category
+                deleteItemFromCategory(category);
+            } else {
+                scanner.nextLine(); // Clear invalid input
+                System.out.println("\t\t\tInvalid input. Please enter a valid number.");
                 displayCategoryMenu();
-                return;  // Exit the method if invalid category is selected
+            }
+        } catch (Exception e) {
+            System.out.println("\t\t\tAn unexpected error occurred: " + e.getMessage());
+            displayCategoryMenu();
         }
-
-        // Ask user to input the item to delete
-        deleteItemFromCategory(category);
     }
-    
-    
 
     // Method to delete an item from the selected category
     private void deleteItemFromCategory(String category) {
-        List<String[]> menuItems = readMenuFromCSV();
-        List<String[]> updatedMenuItems = new ArrayList<>();
-        List<String[]> categoryItems = new ArrayList<>(); 
+        try {
+            List<String[]> menuItems = readMenuFromCSV();
+            List<String[]> updatedMenuItems = new ArrayList<>();
+            List<String[]> categoryItems = new ArrayList<>();
 
+            System.out.println("\t\t\t============================================================================");
+            System.out.printf("\t\t\t| %-30s | %-10s | %-26s |\n", "Item", "Price", "Category");
+            System.out.println("\t\t\t============================================================================");
 
-        // Print table headers
-        System.out.println("\t\t\t============================================================================");
-        System.out.printf("\t\t\t| %-30s | %-10s | %-26s |\n", "Item", "Price", "Category");
-        System.out.println("\t\t\t============================================================================");
-
-        // Filter items by category and display them in a table format
-        boolean categoryFound = false;
-        for (String[] item : menuItems) {
-            if (item[2].equalsIgnoreCase(category)) {
-                categoryFound = true;
-                categoryItems.add(item); // Collect items from the selected category
-                System.out.printf("\t\t\t| %-30s | %-10s | %-26s |\n", item[0], item[1], item[2]);
-            } else {
-                updatedMenuItems.add(item);
+            // Filter items by category and display them
+            boolean categoryFound = false;
+            for (String[] item : menuItems) {
+                if (item[2].equalsIgnoreCase(category)) {
+                    categoryFound = true;
+                    categoryItems.add(item);
+                    System.out.printf("\t\t\t| %-30s | %-10s | %-26s |\n", item[0], item[1], item[2]);
+                } else {
+                    updatedMenuItems.add(item);
+                }
             }
-        }
 
-        if (!categoryFound) {
-            System.out.println("\n\t\t\tNo items found for the selected category.");
-            displayCategoryMenu();  // Go back if no items found for the category
-            return;
-        }
-
-        System.out.println("\t\t\t============================================================================");
-
-        // Ask the user to choose the item to delete
-        System.out.print("\t\t\tEnter the item name to delete: ");
-        String itemToDelete = scanner.nextLine();
-
-        // Check if the item exists
-        boolean itemExists = false;
-        for (String[] item : menuItems) {
-            if (item[0].equalsIgnoreCase(itemToDelete)) {
-                itemExists = true;
-                break;
+            if (!categoryFound) {
+                System.out.println("\n\t\t\tNo items found for the selected category.");
+                displayCategoryMenu();
+                return;
             }
-        }
 
-        if (!itemExists) {
-            System.out.println("\t\t\tItem not found. Please enter a valid item name.");
-            displayCategoryMenu();
-            return;
-        }
+            System.out.println("\t\t\t============================================================================");
 
-        // Ask for confirmation before deleting
-        System.out.print("\t\t\tAre you sure you want to delete the item: " + itemToDelete + "? (Y/N): ");
-        String confirmation = scanner.nextLine();
+            while (true) {
+                System.out.print("\t\t\tEnter the item name to delete (or 0 to go back): ");
+                String itemToDelete = scanner.nextLine();
 
-        if (confirmation.equalsIgnoreCase("Y")) {
-            // Remove the selected item from the menu
-            //updatedMenuItems.removeIf(item -> item[0].equalsIgnoreCase(itemToDelete));
-        	for (int i = 0; i < categoryItems.size(); i++) {
-        	    if (categoryItems.get(i)[0].equalsIgnoreCase(itemToDelete)) {
-        	        categoryItems.remove(i);
-        	        break; // Remove only one match
-        	    }
-        	}
-        	
-        	// Combine the non-category items with the updated category items
-            updatedMenuItems.addAll(categoryItems);
+                if (itemToDelete.equals("0")) {
+                    displayCategoryMenu();
+                    return;
+                }
 
+                boolean itemExists = false;
+                for (String[] item : categoryItems) {
+                    if (item[0].equalsIgnoreCase(itemToDelete)) {
+                        itemExists = true;
+                        break;
+                    }
+                }
 
-            // Write the updated menu back to the CSV file
-            writeToCSV(updatedMenuItems);
-            displayCategoryMenu();
-        } else {
-            System.out.println("\t\t\tItem deletion canceled.");
+                if (itemExists) {
+                    System.out.print("\t\t\tAre you sure you want to delete the item: " + itemToDelete + "? (Y/N): ");
+                    String confirmation = scanner.nextLine();
+
+                    if (confirmation.equalsIgnoreCase("Y")) {
+                        // Remove the item
+                        categoryItems.removeIf(item -> item[0].equalsIgnoreCase(itemToDelete));
+                        updatedMenuItems.addAll(categoryItems);
+                        writeToCSV(updatedMenuItems);
+                        System.out.println("\t\t\tItem deleted successfully.");
+                        displayCategoryMenu();
+                        return;
+                    } else if (confirmation.equalsIgnoreCase("N")) {
+                        System.out.println("\t\t\tItem deletion canceled.");
+                        displayCategoryMenu();
+                        return;
+                    } else {
+                        System.out.println("\t\t\tInvalid confirmation input. Please try again.");
+                    }
+                } else {
+                    System.out.println("\t\t\tItem not found. Please enter a valid item name.");
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("\t\t\tAn error occurred: " + e.getMessage());
             displayCategoryMenu();
         }
     }
-
-
 
     // Method to read the menu from the CSV file
     private List<String[]> readMenuFromCSV() {
@@ -173,9 +176,8 @@ public class DeleteMenuItem {
         try (Scanner fileScanner = new Scanner(file)) {
             while (fileScanner.hasNextLine()) {
                 String line = fileScanner.nextLine();
-                // Skip the header
                 if (line.startsWith("Item, Price, Category")) {
-                    continue;
+                    continue; // Skip the header
                 }
                 String[] itemDetails = line.split(", ");
                 menuItems.add(itemDetails);
@@ -187,38 +189,35 @@ public class DeleteMenuItem {
         return menuItems;
     }
 
-    // Method to write the updated menu back into the CSV file
+    // Method to write the updated menu back to the CSV file
     private void writeToCSV(List<String[]> updatedMenuItems) {
-        // Ensure the folder exists
-        File folder = new File(FOLDER_PATH);
-        if (!folder.exists()) {
-            folder.mkdir();  // Create the folder if it doesn't exist
-        }
-
-        try (FileWriter writer = new FileWriter(FILE_NAME)) {
-            // Write the header
-            writer.append("Item, Price, Category\n");
-
-            // Write the updated menu items to the CSV file
-            for (String[] item : updatedMenuItems) {
-                writer.append(item[0] + ", " + item[1] + ", " + item[2] + "\n");
+        try {
+            File folder = new File(FOLDER_PATH);
+            if (!folder.exists()) {
+                folder.mkdir(); // Create the folder if it doesn't exist
             }
 
-            System.out.println("\t\t\tItem deleted and menu updated successfully.");
+            try (FileWriter writer = new FileWriter(FILE_NAME)) {
+                writer.append("Item, Price, Category\n");
+                for (String[] item : updatedMenuItems) {
+                    writer.append(item[0] + ", " + item[1] + ", " + item[2] + "\n");
+                }
+                System.out.println("\t\t\tMenu updated successfully.");
+            }
         } catch (IOException e) {
             System.out.println("\t\t\tAn error occurred while updating the menu: " + e.getMessage());
         }
     }
-    
+
     public static void clearScreen() {
-        for (int i = 0; i < 50; i++) {  // Print 50 newlines
+        for (int i = 0; i < 50; i++) {
             System.out.println();
-        }   
+        }
     }
-    
+
     public static void clearScreenBottom() {
-        for (int i = 0; i < 40; i++) {  // Print 50 newlines
+        for (int i = 0; i < 40; i++) {
             System.out.println();
-        }   
+        }
     }
 }
