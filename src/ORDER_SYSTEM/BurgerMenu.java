@@ -155,7 +155,7 @@ public class BurgerMenu {
             System.out.println("\t\t\tItem: " + item.getName());
             System.out.println("\t\t\tQuantity: " + quantity);
             System.out.println("\t\t\tPrice: " + String.format("%.2f", totalPrice) + " PHP");
-            System.out.println("\t\t\t\nTotal Price: " + String.format("%.2f", totalPrice) + " PHP");
+            System.out.println("\n\t\t\tTotal Price: " + String.format("%.2f", totalPrice) + " PHP");
             System.out.println("\t\t\tPress Enter to continue...");
             scanner.nextLine(); // Consume newline
             scanner.nextLine(); // Wait for user to press Enter

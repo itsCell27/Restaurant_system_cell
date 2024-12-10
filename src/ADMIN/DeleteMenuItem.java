@@ -84,6 +84,8 @@ public class DeleteMenuItem {
     private void deleteItemFromCategory(String category) {
         List<String[]> menuItems = readMenuFromCSV();
         List<String[]> updatedMenuItems = new ArrayList<>();
+        List<String[]> categoryItems = new ArrayList<>(); 
+
 
         // Print table headers
         System.out.println("\t\t\t============================================================================");
@@ -95,6 +97,7 @@ public class DeleteMenuItem {
         for (String[] item : menuItems) {
             if (item[2].equalsIgnoreCase(category)) {
                 categoryFound = true;
+                categoryItems.add(item); // Collect items from the selected category
                 System.out.printf("\t\t\t| %-30s | %-10s | %-26s |\n", item[0], item[1], item[2]);
             } else {
                 updatedMenuItems.add(item);
@@ -102,7 +105,7 @@ public class DeleteMenuItem {
         }
 
         if (!categoryFound) {
-            System.out.println("\n\\t\t\tNo items found for the selected category.");
+            System.out.println("\n\t\t\tNo items found for the selected category.");
             displayCategoryMenu();  // Go back if no items found for the category
             return;
         }
@@ -134,7 +137,17 @@ public class DeleteMenuItem {
 
         if (confirmation.equalsIgnoreCase("Y")) {
             // Remove the selected item from the menu
-            updatedMenuItems.removeIf(item -> item[0].equalsIgnoreCase(itemToDelete));
+            //updatedMenuItems.removeIf(item -> item[0].equalsIgnoreCase(itemToDelete));
+        	for (int i = 0; i < categoryItems.size(); i++) {
+        	    if (categoryItems.get(i)[0].equalsIgnoreCase(itemToDelete)) {
+        	        categoryItems.remove(i);
+        	        break; // Remove only one match
+        	    }
+        	}
+        	
+        	// Combine the non-category items with the updated category items
+            updatedMenuItems.addAll(categoryItems);
+
 
             // Write the updated menu back to the CSV file
             writeToCSV(updatedMenuItems);

@@ -1,6 +1,7 @@
 package ORDER_SYSTEM;
 
 import java.io.*;
+import java.util.InputMismatchException;
 import java.util.*;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
@@ -30,13 +31,13 @@ public class HandleMyOrder {
         // Display the summary for each order and calculate the total amount
         for (Order order : orders) {
             order.displaySummary();  // Display the order summary using the displaySummary method of the Order class
-            System.out.println("Dining Option: " + diningOption);  // Display the dining option
+            System.out.println("\t\t\tDining Option: " + diningOption);  // Display the dining option
             totalAmount += order.getTotalAmount();  // Add the total price of the current order to totalAmount
             System.out.println("\t\t\t--------------------------------");
         }
 
         // Display the total amount of the orders
-        System.out.println("\t\t\total Amount: " + String.format("%.2f", totalAmount));
+        System.out.println("\t\t\tTotal Amount: " + String.format("%.2f", totalAmount));
 
         // Ask user if they want to checkout
         Scanner scanner = new Scanner(System.in);
@@ -45,26 +46,29 @@ public class HandleMyOrder {
 
         if (userInput == 1) {
             // Ask for the payment method
-            System.out.print("\t\t\tChoose a payment method (1 for Cash / 2 for E-money / 0 to Go Back): ");
-            int paymentMethodInput = scanner.nextInt();
-            scanner.nextLine(); // Consume newline
-
-            String paymentMethod = null;
-
-            switch (paymentMethodInput) {
-                case 1:
-                    paymentMethod = "Cash";
-                    break;
-                case 2:
-                    paymentMethod = "E-money";
-                    break;
-                case 0:
-                    System.out.println("\t\t\tReturning to the previous menu...");
-                    return; // Exit the method without proceeding
-                default:
-                    System.out.println("\t\t\tInvalid choice. Please select 1 for Cash, 2 for E-money, or 0 to go back.");
-                    return; // Exit the method for invalid input
-            }
+//            System.out.print("\t\t\tChoose a payment method (1 for Cash / 2 for E-money / 0 to Go Back): ");
+//            int paymentMethodInput = scanner.nextInt();
+//            scanner.nextLine(); // Consume newline
+//
+//            String paymentMethod = null;
+//
+//            switch (paymentMethodInput) {
+//                case 1:
+//                    paymentMethod = "Cash";
+//                    break;
+//                case 2:
+//                    paymentMethod = "E-money";
+//                    break;
+//                case 0:
+//                    System.out.println("\t\t\tReturning to the previous menu...");
+//                    return; // Exit the method without proceeding
+//                default:
+//                    System.out.println("\t\t\tInvalid choice. Please select 1 for Cash, 2 for E-money, or 0 to go back.");
+//                    return; // Exit the method for invalid input
+//            }
+            
+            
+            String paymentMethod = "Cash";
 
             // Save the order to CSV and clear the orders
             saveOrderToCSV(paymentMethod);
@@ -72,18 +76,35 @@ public class HandleMyOrder {
 
             // Ask if the user wants to continue or exit
             System.out.print("\t\t\tDo you want to add more orders or exit? (1 for Add more / 0 for Exit): ");
-            int continueInput = scanner.nextInt();
-            if (continueInput == 1) {
-                // Proceed to add more orders
-                System.out.println("\t\t\tYou can now add more orders.");
-            } else if (continueInput == 0) {
-                // Exit the system or stop the process
-                System.out.println("\t\t\tExiting the system. Thank you!");
-                return;  // Exit the method and the program
-            } else {
-                System.out.println("\t\t\tInvalid input. Exiting...");
-                return;
+            try {
+            	int continueInput = scanner.nextInt();
+            	
+            	if (continueInput == 1) {
+                    // Proceed to add more orders
+                    System.out.println("\t\t\tYou can now add more orders.");
+                } else if (continueInput == 0) {
+                    // Exit the system or stop the process
+                    System.out.println("\t\t\tExiting the system. Thank you!");
+                    return;  // Exit the method and the program
+                } else {
+                    System.out.println("\t\t\tInvalid input. Exiting...");
+                    return;
+                }
+            } catch (InputMismatchException e_miss) {
+            	System.out.println("\t\t\tInvalid input.\n");
+            	//timer
+                for (int i = 3; i > 0; i--) { // Countdown 
+                    System.out.println("\t\t\t" + i + " returning to menu in...");
+                    try {
+                        Thread.sleep(1000); // Wait for 1 second
+                    } catch (InterruptedException e) {
+                        System.out.println("Timer was interrupted!");
+                    }
+                }
+                //timer
             }
+            	
+            
         } else if (userInput == 0) {
             System.out.println("\t\t\tOrder not checked out.");
         } else {
