@@ -1,9 +1,30 @@
 package EMPLOYEE;
+
 import ORDER_SYSTEM.MainOrderSystem;
 import java.util.InputMismatchException;
 import java.util.Scanner;
+import ORDER_SYSTEM.MenuItem;
+import ORDER_SYSTEM.MainOrderSystem;
+import ORDER_SYSTEM.Order;
+import ORDER_SYSTEM.BreakfastMenu;
+import ORDER_SYSTEM.BurgerMenu;
+import ORDER_SYSTEM.ChickenAndPlattersMenu;
+import ORDER_SYSTEM.DrinksAndDessertMenu;
+import ORDER_SYSTEM.FriesMenu;
+import ORDER_SYSTEM.CoffeeMenu;
+import ORDER_SYSTEM.HandleMyOrder;
 
 public class EmployeeMenu {
+	
+    // Menu objects for different categories
+    ChickenAndPlattersMenu chickenMenu = new ChickenAndPlattersMenu();
+    BreakfastMenu breakfastMenu = new BreakfastMenu();
+    DrinksAndDessertMenu drinksAndDessertMenu = new DrinksAndDessertMenu();
+    BurgerMenu burgerMenu = new BurgerMenu();
+    CoffeeMenu coffeeMenu = new CoffeeMenu();
+    FriesMenu friesMenu = new FriesMenu();
+    HandleMyOrder handleOrder = new HandleMyOrder();
+    
     private Scanner scanner;
 
     public EmployeeMenu() {
@@ -12,10 +33,10 @@ public class EmployeeMenu {
 
     // Start method to display the employee menu and handle actions
     public boolean start() {
-        boolean running = true;
+    	boolean running = true;
 
         while (running) {
-        	MainOrderSystem.clearScreen();
+        	MainOrderSystem.clearScreen();  // Clear screen for each new menu
 			System.out.println("\t\t\t\t\t\tEMPLOYEE MENU");
 			System.out.println("\t\t\t====================================================================");
 			System.out.println("\t\t\t|                        [1] Manage Orders                          |");
@@ -32,20 +53,20 @@ public class EmployeeMenu {
 			
 			    switch (choice) {
 			        case 1:
-			            TicketOrder.handleOrder(); // This should be defined in another class
+			            TicketOrder.handleOrder(); // Handle orders - Method should be defined in another class
 			            break;
 			        case 2:
-			            ViewPendingOrders.displayOrdersByStatus(); // This should be defined in another class
+			            ViewPendingOrders.displayOrdersByStatus(); // Display order status - Method should be defined in another class
 			            break;
 			        case 3:
-			            MarkOrdersCompleted.completeOrder(); // This should be defined in another class
+			        	DiningOption.showDiningMenu(scanner, chickenMenu, breakfastMenu, drinksAndDessertMenu, burgerMenu, coffeeMenu, friesMenu, handleOrder); // Display dining menu
 			            break;
 			        case 4:
-			            CancelOrders.cancelOrder(); // This should be defined in another class
+			        	OrderLogs.displayOrderLogs(); // Show order logs - Method should be defined in another class
 			            break;
 			        case 5:
-			            MainOrderSystem.clearScreen();
-			            return false;  // Return false to indicate logout and go back to role selection
+			            MainOrderSystem.clearScreen(); // Clear the screen before exiting
+			            return false;  // Exit and return to previous screen (e.g., employee role selection)
 			        default:
 			            System.out.println("\t\t\tInvalid option. Please try again.");
 			    }
@@ -61,15 +82,30 @@ public class EmployeeMenu {
         return true;  // If the loop ends, the user has logged out
     }
     
+    // Method to clear the screen (top)
     public static void clearScreen() {
         for (int i = 0; i < 50; i++) {  // Print 50 newlines
             System.out.println();
         }   
     }
     
+    // Method to clear the screen (bottom)
     public static void clearScreenBottom() {
-        for (int i = 0; i < 40; i++) {  // Print 50 newlines
+        for (int i = 0; i < 40; i++) {  // Print 40 newlines
             System.out.println();
         }   
+    }
+    
+    // Main method to run the application
+    public static void main(String[] args) {
+        // Create an instance of EmployeeMenu
+        EmployeeMenu employeeMenu = new EmployeeMenu();
+        
+        // Start the employee menu
+        boolean loggedIn = employeeMenu.start();
+        
+        if (!loggedIn) {
+            System.out.println("Exiting the Employee Menu. Returning to role selection...");
+        }
     }
 }
