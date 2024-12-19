@@ -51,7 +51,7 @@ class AdminMenu {
                         return;
                     case 5:
                         System.out.println("\t\t\tLogging out...");
-                        MainOrderSystem.main(null);
+                        MainOrderSystem.getRoleChoice(scanner);
                         return;
                     default:
                         System.out.println("\t\t\tInvalid choice. Please enter a number between 1 and 5.");

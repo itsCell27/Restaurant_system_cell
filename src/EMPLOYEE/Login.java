@@ -8,26 +8,32 @@ import java.util.Scanner;
 public class Login {
     private static final String FILE_PATH = "EmployeeList/employees.csv";  // Path to employee data file
 
-    // Method to handle employee login directly, accepting username and password
-    public boolean handleLogin(String username, String password) {
+    // Method to handle employee login directly, accepting employeeID and password
+    public boolean handleLogin(String employeeID, String password) {
         // Verify credentials by calling the verifyCredentials method
-        if (verifyCredentials(username, password)) {
-            
+        if (verifyCredentials(employeeID, password)) {
             return true;  // Return true if login is successful
         } else {
-            System.out.println("\t\t\tInvalid username or password.");
+            System.out.println("\t\t\tInvalid employeeID or password.");
             return false;  // Return false if login fails
         }
     }
 
     // Method to verify employee credentials from the file
-    private boolean verifyCredentials(String username, String password) {
+    private boolean verifyCredentials(String employeeID, String password) {
         try (BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");
-                if (data.length == 2 && data[0].equals(username) && data[1].equals(password)) {
-                    return true;  // Username and password match
+                
+                // Check if the CSV has the correct number of columns
+                if (data.length >= 3) {
+                    System.out.println("\t\t\tChecking ID: " + data[0] + ", Password: " + data[2]); // Debugging output
+
+                    // Compare employeeID and password
+                    if (data[0].equals(employeeID) && data[2].equals(password)) {
+                        return true;  // employeeID and password match
+                    }
                 }
             }
         } catch (IOException e) {

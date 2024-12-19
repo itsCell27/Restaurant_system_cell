@@ -163,7 +163,7 @@ public class HandleMyOrder {
                           .append(",")
                           .append(diningOption)
                           .append(",")
-                          .append("pending")
+                          .append("preparing")
                           .append(",")
                           .append(currentDateTime[0])
                           .append(",")

@@ -18,11 +18,11 @@ public class EmployeeMenu {
         	MainOrderSystem.clearScreen();
 			System.out.println("\t\t\t\t\t\tEMPLOYEE MENU");
 			System.out.println("\t\t\t====================================================================");
-			System.out.println("\t\t\t|                        [1] Ticket Order                          |");
-			System.out.println("\t\t\t|                        [2] View Pending Orders                   |");
-			System.out.println("\t\t\t|                        [3] Mark Orders as Completed              |");
-			System.out.println("\t\t\t|                        [4] Cancel Orders                         |");
-			System.out.println("\t\t\t|                        [5] Logout                                |");
+			System.out.println("\t\t\t|                        [1] Manage Orders                          |");
+			System.out.println("\t\t\t|                        [2] Status of orders                       |");
+			System.out.println("\t\t\t|                        [3] Manual order                           |");
+			System.out.println("\t\t\t|                        [4] Order logs                             |");
+			System.out.println("\t\t\t|                        [5] Exit to Employee                       |");
 			System.out.println("\t\t\t====================================================================\n\n");
 			clearScreenBottom();
 

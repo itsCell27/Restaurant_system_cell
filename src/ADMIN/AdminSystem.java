@@ -123,7 +123,7 @@ public class AdminSystem {
     public boolean forgotPassword(Scanner scanner) {
         System.out.print("\t\t\tSecurity Question - What is the CEO's favorite food? ");
         String answer = scanner.nextLine();
-        System.out.print("\t\t\tEnter the hardcoded key: ");
+        System.out.print("\t\t\tEnter the security key: ");
         String key = scanner.nextLine();
 
         if (answer.equalsIgnoreCase(securityAnswer) && key.equals(hardcodedKey)) {

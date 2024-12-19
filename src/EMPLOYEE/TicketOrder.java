@@ -7,21 +7,21 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class TicketOrder {
-	
-	public static void clearScreen() {
+
+    public static void clearScreen() {
         for (int i = 0; i < 50; i++) {  // Print 50 newlines
             System.out.println();
         }   
     }
-    
+
     public static void clearScreenBottom() {
-        for (int i = 0; i < 30; i++) {  // Print 50 newlines
+        for (int i = 0; i < 30; i++) {  // Print 30 newlines
             System.out.println();
         }   
     }
-    
+
     public static void clearScreenSmall() {
-        for (int i = 0; i < 20; i++) {  // Print 50 newlines
+        for (int i = 0; i < 20; i++) {  // Print 20 newlines
             System.out.println();
         }   
     }
@@ -83,12 +83,10 @@ public class TicketOrder {
                 String status = orderDetails[6].trim();
                 String date = orderDetails[7].trim();
 
-                // Only consider served orders now
-                if ("served".equalsIgnoreCase(status)) {
-                    Order order = new Order(orderNumber, itemName, quantity, totalAmount, paymentMethod, diningOption, date);
-                    ordersMap.putIfAbsent(orderNumber, new ArrayList<>());
-                    ordersMap.get(orderNumber).add(order);
-                }
+                // Removed the status check, so we include all orders regardless of status
+                Order order = new Order(orderNumber, itemName, quantity, totalAmount, paymentMethod, diningOption, date);
+                ordersMap.putIfAbsent(orderNumber, new ArrayList<>());
+                ordersMap.get(orderNumber).add(order);
             }
 
         } catch (IOException e) {
@@ -177,197 +175,31 @@ public class TicketOrder {
         clearScreenSmall();
 
         // Ask if the user wants to generate the receipt
-        System.out.print("\n\t\t\tDo you want to generate receipt (1 yes / 0 no)? ");
-        int generateReceipt = scanner.nextInt();
+        int actionChoice = -1;
+        while (actionChoice != 0) {
+            System.out.print("\n\t\t\tDo you want to update or cancel the order? (1 - Update / 2 - Cancel / 0 - Go back): ");
+            if (scanner.hasNextInt()) {
+                actionChoice = scanner.nextInt();
 
-        if (generateReceipt == 1) {
-            generateReceiptFile(selectedOrderNumber, selectedOrderItems, totalPrice);
-            System.out.println("\n\t\t\tReceipt has been generated and saved to the 'Receipts' folder.\n");
-        } else {
-            System.out.println("\n\t\t\tReceipt generation cancelled.\n");
-        }
-    }
-
-    // Receipt space calculator
-    public static String padToWidth(String label, String value, int totalWidth) {
-        int spacesNeeded = totalWidth - (label.length() + value.length());
-        spacesNeeded = Math.max(0, spacesNeeded); // Ensure non-negative space count
-        StringBuilder padding = new StringBuilder();
-        for (int i = 0; i < spacesNeeded; i++) {
-            padding.append(" ");
-        }
-        return label + padding + value; // Combine label, spaces, and value
-    }
-
-    // for individual price of item
-    public static String periodValue(String value, int totalWidth) {
-        int spacesNeeded = totalWidth - value.length();
-        spacesNeeded = Math.max(0, spacesNeeded); // Ensure non-negative space count
-        StringBuilder padding = new StringBuilder();
-        for (int i = 0; i < spacesNeeded; i++) {
-            padding.append(".");
-        }
-        return padding + value; // Combine spaces and value
-    }
-
-    // for total price of item
-    public static String spaceRight(String value, int totalWidth) {
-        int spacesNeeded = totalWidth - value.length();
-        spacesNeeded = Math.max(0, spacesNeeded); // Ensure non-negative space count
-        StringBuilder padding = new StringBuilder();
-        for (int i = 0; i < spacesNeeded; i++) {
-            padding.append(" ");
-        }
-        return value + padding; // Combine spaces and value
-    }
-    
-    public static String spaceLeft(String value, int totalWidth) {
-        int spacesNeeded = totalWidth - value.length();
-        spacesNeeded = Math.max(0, spacesNeeded); // Ensure non-negative space count
-        StringBuilder padding = new StringBuilder();
-        for (int i = 0; i < spacesNeeded; i++) {
-            padding.append(" ");
-        }
-        return padding + value; // Combine spaces and value
-    }
-    // Receipt space calculator ending
-
-
-    private static void generateReceiptFile(String orderNumber, List<Order> orderItems, double totalPrice) {
-        String folderPath = "Receipts";
-
-        // Create the folder if it doesn't exist
-        File folder = new File(folderPath);
-        if (!folder.exists()) {
-            folder.mkdir();
-        }
-
-        String fileName = folderPath + File.separator + "receipt_order_#" + orderNumber + ".txt";
-
-        Scanner scanner = new Scanner(System.in);
-        double amountPaid = 0;
-
-        // Define tax rate (e.g., 12%)
-        double taxRate = 0.12;
-        double tax = totalPrice * taxRate;
-        double grandTotal = totalPrice + tax;
-
-               // Prompt user for a valid amount
-        while (true) {
-            System.out.print("\t\t\tEnter the Amount Paid by the customer: ");
-            if (scanner.hasNextDouble()) {
-                amountPaid = scanner.nextDouble();
-                if (amountPaid >= grandTotal) {
-                    break; // Valid input, exit loop
+                switch (actionChoice) {
+                    case 1:
+                        // Use the new OrderUpdateManager class for updating
+                        OrderUpdate.updateOrder(selectedOrderNumber, selectedOrderItems);
+                        break;
+                    case 2:
+                        // Cancel functionality (yet to be implemented)
+                        System.out.println("\t\t\tYou chose to cancel the order. (Functionality not implemented yet)");
+                        break;
+                    case 0:
+                        System.out.println("\t\t\tGoing back to the order menu.");
+                        break;
+                    default:
+                        System.out.println("\t\t\tInvalid option. Please select 1, 2, or 0.");
                 }
             } else {
-                scanner.nextLine(); // Clear invalid input
+                System.out.println("\t\t\tInvalid input. Please enter a number (1, 2, or 0).");
+                scanner.next(); // Clear invalid input
             }
-            System.out.println("\t\t\tInvalid amount. The amount paid must be greater than or equal to " + Math.ceil(grandTotal) + " PHP.");
-        }
-
-        double amountDue = amountPaid - grandTotal;
-
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
-            writer.write("\t==================================================\n");
-            writer.write("\t                   ORDER #" + orderNumber + "\n");
-            writer.write("\t--------------------------------------------------\n");
-
-            // Write order details
-            Order firstOrder = orderItems.get(0);
-            writer.write("\t" + padToWidth("DATE:", firstOrder.getDate(), 50) + "\n");
-            writer.write("\t" + padToWidth("DINING OPTION:", firstOrder.getDiningOption(), 50) + "\n");
-            writer.write("\t" + padToWidth("PAYMENT METHOD:", firstOrder.getPaymentMethod(), 50) + "\n\n");
-            writer.write("\t--------------------------------------------------\n");
-
-            // Write table headers
-            writer.write(String.format("\t%-5s %-16s %-15s %-5s\n", "QTY", "ITEM", "UNIT PRICE", "TOTAL PRICE"));
-            writer.write("\t--------------------------------------------------\n\n");
-
-            // Write individual item details
-            for (Order order : orderItems) {
-            	writer.write(
-            			"\t" +
-            			spaceRight(String.format("%d", order.getQuantity()), 6) +
-            			spaceRight(order.getItemName(), 17) +
-            			spaceLeft(String.format("₱%.2f", order.getUnitPrice()), 10) +
-            			"      " +
-            			spaceLeft(String.format("₱%.2f", order.getTotalPrice()), 11) +
-            			"\n"
-            			);
-//                writer.write(String.format(
-//                    "\t%-5d %-16s %-15s %-5s\n",
-//                    order.getQuantity(),
-//                    order.getItemName(),
-//                    String.format("%.2f PHP", order.getUnitPrice()),
-//                    String.format("%.2f PHP", order.getTotalPrice())
-//                ));
-            }
-
-            // Write total price, tax, and grand total
-            writer.write("\n\t" + padToWidth("TOTAL:", String.format("₱%.2f", totalPrice), 50) + "\n");
-            writer.write("\t" + padToWidth("TAX (12%):", String.format("₱%.2f", tax), 50) + "\n");
-            writer.write("\t" + padToWidth("GRAND TOTAL:", String.format("₱%.2f", grandTotal), 50) + "\n");
-
-            // Write amount paid and amount due
-            writer.write("\n\t" + padToWidth("AMOUNT PAID:", String.format("₱%.2f", amountPaid), 50) + "\n");
-            writer.write("\t" + padToWidth("AMOUNT DUE:", String.format("₱%.2f", amountDue), 50) + "\n");
-
-            writer.write("\n\t==================================================\n");
-        } catch (IOException e) {
-            System.out.println("\t\t\tError writing the receipt: " + e.getMessage());
-        }
-    }
-
-    // Order class to hold order details
-    private static class Order {
-        private String orderNumber;
-        private String itemName;
-        private int quantity;
-        private double totalAmount;  // Changed to double to support decimals
-        private String paymentMethod;
-        private String diningOption;
-        private String date;
-
-        public Order(String orderNumber, String itemName, int quantity, double totalAmount, String paymentMethod, String diningOption, String date) {
-            this.orderNumber = orderNumber;
-            this.itemName = itemName;
-            this.quantity = quantity;
-            this.totalAmount = totalAmount;
-            this.paymentMethod = paymentMethod;
-            this.diningOption = diningOption;
-            this.date = date;
-        }
-
-        public double getTotalPrice() {
-            // Return total amount as a double (already parsed as double)
-            return totalAmount;
-        }
-
-        public double getUnitPrice() {
-            // Return the unit price calculated from totalAmount and quantity
-            return totalAmount / quantity;
-        }
-
-        public String getItemName() {
-            return itemName;
-        }
-
-        public int getQuantity() {
-            return quantity;
-        }
-
-        public String getPaymentMethod() {
-            return paymentMethod;
-        }
-
-        public String getDiningOption() {
-            return diningOption;
-        }
-
-        public String getDate() {
-            return date;
         }
     }
 }
-
