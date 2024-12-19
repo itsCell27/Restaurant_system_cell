@@ -93,4 +93,8 @@ public class Order {
     public String toString() {
         return "Order #" + orderNumber + " - " + itemName + ": " + quantity + " x " + String.format("%.2f PHP", getUnitPrice()) + " = " + String.format("%.2f PHP", getTotalPrice());
     }
+
+	public Object getOrderNumber() {
+		return orderNumber;
+	}
 }

@@ -96,9 +96,7 @@ public class TicketOrder {
         return ordersMap;
     }
 
-    // Method to display the orders and generate the receipt
     public static void handleOrder() {
-
         String csvFile = "OrderRecords/order_summary.csv"; // Adjust this path if necessary
         try {
             startFileWatcher(csvFile); // Start the file watcher when handling orders
@@ -149,6 +147,8 @@ public class TicketOrder {
 
         // Find the selected order number based on index
         String selectedOrderNumber = new ArrayList<>(ordersMap.keySet()).get(selectedOrderIndex - 1);
+        System.out.println("Selected Order Number for Receipt Generation: " + selectedOrderNumber); // Debugging line
+
         List<Order> selectedOrderItems = ordersMap.get(selectedOrderNumber);
 
         // Display the selected order details in tabular format
@@ -177,7 +177,12 @@ public class TicketOrder {
         // Ask if the user wants to generate the receipt
         int actionChoice = -1;
         while (actionChoice != 0) {
-            System.out.print("\n\t\t\tDo you want to update or cancel the order? (1 - Update / 2 - Cancel / 0 - Go back): ");
+            System.out.print("\n\t\t\tWhat do you want to do with this order?");
+            System.out.print("\n\t\t\t[1] Update order");
+            System.out.print("\n\t\t\t[2] Add discount");
+            System.out.print("\n\t\t\t[3] Generate receipt");
+            System.out.print("\n\t\t\t[4] Go back");
+            System.out.print("\n\t\t\tEnter: ");
             if (scanner.hasNextInt()) {
                 actionChoice = scanner.nextInt();
 
@@ -188,11 +193,14 @@ public class TicketOrder {
                         break;
                     case 2:
                         // Cancel functionality (yet to be implemented)
-                        System.out.println("\t\t\tYou chose to cancel the order. (Functionality not implemented yet)");
+                    	AddDiscount.addDiscount(selectedOrderNumber);
                         break;
-                    case 0:
+                    case 3:
+                        GenerateReceipt.generateReceipt(selectedOrderNumber);
+                        break;
+                    case 4:
                         System.out.println("\t\t\tGoing back to the order menu.");
-                        break;
+                        return;
                     default:
                         System.out.println("\t\t\tInvalid option. Please select 1, 2, or 0.");
                 }
@@ -202,4 +210,5 @@ public class TicketOrder {
             }
         }
     }
+
 }

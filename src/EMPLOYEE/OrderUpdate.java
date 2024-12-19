@@ -14,7 +14,7 @@ public class OrderUpdate {
         while (updateChoice != 3) {
             System.out.println("\n\t\t\tChoose what you want to update:");
             System.out.println("\t\t\t1. Modify quantity");
-            System.out.println("\t\t\t2. Add order (not implemented)");
+            System.out.println("\t\t\t2. Remove order");
             System.out.println("\t\t\t3. Cancel update");
             System.out.print("\n\t\t\tEnter choice: ");
             if (scanner.hasNextInt()) {
@@ -22,12 +22,10 @@ public class OrderUpdate {
 
                 switch (updateChoice) {
                     case 1:
-                        // Modify quantity
                     	ModifyQuantity.modifyQuantity(orderNumber, selectedOrderItems);
                         break;
                     case 2:
-                        // Add order (Functionality not implemented)
-                        AddOrder.addOrder(orderNumber, selectedOrderItems);
+                    	RemoveOrder.removeOrder(orderNumber, selectedOrderItems);
                         break;
                     case 3:
                         // Cancel the update

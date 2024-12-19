@@ -131,6 +131,7 @@ public class HandleMyOrder {
     }
 
     // Method to save orders to CSV file
+ // Method to save orders to CSV file
     private void saveOrderToCSV(String paymentMethod) {
         String directoryPath = "OrderRecords";
         File directory = new File(directoryPath);
@@ -144,13 +145,16 @@ public class HandleMyOrder {
 
         // Try-with-resources to ensure the FileWriter is closed after use
         try (FileWriter fileWriter = new FileWriter(fileName, true)) {
+            // If the file is empty, add the header including the "Discount" column
             if (new File(fileName).length() == 0) {
-                fileWriter.append("Order Number,Item,Quantity,Total Price,Payment Method,Dining Option,Status,Date,Time\n");
+                fileWriter.append("Order Number,Item,Quantity,Total Price,Payment Method,Dining Option,Status,Date,Time,Discount\n");
             }
 
             String[] currentDateTime = getCurrentDateTime();
 
+            // Loop through all orders and save them to the CSV file
             for (Order order : orders) {
+                // Write order details along with a default discount value of 0 for each order
                 fileWriter.append(String.valueOf(orderCount))
                           .append(",")
                           .append(order.getItem().getName())
@@ -163,23 +167,26 @@ public class HandleMyOrder {
                           .append(",")
                           .append(diningOption)
                           .append(",")
-                          .append("preparing")
+                          .append("preparing")  // Assuming status is "preparing"
                           .append(",")
-                          .append(currentDateTime[0])
+                          .append(currentDateTime[0])  // Date
                           .append(",")
-                          .append(currentDateTime[1])
+                          .append(currentDateTime[1])  // Time
+                          .append(",")
+                          .append("0")  // Default discount value is 0
                           .append("\n");
             }
 
             System.out.println("\n\t\t\tOrder has been checked out and saved to " + fileName);
 
             orderCount++;
-            generateTicketFile(orderCount - 1);
+            generateTicketFile(orderCount - 1);  // Call method to generate the ticket
 
         } catch (IOException e) {
             System.out.println("\n\t\t\tAn error occurred while saving the order to CSV: " + e.getMessage());
         }
     }
+
 
     // Method to clear orders
     private void clearOrders() {
