@@ -35,7 +35,7 @@ public class EmployeeMenu {
 			            TicketOrder.handleOrder(); // This should be defined in another class
 			            break;
 			        case 2:
-			            ViewPendingOrders.displayPendingOrders(); // This should be defined in another class
+			            ViewPendingOrders.displayOrdersByStatus(); // This should be defined in another class
 			            break;
 			        case 3:
 			            MarkOrdersCompleted.completeOrder(); // This should be defined in another class
